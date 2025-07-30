@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
-import '../../features/onboarding/presentation/pages/onboarding_page.dart';
-import '../../shared/widgets/main_navigation.dart';
+import 'package:cashflow/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:cashflow/features/profile/presentation/pages/bug_report_page.dart';
+import 'package:cashflow/features/settings/presentation/pages/settings_page.dart';
+import 'package:cashflow/shared/widgets/main_navigation.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -12,19 +14,23 @@ class AppRouter {
         builder: (context, state) => const OnboardingPage(),
       ),
       GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const MainNavigation(initialIndex: 0),
+        path: '/main',
+        name: 'main',
+        builder: (context, state) {
+          final indexString = state.uri.queryParameters['tab'];
+          final index = int.tryParse(indexString ?? '0') ?? 0;
+          return MainNavigation(initialIndex: index);
+        },
       ),
       GoRoute(
-        path: '/transaction',
-        name: 'transaction',
-        builder: (context, state) => const MainNavigation(initialIndex: 1),
+        path: '/bug-report',
+        name: 'bug_report',
+        builder: (context, state) => const BugReportPage(),
       ),
       GoRoute(
-        path: '/profile',
-        name: 'profile',
-        builder: (context, state) => const MainNavigation(initialIndex: 2),
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsPage(),
       ),
     ],
   );

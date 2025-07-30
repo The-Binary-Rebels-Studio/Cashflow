@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/transaction/presentation/pages/transaction_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class MainNavigation extends StatefulWidget {
   final int initialIndex;
@@ -29,18 +29,6 @@ class _MainNavigationState extends State<MainNavigation> {
     setState(() {
       _selectedIndex = index;
     });
-
-    switch (index) {
-      case 0:
-        context.go('/home');
-        break;
-      case 1:
-        context.go('/transaction');
-        break;
-      case 2:
-        context.go('/profile');
-        break;
-    }
   }
 
   @override
@@ -60,18 +48,18 @@ class _MainNavigationState extends State<MainNavigation> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Transactions',
+            icon: const Icon(Icons.account_balance_wallet),
+            label: AppLocalizations.of(context)!.transactions,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: const Icon(Icons.person),
+            label: AppLocalizations.of(context)!.profile,
           ),
         ],
       ),

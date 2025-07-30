@@ -1,13 +1,25 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:cashflow/core/constants/app_constants.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(AppLocalizations.of(context)!.profile),
         centerTitle: true,
       ),
       body: Padding(
@@ -25,19 +37,19 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'User Name',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.cashflowManager,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'user@example.com',
+            Text(
+              AppLocalizations.of(context)!.manageYourFinances,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 32),
@@ -46,38 +58,61 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.settings),
-                    title: const Text('Settings'),
+                    title: Text(AppLocalizations.of(context)!.settings),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      // TODO: Navigate to settings
+                      context.push(AppConstants.settingsRoute);
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.help),
-                    title: const Text('Help & Support'),
+                    leading: const Icon(Icons.category),
+                    title: Text(AppLocalizations.of(context)!.categories),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      // TODO: Navigate to help
+                      // TODO: Navigate to categories
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.bug_report),
+                    title: Text(AppLocalizations.of(context)!.reportBug),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      context.push(AppConstants.bugReportRoute);
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.info),
-                    title: const Text('About'),
+                    title: Text(AppLocalizations.of(context)!.about),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       // TODO: Navigate to about
                     },
                   ),
                   const Divider(),
-                  ListTile(
-                    leading: const Icon(Icons.logout, color: Colors.red),
-                    title: const Text(
-                      'Logout',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onTap: () {
-                      // TODO: Implement logout
-                    },
+                  ExpansionTile(
+                    leading: const Icon(Icons.bug_report),
+                    title: Text(AppLocalizations.of(context)!.debugInformation),
+                    children: [
+                      _buildDebugInfoTile(AppLocalizations.of(context)!.appName, AppConstants.appName),
+                      _buildDebugInfoTile(AppLocalizations.of(context)!.appVersion, AppConstants.appVersion),
+                      _buildDebugInfoTile('Build Number', '1'),
+                      _buildDebugInfoTile(AppLocalizations.of(context)!.platform, Platform.operatingSystem),
+                      _buildDebugInfoTile('Platform Version', Platform.operatingSystemVersion),
+                      _buildDebugInfoTile('Debug Mode', kDebugMode ? AppLocalizations.of(context)!.debugModeYes : AppLocalizations.of(context)!.debugModeNo),
+                      _buildDebugInfoTile('Release Mode', kReleaseMode ? AppLocalizations.of(context)!.debugModeYes : AppLocalizations.of(context)!.debugModeNo),
+                      _buildDebugInfoTile('Profile Mode', kProfileMode ? AppLocalizations.of(context)!.debugModeYes : AppLocalizations.of(context)!.debugModeNo),
+                      _buildDebugInfoTile('Database', AppConstants.databaseName),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            _copyDebugInfo();
+                          },
+                          icon: const Icon(Icons.copy),
+                          label: Text(AppLocalizations.of(context)!.copyDebugInfo),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -87,4 +122,34 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDebugInfoTile(String label, String value) {
+    return ListTile(
+      title: Text(label),
+      subtitle: Text(value),
+      dense: true,
+      onTap: () {
+        Clipboard.setData(ClipboardData(text: value));
+        // Show snackbar would require context, so we'll skip it for now
+      },
+    );
+  }
+
+  void _copyDebugInfo() {
+    final debugInfo = '''
+Debug Information:
+- App Name: ${AppConstants.appName}
+- Version: ${AppConstants.appVersion}
+- Build Number: 1
+- Platform: ${Platform.operatingSystem}
+- Platform Version: ${Platform.operatingSystemVersion}
+- Debug Mode: ${kDebugMode ? 'Yes' : 'No'}
+- Release Mode: ${kReleaseMode ? 'Yes' : 'No'}
+- Profile Mode: ${kProfileMode ? 'Yes' : 'No'}
+- Database: ${AppConstants.databaseName}
+''';
+    
+    Clipboard.setData(ClipboardData(text: debugInfo));
+  }
+
 }

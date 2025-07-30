@@ -6,13 +6,19 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:cashflow/core/di/injection.dart';
+import 'package:cashflow/core/localization/locale_manager.dart';
 
 import 'package:cashflow/main.dart';
 
 void main() {
   testWidgets('App loads correctly', (WidgetTester tester) async {
+    // Setup dependencies
+    await configureDependencies();
+    
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const CashFlowApp());
+    final localeManager = getIt<LocaleManager>();
+    await tester.pumpWidget(CashFlowApp(localeManager: localeManager));
 
     // Verify that the onboarding screen loads.
     expect(find.text('Welcome to CashFlow'), findsOneWidget);

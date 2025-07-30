@@ -1,0 +1,82 @@
+{
+  "@@locale": "en",
+  "appName": "CashFlow",
+  "welcomeTitle": "Welcome to CashFlow",
+  "welcomeSubtitle": "Track your expenses and manage your finances with ease",
+  "getStarted": "Get Started",
+  
+  "home": "Home",
+  "transactions": "Transactions",
+  "profile": "Profile",
+  
+  "settings": "Settings",
+  "categories": "Categories",
+  "reportBug": "Report Bug",
+  "helpSupport": "Help & Support",
+  "about": "About",
+  "backupRestore": "Backup & Restore",
+  
+  "cashflowManager": "Cashflow Manager",
+  "manageYourFinances": "Manage your finances",
+  
+  "debugInformation": "Debug Information",
+  "copyDebugInfo": "Copy Debug Info",
+  "debugInfoCopied": "Debug info copied to clipboard",
+  
+  "bugReportTitle": "Report Bug",
+  "bugReportSubtitle": "Help us improve CashFlow by reporting bugs you encounter.",
+  "bugDescription": "Bug Description",
+  "bugDescriptionRequired": "Bug Description *",
+  "bugDescriptionHint": "Describe what went wrong...",
+  "bugDescriptionError": "Please describe the bug",
+  
+  "stepsToReproduce": "Steps to Reproduce",
+  "stepsToReproduceRequired": "Steps to Reproduce *",
+  "stepsToReproduceHint": "1. Go to...\n2. Click on...\n3. See error...",
+  "stepsToReproduceError": "Please provide steps to reproduce",
+  
+  "expectedBehavior": "Expected Behavior",
+  "expectedBehaviorHint": "What should have happened instead?",
+  
+  "debugInfoAutoIncluded": "This information will be automatically included:",
+  "appVersion": "App Version",
+  "platform": "Platform",
+  "buildMode": "Build Mode",
+  "generateBugReport": "Generate Bug Report",
+  "bugReportCopied": "Bug report copied to clipboard! You can now paste it in an email or message.",
+  
+  "debugModeYes": "Yes",
+  "debugModeNo": "No",
+  "buildModeDebug": "Debug",
+  "buildModeRelease": "Release",
+  "buildModeProfile": "Profile",
+  
+  "notSpecified": "Not specified",
+  
+  "language": "Language",
+  "selectLanguage": "Select Language",
+  "english": "English",
+  "indonesian": "Indonesian", 
+  "malaysian": "Malay",
+  
+  "appearance": "Appearance",
+  "theme": "Theme",
+  "systemDefault": "System Default",
+  "fontSize": "Font Size",
+  "medium": "Medium",
+  
+  "dataPrivacy": "Data & Privacy",
+  "backupRestoreSubtitle": "Export or import your data",
+  "clearData": "Clear Data",
+  "clearDataSubtitle": "Delete all your data permanently",
+  "clearDataConfirmation": "Are you sure you want to clear all data? This action cannot be undone.",
+  "dataCleared": "Data cleared successfully",
+  
+  "notifications": "Notifications",
+  "enableNotifications": "Enable Notifications",
+  "receiveReminders": "Receive reminders and updates",
+  "dailyReminders": "Daily Reminders",
+  "dailyRemindersSubtitle": "Get reminded to track expenses",
+  
+  "cancel": "Cancel"
+}

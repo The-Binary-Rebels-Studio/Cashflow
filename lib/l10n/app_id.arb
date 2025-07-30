@@ -1,0 +1,82 @@
+{
+  "@@locale": "id",
+  "appName": "CashFlow",
+  "welcomeTitle": "Selamat Datang di CashFlow",
+  "welcomeSubtitle": "Lacak pengeluaran Anda dan kelola keuangan dengan mudah",
+  "getStarted": "Mulai",
+  
+  "home": "Beranda",
+  "transactions": "Transaksi",
+  "profile": "Profil",
+  
+  "settings": "Pengaturan",
+  "categories": "Kategori",
+  "reportBug": "Laporkan Bug",
+  "helpSupport": "Bantuan & Dukungan",
+  "about": "Tentang",
+  "backupRestore": "Cadangan & Pemulihan",
+  
+  "cashflowManager": "Pengelola Cashflow",
+  "manageYourFinances": "Kelola keuangan Anda",
+  
+  "debugInformation": "Informasi Debug",
+  "copyDebugInfo": "Salin Info Debug",
+  "debugInfoCopied": "Info debug disalin ke clipboard",
+  
+  "bugReportTitle": "Laporkan Bug",
+  "bugReportSubtitle": "Bantu kami meningkatkan CashFlow dengan melaporkan bug yang Anda temui.",
+  "bugDescription": "Deskripsi Bug",
+  "bugDescriptionRequired": "Deskripsi Bug *",
+  "bugDescriptionHint": "Jelaskan apa yang salah...",
+  "bugDescriptionError": "Silakan jelaskan bug tersebut",
+  
+  "stepsToReproduce": "Langkah untuk Mereproduksi",
+  "stepsToReproduceRequired": "Langkah untuk Mereproduksi *",
+  "stepsToReproduceHint": "1. Pergi ke...\n2. Klik pada...\n3. Lihat error...",
+  "stepsToReproduceError": "Silakan berikan langkah untuk mereproduksi",
+  
+  "expectedBehavior": "Perilaku yang Diharapkan",
+  "expectedBehaviorHint": "Apa yang seharusnya terjadi?",
+  
+  "debugInfoAutoIncluded": "Informasi ini akan disertakan secara otomatis:",
+  "appVersion": "Versi Aplikasi",
+  "platform": "Platform",
+  "buildMode": "Mode Build",
+  "generateBugReport": "Buat Laporan Bug",
+  "bugReportCopied": "Laporan bug disalin ke clipboard! Anda sekarang dapat menempelkannya di email atau pesan.",
+  
+  "debugModeYes": "Ya",
+  "debugModeNo": "Tidak",
+  "buildModeDebug": "Debug",
+  "buildModeRelease": "Rilis",
+  "buildModeProfile": "Profil",
+  
+  "notSpecified": "Tidak ditentukan",
+  
+  "language": "Bahasa",
+  "selectLanguage": "Pilih Bahasa",
+  "english": "Bahasa Inggris",
+  "indonesian": "Bahasa Indonesia", 
+  "malaysian": "Bahasa Melayu",
+  
+  "appearance": "Tampilan",
+  "theme": "Tema",
+  "systemDefault": "Default Sistem",
+  "fontSize": "Ukuran Font",
+  "medium": "Sedang",
+  
+  "dataPrivacy": "Data & Privasi",
+  "backupRestoreSubtitle": "Ekspor atau impor data Anda",
+  "clearData": "Hapus Data",
+  "clearDataSubtitle": "Hapus semua data Anda secara permanen",
+  "clearDataConfirmation": "Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan.",
+  "dataCleared": "Data berhasil dihapus",
+  
+  "notifications": "Notifikasi",
+  "enableNotifications": "Aktifkan Notifikasi",
+  "receiveReminders": "Terima pengingat dan pembaruan",
+  "dailyReminders": "Pengingat Harian",
+  "dailyRemindersSubtitle": "Dapatkan pengingat untuk melacak pengeluaran",
+  
+  "cancel": "Batal"
+}

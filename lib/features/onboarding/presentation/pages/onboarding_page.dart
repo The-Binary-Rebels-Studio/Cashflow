@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cashflow/core/constants/app_constants.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -20,20 +22,20 @@ class OnboardingPage extends StatelessWidget {
                 color: Colors.blue,
               ),
               const SizedBox(height: 32),
-              const Text(
-                'Welcome to CashFlow',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.welcomeTitle,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Track your expenses and manage your finances with ease',
+              Text(
+                AppLocalizations.of(context)!.welcomeSubtitle,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -42,7 +44,7 @@ class OnboardingPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.go('/home');
+                    context.go(AppConstants.mainRoute);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -50,9 +52,9 @@ class OnboardingPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Get Started',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.getStarted,
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),

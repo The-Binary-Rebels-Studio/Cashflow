@@ -1,0 +1,82 @@
+{
+  "@@locale": "ms",
+  "appName": "CashFlow",
+  "welcomeTitle": "Selamat Datang ke CashFlow",
+  "welcomeSubtitle": "Jejaki perbelanjaan anda dan urus kewangan dengan mudah",
+  "getStarted": "Mula",
+  
+  "home": "Laman Utama",
+  "transactions": "Transaksi",
+  "profile": "Profil",
+  
+  "settings": "Tetapan",
+  "categories": "Kategori",
+  "reportBug": "Laporkan Pepijat",
+  "helpSupport": "Bantuan & Sokongan",
+  "about": "Tentang",
+  "backupRestore": "Sandaran & Pemulihan",
+  
+  "cashflowManager": "Pengurus Cashflow",
+  "manageYourFinances": "Urus kewangan anda",
+  
+  "debugInformation": "Maklumat Debug",
+  "copyDebugInfo": "Salin Info Debug",
+  "debugInfoCopied": "Info debug disalin ke papan keratan",
+  
+  "bugReportTitle": "Laporkan Pepijat",
+  "bugReportSubtitle": "Bantu kami menambah baik CashFlow dengan melaporkan pepijat yang anda temui.",
+  "bugDescription": "Penerangan Pepijat",
+  "bugDescriptionRequired": "Penerangan Pepijat *",
+  "bugDescriptionHint": "Terangkan apa yang salah...",
+  "bugDescriptionError": "Sila terangkan pepijat tersebut",
+  
+  "stepsToReproduce": "Langkah untuk Menghasilkan Semula",
+  "stepsToReproduceRequired": "Langkah untuk Menghasilkan Semula *",
+  "stepsToReproduceHint": "1. Pergi ke...\n2. Klik pada...\n3. Lihat ralat...",
+  "stepsToReproduceError": "Sila berikan langkah untuk menghasilkan semula",
+  
+  "expectedBehavior": "Tingkah Laku yang Dijangka",
+  "expectedBehaviorHint": "Apa yang sepatutnya berlaku?",
+  
+  "debugInfoAutoIncluded": "Maklumat ini akan disertakan secara automatik:",
+  "appVersion": "Versi Aplikasi",
+  "platform": "Platform",
+  "buildMode": "Mod Build",
+  "generateBugReport": "Jana Laporan Pepijat",
+  "bugReportCopied": "Laporan pepijat disalin ke papan keratan! Anda kini boleh menampalkannya dalam emel atau mesej.",
+  
+  "debugModeYes": "Ya",
+  "debugModeNo": "Tidak",
+  "buildModeDebug": "Debug",
+  "buildModeRelease": "Keluaran",
+  "buildModeProfile": "Profil",
+  
+  "notSpecified": "Tidak dinyatakan",
+  
+  "language": "Bahasa",
+  "selectLanguage": "Pilih Bahasa",
+  "english": "Bahasa Inggeris",
+  "indonesian": "Bahasa Indonesia", 
+  "malaysian": "Bahasa Melayu",
+  
+  "appearance": "Penampilan",
+  "theme": "Tema",
+  "systemDefault": "Default Sistem",
+  "fontSize": "Saiz Fon",
+  "medium": "Sederhana",
+  
+  "dataPrivacy": "Data & Privasi",
+  "backupRestoreSubtitle": "Eksport atau import data anda",
+  "clearData": "Padam Data",
+  "clearDataSubtitle": "Padam semua data anda secara kekal",
+  "clearDataConfirmation": "Adakah anda pasti ingin memadam semua data? Tindakan ini tidak boleh dibatalkan.",
+  "dataCleared": "Data berjaya dipadam",
+  
+  "notifications": "Pemberitahuan",
+  "enableNotifications": "Aktifkan Pemberitahuan",
+  "receiveReminders": "Terima peringatan dan kemas kini",
+  "dailyReminders": "Peringatan Harian",
+  "dailyRemindersSubtitle": "Dapatkan peringatan untuk jejak perbelanjaan",
+  
+  "cancel": "Batal"
+}
