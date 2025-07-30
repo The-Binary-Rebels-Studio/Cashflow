@@ -1,0 +1,17 @@
+{
+    "dart.flutterSdkPath": null,
+    "dart.previewLsp": true,
+    "dart.flutterGenerateLocalizationsOnSave": true,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true,
+        "**/*.g.dart": true,
+        "**/.dart_tool/**": true
+    },
+    "dart.runPubGetOnPubspecChanges": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    }
+}
