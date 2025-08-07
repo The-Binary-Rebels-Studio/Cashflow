@@ -4,14 +4,12 @@ import 'package:cashflow/l10n/app_localizations.dart';
 class QuickActionsSection extends StatelessWidget {
   final VoidCallback? onAddIncome;
   final VoidCallback? onAddExpense;
-  final VoidCallback? onTransfer;
   final VoidCallback? onBudget;
 
   const QuickActionsSection({
     super.key,
     this.onAddIncome,
     this.onAddExpense,
-    this.onTransfer,
     this.onBudget,
   });
 
@@ -43,12 +41,6 @@ class QuickActionsSection extends StatelessWidget {
               icon: Icons.remove_circle_outline,
               color: Colors.red,
               onTap: onAddExpense,
-            ),
-            _ActionButton(
-              label: l10n.dashboardTransfer,
-              icon: Icons.swap_horiz,
-              color: Colors.blue,
-              onTap: onTransfer,
             ),
             _ActionButton(
               label: l10n.dashboardBudget,

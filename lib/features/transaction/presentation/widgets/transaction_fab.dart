@@ -135,27 +135,7 @@ class _TransactionFABState extends State<TransactionFAB>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 4.0,
-            0.0,
-          ),
-          child: _buildFABItem(
-            icon: Icons.swap_horiz,
-            label: l10n.dashboardTransfer,
-            color: Colors.blue,
-            onPressed: () {
-              _animate();
-              // TODO: Navigate to transfer screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Transfer feature coming soon!')),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-        Transform(
-          transform: Matrix4.translationValues(
-            0.0,
-            _translateButton.value * 3.0,
+            _translateButton.value * 2.0,
             0.0,
           ),
           child: _buildFABItem(
@@ -175,7 +155,7 @@ class _TransactionFABState extends State<TransactionFAB>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 2.0,
+            _translateButton.value * 1.0,
             0.0,
           ),
           child: _buildFABItem(

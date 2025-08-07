@@ -48,9 +48,6 @@ class _HomePageState extends State<HomePage> {
                 onAddExpense: () {
                   // TODO: Navigate to add expense screen
                 },
-                onTransfer: () {
-                  // TODO: Navigate to transfer screen
-                },
                 onBudget: () {
                   // TODO: Navigate to budget screen
                 },
