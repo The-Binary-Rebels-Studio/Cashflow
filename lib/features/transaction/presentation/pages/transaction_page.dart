@@ -1,49 +1,80 @@
 import 'package:flutter/material.dart';
+import '../widgets/transaction_header.dart';
+import '../widgets/transaction_list.dart';
+import '../widgets/transaction_fab.dart';
 
-class TransactionPage extends StatelessWidget {
+class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
+
+  @override
+  State<TransactionPage> createState() => _TransactionPageState();
+}
+
+class _TransactionPageState extends State<TransactionPage> {
+  String _selectedPeriod = 'This Month';
+  String _selectedCategory = 'All';
+  String _sortBy = 'Date';
+  String _searchQuery = '';
+  bool _isSearching = false;
+  
+  final List<String> _periods = ['Today', 'This Week', 'This Month', 'This Year'];
+  final List<String> _categories = ['All', 'Food', 'Transport', 'Shopping', 'Bills', 'Income'];
+  final List<String> _sortOptions = ['Date', 'Amount', 'Category'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Transactions'),
-        centerTitle: true,
-      ),
-      body: const Center(
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.list_alt,
-              size: 64,
-              color: Colors.grey,
+            TransactionHeader(
+              isSearching: _isSearching,
+              searchQuery: _searchQuery,
+              selectedPeriod: _selectedPeriod,
+              selectedCategory: _selectedCategory,
+              sortBy: _sortBy,
+              periods: _periods,
+              categories: _categories,
+              sortOptions: _sortOptions,
+              onSearchToggle: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                  if (!_isSearching) _searchQuery = '';
+                });
+              },
+              onSearchChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+              onPeriodChanged: (period) {
+                setState(() {
+                  _selectedPeriod = period;
+                });
+              },
+              onCategoryChanged: (category) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              },
+              onSortChanged: (sort) {
+                setState(() {
+                  _sortBy = sort;
+                });
+              },
             ),
-            SizedBox(height: 16),
-            Text(
-              'No transactions yet',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Start adding your income and expenses',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
+            Expanded(
+              child: TransactionList(
+                searchQuery: _searchQuery,
+                selectedPeriod: _selectedPeriod,
+                selectedCategory: _selectedCategory,
+                sortBy: _sortBy,
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to add transaction screen
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const TransactionFAB(),
     );
   }
 }

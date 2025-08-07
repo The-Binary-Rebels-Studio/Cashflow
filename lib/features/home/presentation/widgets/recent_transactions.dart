@@ -36,8 +36,29 @@ class RecentTransactions extends StatelessWidget {
         icon: Icons.account_balance_wallet,
         color: Colors.green,
       ),
+      TransactionItem(
+        title: 'Netflix Subscription',
+        category: 'Bills',
+        amount: '-Rp 199,000',
+        icon: Icons.subscriptions,
+        color: Colors.red,
+      ),
+      TransactionItem(
+        title: 'Grocery Shopping',
+        category: 'Shopping',
+        amount: '-Rp 150,000',
+        icon: Icons.shopping_cart,
+        color: Colors.purple,
+      ),
+      TransactionItem(
+        title: 'Freelance Payment',
+        category: l10n.dashboardIncome,
+        amount: '+Rp 2,500,000',
+        icon: Icons.work,
+        color: Colors.green,
+      ),
     ];
-    final displayTransactions = transactions.isEmpty ? defaultTransactions : transactions;
+    final displayTransactions = transactions.isEmpty ? defaultTransactions.take(6).toList() : transactions.take(6).toList();
     
     return Card(
       elevation: 0,
@@ -63,11 +84,11 @@ class RecentTransactions extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            ...displayTransactions.map((transaction) => _TransactionTile(
-              transaction: transaction,
-            )),
+            if (displayTransactions.isNotEmpty)
+              ...displayTransactions.map((transaction) => _TransactionTile(
+                transaction: transaction,
+              )),
             const SizedBox(height: 16),
-            _EmptyState(l10n: l10n),
           ],
         ),
       ),
@@ -138,37 +159,6 @@ class _TransactionTile extends StatelessWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  final AppLocalizations l10n;
-  
-  const _EmptyState({required this.l10n});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 60),
-        child: Column(
-          children: [
-            Icon(
-              Icons.receipt_long_outlined,
-              size: 48,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              l10n.dashboardMoreTransactionsSoon,
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class TransactionItem {
   final String title;

@@ -5,6 +5,7 @@ import '../widgets/quick_stats_row.dart';
 import '../widgets/quick_actions_section.dart';
 import '../widgets/spending_chart.dart';
 import '../widgets/recent_transactions.dart';
+import '../../../../core/utils/navigation_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 24),
               RecentTransactions(
                 onSeeAll: () {
-                  // TODO: Navigate to all transactions screen
+                  NavigationHelper.navigateToTransactions(context);
                 },
               ),
             ],
