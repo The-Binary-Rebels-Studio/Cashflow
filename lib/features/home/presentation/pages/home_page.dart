@@ -1,77 +1,69 @@
 import 'package:flutter/material.dart';
+import '../widgets/header_section.dart';
+import '../widgets/balance_card.dart';
+import '../widgets/quick_stats_row.dart';
+import '../widgets/quick_actions_section.dart';
+import '../widgets/spending_chart.dart';
+import '../widgets/recent_transactions.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _isBalanceVisible = true;
+
+  void _toggleBalanceVisibility() {
+    setState(() {
+      _isBalanceVisible = !_isBalanceVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total Balance',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '\$0.00',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeaderSection(),
+              const SizedBox(height: 24),
+              BalanceCard(
+                isBalanceVisible: _isBalanceVisible,
+                onVisibilityToggle: _toggleBalanceVisibility,
               ),
-            ),
-            SizedBox(height: 24),
-            Text(
-              'Recent Transactions',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 24),
+              const QuickStatsRow(),
+              const SizedBox(height: 24),
+              QuickActionsSection(
+                onAddIncome: () {
+                  // TODO: Navigate to add income screen
+                },
+                onAddExpense: () {
+                  // TODO: Navigate to add expense screen
+                },
+                onTransfer: () {
+                  // TODO: Navigate to transfer screen
+                },
+                onBudget: () {
+                  // TODO: Navigate to budget screen
+                },
               ),
-            ),
-            SizedBox(height: 16),
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.receipt_long,
-                      size: 64,
-                      color: Colors.grey,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'No transactions yet',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 24),
+              const SpendingChart(),
+              const SizedBox(height: 24),
+              RecentTransactions(
+                onSeeAll: () {
+                  // TODO: Navigate to all transactions screen
+                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

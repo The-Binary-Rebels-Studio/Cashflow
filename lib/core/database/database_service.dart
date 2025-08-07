@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
   static Database? _database;
-  static const int _currentVersion = 1;
+  static const int _currentVersion = 2;
 
   static Future<Database> get instance async {
     if (_database != null) return _database!;
@@ -36,7 +36,8 @@ class DatabaseService {
       CREATE TABLE app_settings(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         locale TEXT,
-        is_dark_mode INTEGER
+        is_dark_mode INTEGER,
+        onboarding_completed INTEGER DEFAULT 0
       )
     ''');
     
@@ -46,8 +47,8 @@ class DatabaseService {
   static Future<void> _migrateToVersion(Database db, int version) async {
     switch (version) {
       case 2:
-        // Example migration to version 2
-        // await db.execute('ALTER TABLE app_settings ADD COLUMN theme_color TEXT');
+        // Add onboarding_completed column to existing app_settings table
+        await db.execute('ALTER TABLE app_settings ADD COLUMN onboarding_completed INTEGER DEFAULT 0');
         break;
       case 3:
         // Example migration to version 3  
