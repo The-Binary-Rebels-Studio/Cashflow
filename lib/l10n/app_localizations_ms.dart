@@ -22,6 +22,50 @@ class AppLocalizationsMs extends AppLocalizations {
   String get getStarted => 'Mula';
 
   @override
+  String get onboardingChooseLanguage => 'Pilih Bahasa';
+
+  @override
+  String get onboardingSelectPreferredLanguage => 'Pilih bahasa pilihan anda';
+
+  @override
+  String get onboardingSkip => 'Langkau';
+
+  @override
+  String get onboardingTrackExpensesTitle => 'Jejaki Perbelanjaan Anda';
+
+  @override
+  String get onboardingTrackExpensesSubtitle =>
+      'Pantau tabiat perbelanjaan dan lihat ke mana wang anda pergi';
+
+  @override
+  String get onboardingSmartCategoriesTitle => 'Kategori Pintar';
+
+  @override
+  String get onboardingSmartCategoriesSubtitle =>
+      'Atur transaksi dengan pengkategorian yang bijak';
+
+  @override
+  String get onboardingFinancialInsightsTitle => 'Wawasan Kewangan';
+
+  @override
+  String get onboardingFinancialInsightsSubtitle =>
+      'Dapatkan analitik dan wawasan terperinci tentang corak perbelanjaan anda';
+
+  @override
+  String get onboardingSecurePrivateTitle => 'Selamat & Peribadi';
+
+  @override
+  String get onboardingSecurePrivateSubtitle =>
+      'Data kewangan anda disulitkan dan disimpan dengan selamat di peranti anda';
+
+  @override
+  String get onboardingCurrencyTitle => 'Pilih Mata Wang Anda';
+
+  @override
+  String get onboardingCurrencySubtitle =>
+      'Pilih mata wang pilihan untuk semua transaksi dan pengiraan';
+
+  @override
   String get home => 'Laman Utama';
 
   @override
@@ -207,4 +251,104 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get cancel => 'Batal';
+
+  @override
+  String get dashboardGoodMorning => 'Selamat Pagi!';
+
+  @override
+  String get dashboardWelcomeBack => 'Selamat kembali ke kewangan anda';
+
+  @override
+  String get dashboardTotalBalance => 'Jumlah Baki';
+
+  @override
+  String get dashboardTrendFromLastMonth => '+12.5% dari bulan lalu';
+
+  @override
+  String get dashboardIncome => 'Pendapatan';
+
+  @override
+  String get dashboardExpenses => 'Perbelanjaan';
+
+  @override
+  String get dashboardQuickActions => 'Tindakan Pantas';
+
+  @override
+  String get dashboardAddIncome => 'Tambah Pendapatan';
+
+  @override
+  String get dashboardAddExpense => 'Tambah Perbelanjaan';
+
+  @override
+  String get dashboardTransfer => 'Pindahan';
+
+  @override
+  String get dashboardBudget => 'Bajet';
+
+  @override
+  String get dashboardSpendingCategories => 'Kategori Perbelanjaan';
+
+  @override
+  String get dashboardChartPlaceholder => 'Placeholder Carta';
+
+  @override
+  String get dashboardFoodDining => 'Makanan & Minuman';
+
+  @override
+  String get dashboardTransportation => 'Pengangkutan';
+
+  @override
+  String get dashboardShopping => 'Membeli-belah';
+
+  @override
+  String get dashboardBills => 'Bil';
+
+  @override
+  String get dashboardRecentTransactions => 'Transaksi Terkini';
+
+  @override
+  String get dashboardSeeAll => 'Lihat Semua';
+
+  @override
+  String get dashboardStarbucksCoffee => 'Kopi Starbucks';
+
+  @override
+  String get dashboardGrabTransport => 'Pengangkutan Grab';
+
+  @override
+  String get dashboardSalaryDeposit => 'Deposit Gaji';
+
+  @override
+  String get dashboardMoreTransactionsSoon =>
+      'Lebih banyak transaksi akan datang tidak lama lagi';
+
+  @override
+  String get currencyUSD => 'Dolar Amerika (USD)';
+
+  @override
+  String get currencyEUR => 'Euro (EUR)';
+
+  @override
+  String get currencyIDR => 'Rupiah Indonesia (IDR)';
+
+  @override
+  String get currencyMYR => 'Ringgit Malaysia (MYR)';
+
+  @override
+  String get currencyGBP => 'Pound British (GBP)';
+
+  @override
+  String get currencyJPY => 'Yen Jepun (JPY)';
+
+  @override
+  String get currencySGD => 'Dolar Singapura (SGD)';
+
+  @override
+  String get selectCurrency => 'Pilih Mata Wang';
+
+  @override
+  String get currency => 'Mata Wang';
+
+  @override
+  String get currencySettings => 'Tetapan Mata Wang';
 }

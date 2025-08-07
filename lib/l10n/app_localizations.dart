@@ -124,6 +124,84 @@ abstract class AppLocalizations {
   /// **'Get Started'**
   String get getStarted;
 
+  /// No description provided for @onboardingChooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Language'**
+  String get onboardingChooseLanguage;
+
+  /// No description provided for @onboardingSelectPreferredLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your preferred language'**
+  String get onboardingSelectPreferredLanguage;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingTrackExpensesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Your Expenses'**
+  String get onboardingTrackExpensesTitle;
+
+  /// No description provided for @onboardingTrackExpensesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor your spending habits and see where your money goes'**
+  String get onboardingTrackExpensesSubtitle;
+
+  /// No description provided for @onboardingSmartCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Categories'**
+  String get onboardingSmartCategoriesTitle;
+
+  /// No description provided for @onboardingSmartCategoriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize your transactions with intelligent categorization'**
+  String get onboardingSmartCategoriesSubtitle;
+
+  /// No description provided for @onboardingFinancialInsightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Insights'**
+  String get onboardingFinancialInsightsTitle;
+
+  /// No description provided for @onboardingFinancialInsightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get detailed analytics and insights about your spending patterns'**
+  String get onboardingFinancialInsightsSubtitle;
+
+  /// No description provided for @onboardingSecurePrivateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure & Private'**
+  String get onboardingSecurePrivateTitle;
+
+  /// No description provided for @onboardingSecurePrivateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your financial data is encrypted and stored securely on your device'**
+  String get onboardingSecurePrivateSubtitle;
+
+  /// No description provided for @onboardingCurrencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Currency'**
+  String get onboardingCurrencyTitle;
+
+  /// No description provided for @onboardingCurrencySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your preferred currency for all transactions and calculations'**
+  String get onboardingCurrencySubtitle;
+
   /// No description provided for @home.
   ///
   /// In en, this message translates to:
@@ -483,6 +561,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @dashboardGoodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning!'**
+  String get dashboardGoodMorning;
+
+  /// No description provided for @dashboardWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back to your finances'**
+  String get dashboardWelcomeBack;
+
+  /// No description provided for @dashboardTotalBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Balance'**
+  String get dashboardTotalBalance;
+
+  /// No description provided for @dashboardTrendFromLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'+12.5% from last month'**
+  String get dashboardTrendFromLastMonth;
+
+  /// No description provided for @dashboardIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get dashboardIncome;
+
+  /// No description provided for @dashboardExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get dashboardExpenses;
+
+  /// No description provided for @dashboardQuickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get dashboardQuickActions;
+
+  /// No description provided for @dashboardAddIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Income'**
+  String get dashboardAddIncome;
+
+  /// No description provided for @dashboardAddExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get dashboardAddExpense;
+
+  /// No description provided for @dashboardTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get dashboardTransfer;
+
+  /// No description provided for @dashboardBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get dashboardBudget;
+
+  /// No description provided for @dashboardSpendingCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending Categories'**
+  String get dashboardSpendingCategories;
+
+  /// No description provided for @dashboardChartPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Chart Placeholder'**
+  String get dashboardChartPlaceholder;
+
+  /// No description provided for @dashboardFoodDining.
+  ///
+  /// In en, this message translates to:
+  /// **'Food & Dining'**
+  String get dashboardFoodDining;
+
+  /// No description provided for @dashboardTransportation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get dashboardTransportation;
+
+  /// No description provided for @dashboardShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get dashboardShopping;
+
+  /// No description provided for @dashboardBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get dashboardBills;
+
+  /// No description provided for @dashboardRecentTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Transactions'**
+  String get dashboardRecentTransactions;
+
+  /// No description provided for @dashboardSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get dashboardSeeAll;
+
+  /// No description provided for @dashboardStarbucksCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Starbucks Coffee'**
+  String get dashboardStarbucksCoffee;
+
+  /// No description provided for @dashboardGrabTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Grab Transport'**
+  String get dashboardGrabTransport;
+
+  /// No description provided for @dashboardSalaryDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary Deposit'**
+  String get dashboardSalaryDeposit;
+
+  /// No description provided for @dashboardMoreTransactionsSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'More transactions coming soon'**
+  String get dashboardMoreTransactionsSoon;
+
+  /// No description provided for @currencyUSD.
+  ///
+  /// In en, this message translates to:
+  /// **'US Dollar (USD)'**
+  String get currencyUSD;
+
+  /// No description provided for @currencyEUR.
+  ///
+  /// In en, this message translates to:
+  /// **'Euro (EUR)'**
+  String get currencyEUR;
+
+  /// No description provided for @currencyIDR.
+  ///
+  /// In en, this message translates to:
+  /// **'Indonesian Rupiah (IDR)'**
+  String get currencyIDR;
+
+  /// No description provided for @currencyMYR.
+  ///
+  /// In en, this message translates to:
+  /// **'Malaysian Ringgit (MYR)'**
+  String get currencyMYR;
+
+  /// No description provided for @currencyGBP.
+  ///
+  /// In en, this message translates to:
+  /// **'British Pound (GBP)'**
+  String get currencyGBP;
+
+  /// No description provided for @currencyJPY.
+  ///
+  /// In en, this message translates to:
+  /// **'Japanese Yen (JPY)'**
+  String get currencyJPY;
+
+  /// No description provided for @currencySGD.
+  ///
+  /// In en, this message translates to:
+  /// **'Singapore Dollar (SGD)'**
+  String get currencySGD;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Currency'**
+  String get selectCurrency;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @currencySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency Settings'**
+  String get currencySettings;
 }
 
 class _AppLocalizationsDelegate

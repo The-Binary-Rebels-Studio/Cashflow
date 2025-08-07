@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class BalanceCard extends StatelessWidget {
   final String balance;
@@ -16,6 +17,8 @@ class BalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -40,8 +43,8 @@ class BalanceCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Total Balance',
+              Text(
+                l10n.dashboardTotalBalance,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white70,
@@ -74,7 +77,7 @@ class BalanceCard extends StatelessWidget {
                 const Icon(Icons.trending_up, color: Colors.greenAccent, size: 16),
                 const SizedBox(width: 4),
                 Text(
-                  trend,
+                  l10n.dashboardTrendFromLastMonth,
                   style: const TextStyle(
                     color: Colors.greenAccent,
                     fontSize: 14,

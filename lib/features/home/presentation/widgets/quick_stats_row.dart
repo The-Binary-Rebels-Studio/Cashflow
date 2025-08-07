@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class QuickStatsRow extends StatelessWidget {
   final String income;
@@ -12,11 +13,13 @@ class QuickStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Row(
       children: [
         Expanded(
           child: _StatCard(
-            title: 'Income',
+            title: l10n.dashboardIncome,
             amount: income,
             icon: Icons.trending_up,
             color: Colors.green,
@@ -25,7 +28,7 @@ class QuickStatsRow extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: _StatCard(
-            title: 'Expenses',
+            title: l10n.dashboardExpenses,
             amount: expenses,
             icon: Icons.trending_down,
             color: Colors.red,

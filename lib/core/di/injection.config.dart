@@ -18,6 +18,7 @@ import '../../features/localization/data/repositories/localization_repository_im
     as _i7;
 import '../../features/localization/domain/repositories/localization_repository.dart'
     as _i6;
+import '../../features/localization/domain/usecases/change_locale.dart' as _i16;
 import '../../features/onboarding/data/datasources/onboarding_local_datasource.dart'
     as _i8;
 import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart'
@@ -30,11 +31,13 @@ import '../../features/onboarding/domain/usecases/get_onboarding_status.dart'
     as _i13;
 import '../../features/onboarding/domain/usecases/reset_onboarding.dart'
     as _i11;
+import '../../features/onboarding/domain/usecases/save_onboarding_settings.dart'
+    as _i17;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
     as _i15;
 import '../localization/locale_manager.dart' as _i14;
 import '../localization/locale_service.dart' as _i4;
-import 'injection_module.dart' as _i16;
+import 'injection_module.dart' as _i18;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -75,8 +78,16 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i12.CompleteOnboarding>(),
           gh<_i11.ResetOnboarding>(),
         ));
+    gh.factory<_i16.ChangeLocale>(() => _i16.ChangeLocale(
+          gh<_i6.LocalizationRepository>(),
+          gh<_i14.LocaleManager>(),
+        ));
+    gh.factory<_i17.SaveOnboardingSettings>(() => _i17.SaveOnboardingSettings(
+          gh<_i9.OnboardingRepository>(),
+          gh<_i16.ChangeLocale>(),
+        ));
     return this;
   }
 }
 
-class _$InjectionModule extends _i16.InjectionModule {}
+class _$InjectionModule extends _i18.InjectionModule {}

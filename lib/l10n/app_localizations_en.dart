@@ -22,6 +22,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getStarted => 'Get Started';
 
   @override
+  String get onboardingChooseLanguage => 'Choose Language';
+
+  @override
+  String get onboardingSelectPreferredLanguage =>
+      'Select your preferred language';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingTrackExpensesTitle => 'Track Your Expenses';
+
+  @override
+  String get onboardingTrackExpensesSubtitle =>
+      'Monitor your spending habits and see where your money goes';
+
+  @override
+  String get onboardingSmartCategoriesTitle => 'Smart Categories';
+
+  @override
+  String get onboardingSmartCategoriesSubtitle =>
+      'Organize your transactions with intelligent categorization';
+
+  @override
+  String get onboardingFinancialInsightsTitle => 'Financial Insights';
+
+  @override
+  String get onboardingFinancialInsightsSubtitle =>
+      'Get detailed analytics and insights about your spending patterns';
+
+  @override
+  String get onboardingSecurePrivateTitle => 'Secure & Private';
+
+  @override
+  String get onboardingSecurePrivateSubtitle =>
+      'Your financial data is encrypted and stored securely on your device';
+
+  @override
+  String get onboardingCurrencyTitle => 'Choose Your Currency';
+
+  @override
+  String get onboardingCurrencySubtitle =>
+      'Select your preferred currency for all transactions and calculations';
+
+  @override
   String get home => 'Home';
 
   @override
@@ -205,4 +250,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get dashboardGoodMorning => 'Good Morning!';
+
+  @override
+  String get dashboardWelcomeBack => 'Welcome back to your finances';
+
+  @override
+  String get dashboardTotalBalance => 'Total Balance';
+
+  @override
+  String get dashboardTrendFromLastMonth => '+12.5% from last month';
+
+  @override
+  String get dashboardIncome => 'Income';
+
+  @override
+  String get dashboardExpenses => 'Expenses';
+
+  @override
+  String get dashboardQuickActions => 'Quick Actions';
+
+  @override
+  String get dashboardAddIncome => 'Add Income';
+
+  @override
+  String get dashboardAddExpense => 'Add Expense';
+
+  @override
+  String get dashboardTransfer => 'Transfer';
+
+  @override
+  String get dashboardBudget => 'Budget';
+
+  @override
+  String get dashboardSpendingCategories => 'Spending Categories';
+
+  @override
+  String get dashboardChartPlaceholder => 'Chart Placeholder';
+
+  @override
+  String get dashboardFoodDining => 'Food & Dining';
+
+  @override
+  String get dashboardTransportation => 'Transportation';
+
+  @override
+  String get dashboardShopping => 'Shopping';
+
+  @override
+  String get dashboardBills => 'Bills';
+
+  @override
+  String get dashboardRecentTransactions => 'Recent Transactions';
+
+  @override
+  String get dashboardSeeAll => 'See All';
+
+  @override
+  String get dashboardStarbucksCoffee => 'Starbucks Coffee';
+
+  @override
+  String get dashboardGrabTransport => 'Grab Transport';
+
+  @override
+  String get dashboardSalaryDeposit => 'Salary Deposit';
+
+  @override
+  String get dashboardMoreTransactionsSoon => 'More transactions coming soon';
+
+  @override
+  String get currencyUSD => 'US Dollar (USD)';
+
+  @override
+  String get currencyEUR => 'Euro (EUR)';
+
+  @override
+  String get currencyIDR => 'Indonesian Rupiah (IDR)';
+
+  @override
+  String get currencyMYR => 'Malaysian Ringgit (MYR)';
+
+  @override
+  String get currencyGBP => 'British Pound (GBP)';
+
+  @override
+  String get currencyJPY => 'Japanese Yen (JPY)';
+
+  @override
+  String get currencySGD => 'Singapore Dollar (SGD)';
+
+  @override
+  String get selectCurrency => 'Select Currency';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get currencySettings => 'Currency Settings';
 }
