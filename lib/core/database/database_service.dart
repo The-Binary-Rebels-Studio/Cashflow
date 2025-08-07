@@ -1,24 +1,66 @@
-import 'package:isar/isar.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
-  static Isar? _isar;
+  static Database? _database;
+  static const int _currentVersion = 1;
 
-  static Future<Isar> get instance async {
-    if (_isar != null) return _isar!;
+  static Future<Database> get instance async {
+    if (_database != null) return _database!;
 
-    final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open(
-      [],
-      directory: dir.path,
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    final path = join(documentsDirectory.path, 'cashflow.db');
+    
+    _database = await openDatabase(
+      path,
+      version: _currentVersion,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
-    return _isar!;
+    return _database!;
+  }
+
+  static Future<void> _onCreate(Database db, int version) async {
+    await _createAllTables(db);
+  }
+
+  static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    for (int version = oldVersion + 1; version <= newVersion; version++) {
+      await _migrateToVersion(db, version);
+    }
+  }
+
+  static Future<void> _createAllTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE app_settings(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        locale TEXT,
+        is_dark_mode INTEGER
+      )
+    ''');
+    
+    // Add other table creations here
+  }
+
+  static Future<void> _migrateToVersion(Database db, int version) async {
+    switch (version) {
+      case 2:
+        // Example migration to version 2
+        // await db.execute('ALTER TABLE app_settings ADD COLUMN theme_color TEXT');
+        break;
+      case 3:
+        // Example migration to version 3  
+        // await db.execute('CREATE TABLE transactions(id INTEGER PRIMARY KEY, amount REAL, date TEXT)');
+        break;
+      // Add more migrations as needed
+    }
   }
 
   static Future<void> close() async {
-    if (_isar != null) {
-      await _isar!.close();
-      _isar = null;
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
     }
   }
 }

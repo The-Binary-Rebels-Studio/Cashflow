@@ -42,12 +42,10 @@ dependencies:
   go_router: ^14.6.1
   
   # Database
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
+  sqflite: ^2.4.1
+  path: ^1.9.0
   path_provider: ^2.1.4
   
-  # Settings
-  shared_preferences: ^2.3.4
   
   # State Management
   provider: ^6.1.2
@@ -70,9 +68,9 @@ dev_dependencies:
   # Static analysis
   analyzer: ^5.13.0
   
-  # Isar code generation
-  isar_generator: ^3.1.0+1
+  # Code generation
   build_runner: ^2.4.13
+  
   
   # Dependency Injection code generation
   injectable_generator: ^2.4.2

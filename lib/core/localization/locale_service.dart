@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 abstract class LocaleService {
   Future<Locale?> getSavedLocale();
@@ -9,22 +9,40 @@ abstract class LocaleService {
 
 @Injectable(as: LocaleService)
 class LocaleServiceImpl implements LocaleService {
-  static const String _localeKey = 'selected_locale';
-  final SharedPreferences _prefs;
+  final Database _database;
 
-  LocaleServiceImpl(this._prefs);
+  LocaleServiceImpl(this._database);
 
   @override
   Future<Locale?> getSavedLocale() async {
-    final savedLocale = _prefs.getString(_localeKey);
-    if (savedLocale != null) {
-      return Locale(savedLocale);
+    final result = await _database.query(
+      'app_settings',
+      columns: ['locale'],
+      limit: 1,
+    );
+    
+    if (result.isNotEmpty && result.first['locale'] != null) {
+      return Locale(result.first['locale'] as String);
     }
     return null;
   }
 
   @override
   Future<void> saveLocale(Locale locale) async {
-    await _prefs.setString(_localeKey, locale.languageCode);
+    final existing = await _database.query('app_settings', limit: 1);
+    
+    if (existing.isNotEmpty) {
+      await _database.update(
+        'app_settings',
+        {'locale': locale.languageCode},
+        where: 'id = ?',
+        whereArgs: [existing.first['id']],
+      );
+    } else {
+      await _database.insert(
+        'app_settings',
+        {'locale': locale.languageCode},
+      );
+    }
   }
 }

@@ -1,8 +1,9 @@
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import '../database/database_service.dart';
 
 @module
 abstract class InjectionModule {
   @preResolve
-  Future<SharedPreferences> get sharedPrefs => SharedPreferences.getInstance();
+  Future<Database> get database => DatabaseService.instance;
 }
