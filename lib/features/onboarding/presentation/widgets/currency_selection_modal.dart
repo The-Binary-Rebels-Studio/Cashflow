@@ -114,7 +114,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
                 controller: _searchController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'Search currencies...',
+                  hintText: l10n.searchCurrencies,
                   hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                   prefixIcon: Icon(
                     Icons.search,
@@ -142,7 +142,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
                 border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
               ),
               child: _filteredCurrencies.isEmpty
-                  ? _buildEmptyState()
+                  ? _buildEmptyState(l10n)
                   : ListView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: _filteredCurrencies.length,
@@ -162,7 +162,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -174,7 +174,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No currencies found',
+            l10n.noCurrenciesFound,
             style: TextStyle(
               fontSize: 18,
               color: Colors.white.withValues(alpha: 0.7),
@@ -183,7 +183,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Try adjusting your search',
+            l10n.tryAdjustingSearch,
             style: TextStyle(
               fontSize: 14,
               color: Colors.white.withValues(alpha: 0.5),

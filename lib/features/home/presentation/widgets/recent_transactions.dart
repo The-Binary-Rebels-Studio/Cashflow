@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class RecentTransactions extends StatelessWidget {
   final List<TransactionItem> transactions;
@@ -6,34 +7,38 @@ class RecentTransactions extends StatelessWidget {
 
   const RecentTransactions({
     super.key,
-    this.transactions = const [
-      TransactionItem(
-        title: 'Starbucks Coffee',
-        category: 'Food & Dining',
-        amount: '-Rp 45,000',
-        icon: Icons.local_cafe,
-        color: Colors.orange,
-      ),
-      TransactionItem(
-        title: 'Grab Transport',
-        category: 'Transportation',
-        amount: '-Rp 25,000',
-        icon: Icons.directions_car,
-        color: Colors.blue,
-      ),
-      TransactionItem(
-        title: 'Salary Deposit',
-        category: 'Income',
-        amount: '+Rp 8,500,000',
-        icon: Icons.account_balance_wallet,
-        color: Colors.green,
-      ),
-    ],
+    this.transactions = const [],
     this.onSeeAll,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final defaultTransactions = [
+      TransactionItem(
+        title: l10n.dashboardStarbucksCoffee,
+        category: l10n.dashboardFoodDining,
+        amount: '-Rp 45,000',
+        icon: Icons.local_cafe,
+        color: Colors.orange,
+      ),
+      TransactionItem(
+        title: l10n.dashboardGrabTransport,
+        category: l10n.dashboardTransportation,
+        amount: '-Rp 25,000',
+        icon: Icons.directions_car,
+        color: Colors.blue,
+      ),
+      TransactionItem(
+        title: l10n.dashboardSalaryDeposit,
+        category: l10n.dashboardIncome,
+        amount: '+Rp 8,500,000',
+        icon: Icons.account_balance_wallet,
+        color: Colors.green,
+      ),
+    ];
+    final displayTransactions = transactions.isEmpty ? defaultTransactions : transactions;
+    
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -46,23 +51,23 @@ class RecentTransactions extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Recent Transactions',
+                  l10n.dashboardRecentTransactions,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 TextButton(
                   onPressed: onSeeAll,
-                  child: const Text('See All'),
+                  child: Text(l10n.dashboardSeeAll),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            ...transactions.map((transaction) => _TransactionTile(
+            ...displayTransactions.map((transaction) => _TransactionTile(
               transaction: transaction,
             )),
             const SizedBox(height: 16),
-            const _EmptyState(),
+            _EmptyState(l10n: l10n),
           ],
         ),
       ),
@@ -134,7 +139,9 @@ class _TransactionTile extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+  final AppLocalizations l10n;
+  
+  const _EmptyState({required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +157,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'More transactions coming soon',
+              l10n.dashboardMoreTransactionsSoon,
               style: TextStyle(
                 color: Colors.grey[500],
                 fontSize: 14,

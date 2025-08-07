@@ -607,13 +607,13 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardAddIncome.
   ///
   /// In en, this message translates to:
-  /// **'Add Income'**
+  /// **'Add\nIncome'**
   String get dashboardAddIncome;
 
   /// No description provided for @dashboardAddExpense.
   ///
   /// In en, this message translates to:
-  /// **'Add Expense'**
+  /// **'Add\nExpense'**
   String get dashboardAddExpense;
 
   /// No description provided for @dashboardTransfer.
@@ -759,6 +759,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Currency Settings'**
   String get currencySettings;
+
+  /// No description provided for @changeCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Currency'**
+  String get changeCurrency;
+
+  /// No description provided for @changeLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get changeLanguage;
+
+  /// No description provided for @noCurrenciesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No currencies found'**
+  String get noCurrenciesFound;
+
+  /// No description provided for @tryAdjustingSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search'**
+  String get tryAdjustingSearch;
+
+  /// No description provided for @searchCurrencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Search currencies...'**
+  String get searchCurrencies;
 }
 
 class _AppLocalizationsDelegate

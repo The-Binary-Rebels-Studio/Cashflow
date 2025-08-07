@@ -275,10 +275,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get dashboardQuickActions => 'Aksi Cepat';
 
   @override
-  String get dashboardAddIncome => 'Tambah Pemasukan';
+  String get dashboardAddIncome => 'Tambah\nPemasukan';
 
   @override
-  String get dashboardAddExpense => 'Tambah Pengeluaran';
+  String get dashboardAddExpense => 'Tambah\nPengeluaran';
 
   @override
   String get dashboardTransfer => 'Transfer';
@@ -352,4 +352,19 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get currencySettings => 'Pengaturan Mata Uang';
+
+  @override
+  String get changeCurrency => 'Ubah Mata Uang';
+
+  @override
+  String get changeLanguage => 'Ubah Bahasa';
+
+  @override
+  String get noCurrenciesFound => 'Mata uang tidak ditemukan';
+
+  @override
+  String get tryAdjustingSearch => 'Coba sesuaikan pencarian Anda';
+
+  @override
+  String get searchCurrencies => 'Cari mata uang...';
 }

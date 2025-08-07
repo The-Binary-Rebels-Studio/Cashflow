@@ -101,8 +101,8 @@
   "dashboardIncome": "Income",
   "dashboardExpenses": "Expenses",
   "dashboardQuickActions": "Quick Actions",
-  "dashboardAddIncome": "Add Income",
-  "dashboardAddExpense": "Add Expense",
+  "dashboardAddIncome": "Add\nIncome",
+  "dashboardAddExpense": "Add\nExpense",
   "dashboardTransfer": "Transfer",
   "dashboardBudget": "Budget",
   "dashboardSpendingCategories": "Spending Categories",
@@ -127,5 +127,11 @@
   "currencySGD": "Singapore Dollar (SGD)",
   "selectCurrency": "Select Currency",
   "currency": "Currency",
-  "currencySettings": "Currency Settings"
+  "currencySettings": "Currency Settings",
+  
+  "changeCurrency": "Change Currency",
+  "changeLanguage": "Change Language",
+  "noCurrenciesFound": "No currencies found",
+  "tryAdjustingSearch": "Try adjusting your search",
+  "searchCurrencies": "Search currencies..."
 }

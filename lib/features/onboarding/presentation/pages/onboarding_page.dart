@@ -422,7 +422,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           const SizedBox(height: 24),
           
           // Select locale button
-          _buildSelectLocaleButton(),
+          _buildSelectLocaleButton(l10n),
           
           const Spacer(),
         ],
@@ -558,7 +558,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           );
         },
         icon: const Icon(Icons.tune),
-        label: const Text('Change Currency'),
+        label: Text(l10n.changeCurrency),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white.withValues(alpha: 0.2),
           foregroundColor: Colors.white,
@@ -572,7 +572,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  Widget _buildSelectLocaleButton() {
+  Widget _buildSelectLocaleButton(AppLocalizations l10n) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
@@ -592,7 +592,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           );
         },
         icon: const Icon(Icons.language),
-        label: const Text('Change Language'),
+        label: Text(l10n.changeLanguage),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white.withValues(alpha: 0.2),
           foregroundColor: Colors.white,

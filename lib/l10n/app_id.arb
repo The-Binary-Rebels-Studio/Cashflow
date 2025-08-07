@@ -101,8 +101,8 @@
   "dashboardIncome": "Pemasukan",
   "dashboardExpenses": "Pengeluaran",
   "dashboardQuickActions": "Aksi Cepat",
-  "dashboardAddIncome": "Tambah Pemasukan",
-  "dashboardAddExpense": "Tambah Pengeluaran",
+  "dashboardAddIncome": "Tambah\nPemasukan",
+  "dashboardAddExpense": "Tambah\nPengeluaran", 
   "dashboardTransfer": "Transfer",
   "dashboardBudget": "Anggaran",
   "dashboardSpendingCategories": "Kategori Pengeluaran",
@@ -127,5 +127,11 @@
   "currencySGD": "Dolar Singapura (SGD)",
   "selectCurrency": "Pilih Mata Uang",
   "currency": "Mata Uang",
-  "currencySettings": "Pengaturan Mata Uang"
+  "currencySettings": "Pengaturan Mata Uang",
+  
+  "changeCurrency": "Ubah Mata Uang",
+  "changeLanguage": "Ubah Bahasa",
+  "noCurrenciesFound": "Mata uang tidak ditemukan",
+  "tryAdjustingSearch": "Coba sesuaikan pencarian Anda",
+  "searchCurrencies": "Cari mata uang..."
 }

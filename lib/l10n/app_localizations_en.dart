@@ -273,10 +273,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardQuickActions => 'Quick Actions';
 
   @override
-  String get dashboardAddIncome => 'Add Income';
+  String get dashboardAddIncome => 'Add\nIncome';
 
   @override
-  String get dashboardAddExpense => 'Add Expense';
+  String get dashboardAddExpense => 'Add\nExpense';
 
   @override
   String get dashboardTransfer => 'Transfer';
@@ -349,4 +349,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get currencySettings => 'Currency Settings';
+
+  @override
+  String get changeCurrency => 'Change Currency';
+
+  @override
+  String get changeLanguage => 'Change Language';
+
+  @override
+  String get noCurrenciesFound => 'No currencies found';
+
+  @override
+  String get tryAdjustingSearch => 'Try adjusting your search';
+
+  @override
+  String get searchCurrencies => 'Search currencies...';
 }

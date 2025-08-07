@@ -101,8 +101,8 @@
   "dashboardIncome": "Pendapatan",
   "dashboardExpenses": "Perbelanjaan",
   "dashboardQuickActions": "Tindakan Pantas",
-  "dashboardAddIncome": "Tambah Pendapatan",
-  "dashboardAddExpense": "Tambah Perbelanjaan",
+  "dashboardAddIncome": "Tambah\nPendapatan",
+  "dashboardAddExpense": "Tambah\nPerbelanjaan",
   "dashboardTransfer": "Pindahan",
   "dashboardBudget": "Bajet",
   "dashboardSpendingCategories": "Kategori Perbelanjaan",
@@ -127,5 +127,11 @@
   "currencySGD": "Dolar Singapura (SGD)",
   "selectCurrency": "Pilih Mata Wang",
   "currency": "Mata Wang",
-  "currencySettings": "Tetapan Mata Wang"
+  "currencySettings": "Tetapan Mata Wang",
+  
+  "changeCurrency": "Tukar Mata Wang",
+  "changeLanguage": "Tukar Bahasa",
+  "noCurrenciesFound": "Mata wang tidak dijumpai",
+  "tryAdjustingSearch": "Cuba laraskan carian anda",
+  "searchCurrencies": "Cari mata wang..."
 }

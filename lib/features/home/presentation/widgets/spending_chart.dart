@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class SpendingChart extends StatelessWidget {
   final List<SpendingCategory> categories;
 
   const SpendingChart({
     super.key,
-    this.categories = const [
-      SpendingCategory('Food & Dining', Colors.orange, 'Rp 1.2M'),
-      SpendingCategory('Transportation', Colors.blue, 'Rp 800K'),
-      SpendingCategory('Shopping', Colors.pink, 'Rp 600K'),
-      SpendingCategory('Bills', Colors.purple, 'Rp 450K'),
-    ],
+    this.categories = const [],
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final defaultCategories = [
+      SpendingCategory(l10n.dashboardFoodDining, Colors.orange, 'Rp 1.2M'),
+      SpendingCategory(l10n.dashboardTransportation, Colors.blue, 'Rp 800K'),
+      SpendingCategory(l10n.dashboardShopping, Colors.pink, 'Rp 600K'),
+      SpendingCategory(l10n.dashboardBills, Colors.purple, 'Rp 450K'),
+    ];
+    final displayCategories = categories.isEmpty ? defaultCategories : categories;
+    
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -24,7 +29,7 @@ class SpendingChart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Spending Categories',
+              l10n.dashboardSpendingCategories,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -39,15 +44,15 @@ class SpendingChart extends StatelessWidget {
                       color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Center(
-                      child: Text('Chart Placeholder'),
+                    child: Center(
+                      child: Text(l10n.dashboardChartPlaceholder),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: categories
+                  children: displayCategories
                       .map((category) => _CategoryItem(category: category))
                       .toList(),
                 ),

@@ -274,10 +274,10 @@ class AppLocalizationsMs extends AppLocalizations {
   String get dashboardQuickActions => 'Tindakan Pantas';
 
   @override
-  String get dashboardAddIncome => 'Tambah Pendapatan';
+  String get dashboardAddIncome => 'Tambah\nPendapatan';
 
   @override
-  String get dashboardAddExpense => 'Tambah Perbelanjaan';
+  String get dashboardAddExpense => 'Tambah\nPerbelanjaan';
 
   @override
   String get dashboardTransfer => 'Pindahan';
@@ -351,4 +351,19 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get currencySettings => 'Tetapan Mata Wang';
+
+  @override
+  String get changeCurrency => 'Tukar Mata Wang';
+
+  @override
+  String get changeLanguage => 'Tukar Bahasa';
+
+  @override
+  String get noCurrenciesFound => 'Mata wang tidak dijumpai';
+
+  @override
+  String get tryAdjustingSearch => 'Cuba laraskan carian anda';
+
+  @override
+  String get searchCurrencies => 'Cari mata wang...';
 }

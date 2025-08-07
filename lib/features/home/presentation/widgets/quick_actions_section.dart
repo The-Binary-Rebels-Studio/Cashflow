@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class QuickActionsSection extends StatelessWidget {
   final VoidCallback? onAddIncome;
@@ -16,11 +17,13 @@ class QuickActionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Quick Actions',
+          l10n.dashboardQuickActions,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -30,25 +33,25 @@ class QuickActionsSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _ActionButton(
-              label: 'Add Income',
+              label: l10n.dashboardAddIncome,
               icon: Icons.add_circle_outline,
               color: Colors.green,
               onTap: onAddIncome,
             ),
             _ActionButton(
-              label: 'Add Expense',
+              label: l10n.dashboardAddExpense,
               icon: Icons.remove_circle_outline,
               color: Colors.red,
               onTap: onAddExpense,
             ),
             _ActionButton(
-              label: 'Transfer',
+              label: l10n.dashboardTransfer,
               icon: Icons.swap_horiz,
               color: Colors.blue,
               onTap: onTransfer,
             ),
             _ActionButton(
-              label: 'Budget',
+              label: l10n.dashboardBudget,
               icon: Icons.pie_chart_outline,
               color: Colors.purple,
               onTap: onBudget,
@@ -90,10 +93,19 @@ class _ActionButton extends StatelessWidget {
             child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 8),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
+          SizedBox(
+            width: 70,
+            height: 36,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 10,
+                height: 1.1,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+            ),
           ),
         ],
       ),
