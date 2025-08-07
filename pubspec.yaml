@@ -55,6 +55,9 @@ dependencies:
   # Dependency Injection
   get_it: ^7.7.0
   injectable: ^2.4.4
+  
+  # Charts
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:
@@ -68,10 +71,11 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   
   # Static analysis
-  analyzer: ^5.13.0
+  analyzer: ^6.4.1
   
   # Code generation
   build_runner: ^2.4.13
+  dart_style: ^2.3.7
   
   
   # Dependency Injection code generation
