@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/core/localization/locale_manager.dart';
+import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -39,16 +41,28 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 24),
               _SettingsSection(
-                title: l10n.language,
+                title: 'Preferences',
                 children: [
-                  Consumer<LocaleManager>(
-                    builder: (context, localeManager, child) {
+                  BlocBuilder<LocaleManager, Locale>(
+                    builder: (context, locale) {
                       return _SettingsItem(
                         icon: Icons.language,
                         title: l10n.selectLanguage,
-                        subtitle: _getLanguageDisplayName(localeManager.currentLocale.languageCode),
+                        subtitle: _getLanguageDisplayName(locale.languageCode),
                         color: Colors.green,
                         onTap: () => _showLanguageDialog(),
+                      );
+                    },
+                  ),
+                  const Divider(height: 1),
+                  BlocBuilder<CurrencyService, CurrencyModel>(
+                    builder: (context, currency) {
+                      return _SettingsItem(
+                        icon: Icons.attach_money,
+                        title: 'Currency',
+                        subtitle: '${currency.code} - ${currency.name}',
+                        color: Colors.blue,
+                        onTap: () => _showCurrencyDialog(),
                       );
                     },
                   ),
@@ -164,6 +178,77 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 20),
               ],
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCurrencyDialog() {
+    final currencyService = context.read<CurrencyService>();
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Select Currency',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: CurrencyData.currencies.length,
+                  separatorBuilder: (context, index) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final currency = CurrencyData.currencies[index];
+                    return _CurrencyOption(
+                      currency: currency,
+                      isSelected: currency.code == currencyService.selectedCurrency.code,
+                      onChanged: () {
+                        currencyService.setSelectedCurrency(currency);
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 20),
+            ],
           ),
         );
       },
@@ -486,6 +571,121 @@ class _DangerZoneSection extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _CurrencyOption extends StatelessWidget {
+  final CurrencyModel currency;
+  final bool isSelected;
+  final VoidCallback onChanged;
+
+  const _CurrencyOption({
+    required this.currency,
+    required this.isSelected,
+    required this.onChanged,
+  });
+
+  String _getCurrencyFlag(String code) {
+    const flagMap = {
+      'USD': '🇺🇸', 'EUR': '🇪🇺', 'IDR': '🇮🇩', 'MYR': '🇲🇾', 'SGD': '🇸🇬',
+      'GBP': '🇬🇧', 'JPY': '🇯🇵', 'CNY': '🇨🇳', 'AUD': '🇦🇺', 'CAD': '🇨🇦',
+      'CHF': '🇨🇭', 'INR': '🇮🇳', 'KRW': '🇰🇷', 'THB': '🇹🇭', 'PHP': '🇵🇭',
+      'VND': '🇻🇳', 'BRL': '🇧🇷', 'ARS': '🇦🇷', 'CLP': '🇨🇱', 'COP': '🇨🇴',
+      'MXN': '🇲🇽', 'ZAR': '🇿🇦', 'EGP': '🇪🇬', 'NGN': '🇳🇬', 'TRY': '🇹🇷',
+      'RUB': '🇷🇺', 'PLN': '🇵🇱', 'CZK': '🇨🇿', 'HUF': '🇭🇺', 'SEK': '🇸🇪',
+      'NOK': '🇳🇴', 'DKK': '🇩🇰', 'NZD': '🇳🇿', 'HKD': '🇭🇰', 'TWD': '🇹🇼',
+    };
+    return flagMap[code] ?? '💰';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onChanged,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: isSelected 
+                    ? const Color(0xFF667eea).withValues(alpha: 0.1)
+                    : Colors.grey.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isSelected 
+                      ? const Color(0xFF667eea) 
+                      : Colors.grey[300]!,
+                    width: isSelected ? 2 : 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    _getCurrencyFlag(currency.code),
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      currency.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected 
+                          ? const Color(0xFF667eea) 
+                          : Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${currency.code} - ${currency.country}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                currency.symbol,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected 
+                    ? const Color(0xFF667eea) 
+                    : Colors.grey[600],
+                ),
+              ),
+              const SizedBox(width: 12),
+              if (isSelected)
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF667eea),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

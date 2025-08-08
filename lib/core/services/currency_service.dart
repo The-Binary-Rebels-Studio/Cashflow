@@ -1,53 +1,45 @@
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import '../models/currency_model.dart';
 import '../database/database_service.dart';
 
-class CurrencyService {
-  DatabaseService? _databaseService;
-  CurrencyModel? _cachedCurrency;
+@singleton
+class CurrencyService extends Cubit<CurrencyModel> {
+  final DatabaseService _databaseService;
 
-  DatabaseService get databaseService {
-    _databaseService ??= GetIt.instance<DatabaseService>();
-    return _databaseService!;
-  }
-
-  Future<CurrencyModel> getSelectedCurrency() async {
-    if (_cachedCurrency != null) {
-      return _cachedCurrency!;
-    }
-
-    final currencyCode = await databaseService.getString('currency_code');
-    
-    if (currencyCode != null) {
-      _cachedCurrency = CurrencyData.getCurrencyByCode(currencyCode);
-    }
-    
-    _cachedCurrency ??= const CurrencyModel(
+  CurrencyService(this._databaseService) : super(
+    const CurrencyModel(
       code: 'IDR',
       name: 'Indonesian Rupiah',
       country: 'Indonesia',
       symbol: 'Rp',
-    );
+    ),
+  );
+
+  CurrencyModel get selectedCurrency => state;
+
+  Future<void> loadSavedCurrency() async {
+    final currencyCode = await _databaseService.getString('currency_code');
     
-    return _cachedCurrency!;
+    if (currencyCode != null) {
+      final currency = CurrencyData.getCurrencyByCode(currencyCode);
+      if (currency != null) {
+        emit(currency);
+      }
+    }
   }
 
   Future<void> initializeService() async {
-    await getSelectedCurrency();
+    await loadSavedCurrency();
   }
 
   Future<void> setSelectedCurrency(CurrencyModel currency) async {
-    await databaseService.setString('currency_code', currency.code);
-    _cachedCurrency = currency;
+    await _databaseService.setString('currency_code', currency.code);
+    emit(currency);
   }
 
-  String formatAmount(double amount, {bool showSymbol = true}) {
-    final currency = _cachedCurrency ?? const CurrencyModel(
-      code: 'IDR',
-      name: 'Indonesian Rupiah',
-      country: 'Indonesia',
-      symbol: 'Rp',
-    );
+  String formatAmount(double amount, {bool showSymbol = true, CurrencyModel? currency}) {
+    final currentCurrency = currency ?? state;
 
     final formattedAmount = amount.abs().toStringAsFixed(0).replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
@@ -56,13 +48,9 @@ class CurrencyService {
 
     if (!showSymbol) return formattedAmount;
 
-    final symbol = currency.symbol;
+    final symbol = currentCurrency.symbol;
     final isPositive = amount >= 0;
     
     return isPositive ? '+$symbol $formattedAmount' : '-$symbol $formattedAmount';
-  }
-
-  void clearCache() {
-    _cachedCurrency = null;
   }
 }

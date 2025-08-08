@@ -8,6 +8,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cashflow/core/di/injection.dart';
 import 'package:cashflow/core/localization/locale_manager.dart';
+import 'package:cashflow/core/services/currency_service.dart';
 
 import 'package:cashflow/main.dart';
 
@@ -18,7 +19,12 @@ void main() {
     
     // Build our app and trigger a frame.
     final localeManager = getIt<LocaleManager>();
-    await tester.pumpWidget(CashFlowApp(localeManager: localeManager));
+    final currencyService = getIt<CurrencyService>();
+    await currencyService.initializeService();
+    await tester.pumpWidget(CashFlowApp(
+      localeManager: localeManager,
+      currencyService: currencyService,
+    ));
 
     // Verify that the onboarding screen loads.
     expect(find.text('Welcome to CashFlow'), findsOneWidget);

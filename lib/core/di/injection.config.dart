@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -8,91 +9,108 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:get_it/get_it.dart' as _i1;
-import 'package:injectable/injectable.dart' as _i2;
-import 'package:sqflite/sqflite.dart' as _i4;
+import 'package:get_it/get_it.dart' as _i174;
+import 'package:injectable/injectable.dart' as _i526;
+import 'package:sqflite/sqflite.dart' as _i779;
 
 import '../../features/localization/data/datasources/localization_local_datasource.dart'
-    as _i7;
+    as _i800;
 import '../../features/localization/data/repositories/localization_repository_impl.dart'
-    as _i9;
+    as _i172;
 import '../../features/localization/domain/repositories/localization_repository.dart'
-    as _i8;
-import '../../features/localization/domain/usecases/change_locale.dart' as _i17;
+    as _i1044;
+import '../../features/localization/domain/usecases/change_locale.dart' as _i53;
 import '../../features/onboarding/data/datasources/onboarding_local_datasource.dart'
-    as _i10;
+    as _i804;
 import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart'
-    as _i12;
+    as _i452;
 import '../../features/onboarding/domain/repositories/onboarding_repository.dart'
-    as _i11;
+    as _i430;
 import '../../features/onboarding/domain/usecases/complete_onboarding.dart'
-    as _i14;
+    as _i561;
 import '../../features/onboarding/domain/usecases/get_onboarding_status.dart'
-    as _i15;
+    as _i52;
 import '../../features/onboarding/domain/usecases/reset_onboarding.dart'
-    as _i13;
+    as _i390;
 import '../../features/onboarding/domain/usecases/save_onboarding_settings.dart'
-    as _i19;
+    as _i902;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
-    as _i18;
-import '../database/database_service.dart' as _i5;
-import '../localization/locale_manager.dart' as _i16;
-import '../localization/locale_service.dart' as _i6;
-import '../services/currency_service.dart' as _i3;
-import 'injection_module.dart' as _i20;
+    as _i807;
+import '../database/database_service.dart' as _i711;
+import '../localization/locale_manager.dart' as _i71;
+import '../localization/locale_service.dart' as _i339;
+import '../services/currency_service.dart' as _i31;
+import 'injection_module.dart' as _i212;
 
-extension GetItInjectableX on _i1.GetIt {
-// initializes the registration of main-scope dependencies inside of GetIt
-  Future<_i1.GetIt> init({
+extension GetItInjectableX on _i174.GetIt {
+  // initializes the registration of main-scope dependencies inside of GetIt
+  Future<_i174.GetIt> init({
     String? environment,
-    _i2.EnvironmentFilter? environmentFilter,
+    _i526.EnvironmentFilter? environmentFilter,
   }) async {
-    final gh = _i2.GetItHelper(
-      this,
-      environment,
-      environmentFilter,
-    );
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final injectionModule = _$InjectionModule();
-    gh.singleton<_i3.CurrencyService>(() => injectionModule.currencyService);
-    await gh.factoryAsync<_i4.Database>(
+    await gh.factoryAsync<_i779.Database>(
       () => injectionModule.database,
       preResolve: true,
     );
-    gh.singleton<_i5.DatabaseService>(() => injectionModule.databaseService);
-    gh.factory<_i6.LocaleService>(
-        () => _i6.LocaleServiceImpl(gh<_i4.Database>()));
-    gh.factory<_i7.LocalizationLocalDataSource>(
-        () => _i7.LocalizationLocalDataSourceImpl());
-    gh.factory<_i8.LocalizationRepository>(() => _i9.LocalizationRepositoryImpl(
-        localDataSource: gh<_i7.LocalizationLocalDataSource>()));
-    gh.factory<_i10.OnboardingLocalDataSource>(
-        () => _i10.OnboardingLocalDataSourceImpl());
-    gh.factory<_i11.OnboardingRepository>(() => _i12.OnboardingRepositoryImpl(
-        localDataSource: gh<_i10.OnboardingLocalDataSource>()));
-    gh.factory<_i13.ResetOnboarding>(
-        () => _i13.ResetOnboarding(gh<_i11.OnboardingRepository>()));
-    gh.factory<_i14.CompleteOnboarding>(
-        () => _i14.CompleteOnboarding(gh<_i11.OnboardingRepository>()));
-    gh.factory<_i15.GetOnboardingStatus>(
-        () => _i15.GetOnboardingStatus(gh<_i11.OnboardingRepository>()));
-    gh.singleton<_i16.LocaleManager>(
-        () => _i16.LocaleManager(gh<_i6.LocaleService>()));
-    gh.factory<_i17.ChangeLocale>(() => _i17.ChangeLocale(
-          gh<_i8.LocalizationRepository>(),
-          gh<_i16.LocaleManager>(),
-        ));
-    gh.factory<_i18.OnboardingCubit>(() => _i18.OnboardingCubit(
-          gh<_i15.GetOnboardingStatus>(),
-          gh<_i14.CompleteOnboarding>(),
-          gh<_i13.ResetOnboarding>(),
-          gh<_i17.ChangeLocale>(),
-        ));
-    gh.factory<_i19.SaveOnboardingSettings>(() => _i19.SaveOnboardingSettings(
-          gh<_i11.OnboardingRepository>(),
-          gh<_i17.ChangeLocale>(),
-        ));
+    gh.singleton<_i711.DatabaseService>(() => injectionModule.databaseService);
+    gh.factory<_i804.OnboardingLocalDataSource>(
+      () => _i804.OnboardingLocalDataSourceImpl(),
+    );
+    gh.factory<_i800.LocalizationLocalDataSource>(
+      () => _i800.LocalizationLocalDataSourceImpl(),
+    );
+    gh.factory<_i339.LocaleService>(
+      () => _i339.LocaleServiceImpl(gh<_i779.Database>()),
+    );
+    gh.singleton<_i71.LocaleManager>(
+      () => _i71.LocaleManager(gh<_i339.LocaleService>()),
+    );
+    gh.singleton<_i31.CurrencyService>(
+      () => _i31.CurrencyService(gh<_i711.DatabaseService>()),
+    );
+    gh.factory<_i430.OnboardingRepository>(
+      () => _i452.OnboardingRepositoryImpl(
+        localDataSource: gh<_i804.OnboardingLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i561.CompleteOnboarding>(
+      () => _i561.CompleteOnboarding(gh<_i430.OnboardingRepository>()),
+    );
+    gh.factory<_i52.GetOnboardingStatus>(
+      () => _i52.GetOnboardingStatus(gh<_i430.OnboardingRepository>()),
+    );
+    gh.factory<_i390.ResetOnboarding>(
+      () => _i390.ResetOnboarding(gh<_i430.OnboardingRepository>()),
+    );
+    gh.factory<_i1044.LocalizationRepository>(
+      () => _i172.LocalizationRepositoryImpl(
+        localDataSource: gh<_i800.LocalizationLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i53.ChangeLocale>(
+      () => _i53.ChangeLocale(
+        gh<_i1044.LocalizationRepository>(),
+        gh<_i71.LocaleManager>(),
+      ),
+    );
+    gh.factory<_i902.SaveOnboardingSettings>(
+      () => _i902.SaveOnboardingSettings(
+        gh<_i430.OnboardingRepository>(),
+        gh<_i53.ChangeLocale>(),
+      ),
+    );
+    gh.factory<_i807.OnboardingCubit>(
+      () => _i807.OnboardingCubit(
+        gh<_i52.GetOnboardingStatus>(),
+        gh<_i561.CompleteOnboarding>(),
+        gh<_i390.ResetOnboarding>(),
+        gh<_i53.ChangeLocale>(),
+      ),
+    );
     return this;
   }
 }
 
-class _$InjectionModule extends _i20.InjectionModule {}
+class _$InjectionModule extends _i212.InjectionModule {}

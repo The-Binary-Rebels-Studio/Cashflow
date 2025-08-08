@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'locale_service.dart';
 
 @singleton
-class LocaleManager extends ChangeNotifier {
+class LocaleManager extends Cubit<Locale> {
   final LocaleService _localeService;
   
-  Locale _currentLocale = const Locale('en');
+  LocaleManager(this._localeService) : super(const Locale('en'));
   
-  LocaleManager(this._localeService);
-  
-  Locale get currentLocale => _currentLocale;
+  Locale get currentLocale => state;
   
   static final List<Locale> supportedLocales = [
     const Locale('en'),
@@ -22,16 +21,14 @@ class LocaleManager extends ChangeNotifier {
     final savedLocale = await _localeService.getSavedLocale();
     
     if (savedLocale != null && supportedLocales.contains(savedLocale)) {
-      _currentLocale = savedLocale;
-      notifyListeners();
+      emit(savedLocale);
     }
   }
   
   Future<void> changeLocale(Locale locale) async {
-    if (supportedLocales.contains(locale) && _currentLocale != locale) {
-      _currentLocale = locale;
+    if (supportedLocales.contains(locale) && state != locale) {
       await _localeService.saveLocale(locale);
-      notifyListeners();
+      emit(locale);
     }
   }
 }

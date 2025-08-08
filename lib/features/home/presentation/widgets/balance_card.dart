@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
+import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/models/currency_model.dart';
 
 class BalanceCard extends StatelessWidget {
   final String balance;
@@ -62,13 +65,20 @@ class BalanceCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            isBalanceVisible ? balance : '****',
-            style: const TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          BlocBuilder<CurrencyService, CurrencyModel>(
+            builder: (context, currency) {
+              final formattedBalance = isBalanceVisible 
+                ? '${currency.symbol} 15,750,000' // TODO: Use real balance data
+                : '****';
+              return Text(
+                formattedBalance,
+                style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              );
+            },
           ),
           const SizedBox(height: 8),
           if (isBalanceVisible)

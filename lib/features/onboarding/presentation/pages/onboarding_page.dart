@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cashflow/core/constants/app_constants.dart';
 import 'package:cashflow/core/di/injection.dart';
@@ -33,7 +32,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void initState() {
     super.initState();
     // Initialize selected locale based on current app locale
-    final localeManager = Provider.of<LocaleManager>(context, listen: false);
+    final localeManager = context.read<LocaleManager>();
     final currentLocale = localeManager.currentLocale;
     _selectedLocale = LocaleData.getLocaleByCode(currentLocale.languageCode) ?? LocaleData.supportedLocales.first;
   }
