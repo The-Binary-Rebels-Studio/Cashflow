@@ -133,5 +133,11 @@
   "changeLanguage": "Tukar Bahasa",
   "noCurrenciesFound": "Mata wang tidak dijumpai",
   "tryAdjustingSearch": "Cuba laraskan carian anda",
-  "searchCurrencies": "Cari mata wang..."
+  "searchCurrencies": "Cari mata wang...",
+  
+  "budgetManagement": "Pengurusan Belanjawan",
+  "budgetCategories": "Kategori Belanjawan",
+  "budgetPlans": "Pelan Belanjawan",
+  "add": "Tambah",
+  "update": "Kemaskini"
 }

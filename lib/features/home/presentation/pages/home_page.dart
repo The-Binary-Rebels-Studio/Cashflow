@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:cashflow/core/constants/app_constants.dart';
 import '../widgets/header_section.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/quick_stats_row.dart';
@@ -49,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                   // TODO: Navigate to add expense screen
                 },
                 onBudget: () {
-                  // TODO: Navigate to budget screen
+                  context.push(AppConstants.budgetManagementRoute);
                 },
               ),
               const SizedBox(height: 24),

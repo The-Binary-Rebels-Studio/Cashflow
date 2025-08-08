@@ -9,6 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cashflow/core/di/injection.dart';
 import 'package:cashflow/core/localization/locale_manager.dart';
 import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/features/category/presentation/cubit/category_cubit.dart';
+import 'package:cashflow/features/financial/presentation/cubit/budget_management_cubit.dart';
 
 import 'package:cashflow/main.dart';
 
@@ -21,9 +23,18 @@ void main() {
     final localeManager = getIt<LocaleManager>();
     final currencyService = getIt<CurrencyService>();
     await currencyService.initializeService();
+    
+    final categoryCubit = getIt<CategoryCubit>();
+    await categoryCubit.initializeCategories();
+    
+    final budgetManagementCubit = getIt<BudgetManagementCubit>();
+    await budgetManagementCubit.initializeBudgetManagement();
+    
     await tester.pumpWidget(CashFlowApp(
       localeManager: localeManager,
       currencyService: currencyService,
+      categoryCubit: categoryCubit,
+      budgetManagementCubit: budgetManagementCubit,
     ));
 
     // Verify that the onboarding screen loads.

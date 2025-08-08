@@ -169,9 +169,7 @@ class _MenuSection extends StatelessWidget {
             icon: Icons.category,
             title: l10n.categories,
             color: Colors.purple,
-            onTap: () {
-              // TODO: Navigate to categories
-            },
+            onTap: () => context.push(AppConstants.budgetManagementRoute),
           ),
           const Divider(height: 1),
           _MenuItem(

@@ -366,4 +366,19 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get searchCurrencies => 'Cari mata wang...';
+
+  @override
+  String get budgetManagement => 'Pengurusan Belanjawan';
+
+  @override
+  String get budgetCategories => 'Kategori Belanjawan';
+
+  @override
+  String get budgetPlans => 'Pelan Belanjawan';
+
+  @override
+  String get add => 'Tambah';
+
+  @override
+  String get update => 'Kemaskini';
 }

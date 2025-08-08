@@ -367,4 +367,19 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get searchCurrencies => 'Cari mata uang...';
+
+  @override
+  String get budgetManagement => 'Manajemen Anggaran';
+
+  @override
+  String get budgetCategories => 'Kategori Anggaran';
+
+  @override
+  String get budgetPlans => 'Rencana Anggaran';
+
+  @override
+  String get add => 'Tambah';
+
+  @override
+  String get update => 'Perbarui';
 }

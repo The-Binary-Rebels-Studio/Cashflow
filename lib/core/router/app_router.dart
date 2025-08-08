@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:cashflow/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:cashflow/features/profile/presentation/pages/bug_report_page.dart';
 import 'package:cashflow/features/settings/presentation/pages/settings_page.dart';
+import 'package:cashflow/features/financial/presentation/pages/budget_management_page.dart';
+import 'package:cashflow/features/financial/presentation/pages/create_budget_page.dart';
 import 'package:cashflow/shared/widgets/main_navigation.dart';
 import 'package:cashflow/features/onboarding/domain/usecases/get_onboarding_status.dart';
 import 'package:cashflow/core/di/injection.dart';
@@ -65,6 +67,20 @@ class AppRouter {
         path: '/settings',
         name: 'settings',
         builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: '/budget-management',
+        name: 'budget_management',
+        builder: (context, state) => const BudgetManagementPage(),
+      ),
+      GoRoute(
+        path: '/create-budget',
+        name: 'create_budget',
+        builder: (context, state) {
+          final budgetData = state.extra as Map<String, dynamic>?;
+          final budget = budgetData?['budget'];
+          return CreateBudgetPage(budget: budget);
+        },
       ),
     ],
   );

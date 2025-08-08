@@ -133,5 +133,11 @@
   "changeLanguage": "Ubah Bahasa",
   "noCurrenciesFound": "Mata uang tidak ditemukan",
   "tryAdjustingSearch": "Coba sesuaikan pencarian Anda",
-  "searchCurrencies": "Cari mata uang..."
+  "searchCurrencies": "Cari mata uang...",
+  
+  "budgetManagement": "Manajemen Anggaran",
+  "budgetCategories": "Kategori Anggaran",
+  "budgetPlans": "Rencana Anggaran",
+  "add": "Tambah",
+  "update": "Perbarui"
 }

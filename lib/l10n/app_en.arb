@@ -133,5 +133,11 @@
   "changeLanguage": "Change Language",
   "noCurrenciesFound": "No currencies found",
   "tryAdjustingSearch": "Try adjusting your search",
-  "searchCurrencies": "Search currencies..."
+  "searchCurrencies": "Search currencies...",
+  
+  "budgetManagement": "Budget Management",
+  "budgetCategories": "Budget Categories",
+  "budgetPlans": "Budget Plans",
+  "add": "Add",
+  "update": "Update"
 }

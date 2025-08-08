@@ -789,6 +789,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search currencies...'**
   String get searchCurrencies;
+
+  /// No description provided for @budgetManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Management'**
+  String get budgetManagement;
+
+  /// No description provided for @budgetCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Categories'**
+  String get budgetCategories;
+
+  /// No description provided for @budgetPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Plans'**
+  String get budgetPlans;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
 }
 
 class _AppLocalizationsDelegate

@@ -364,4 +364,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchCurrencies => 'Search currencies...';
+
+  @override
+  String get budgetManagement => 'Budget Management';
+
+  @override
+  String get budgetCategories => 'Budget Categories';
+
+  @override
+  String get budgetPlans => 'Budget Plans';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get update => 'Update';
 }

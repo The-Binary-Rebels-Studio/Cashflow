@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
   static Database? _database;
-  static const int _currentVersion = 2;
+  static const int _currentVersion = 1;
 
   static Future<Database> get instance async {
     if (_database != null) return _database!;
@@ -42,20 +42,54 @@ class DatabaseService {
       )
     ''');
     
-    // Add other table creations here
+    await db.execute('''
+      CREATE TABLE categories(
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        icon_code_point TEXT NOT NULL,
+        color_value TEXT NOT NULL,
+        type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+    
+    // Create index for better query performance
+    await db.execute('CREATE INDEX idx_categories_type ON categories(type)');
+    await db.execute('CREATE INDEX idx_categories_active ON categories(is_active)');
+    
+    await db.execute('''
+      CREATE TABLE budgets(
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        category_id TEXT NOT NULL,
+        amount REAL NOT NULL,
+        period TEXT NOT NULL CHECK (period IN ('weekly', 'monthly', 'quarterly', 'yearly')),
+        start_date TEXT NOT NULL,
+        end_date TEXT NOT NULL,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (category_id) REFERENCES categories (id)
+      )
+    ''');
+    
+    // Create indexes for budgets
+    await db.execute('CREATE INDEX idx_budgets_category ON budgets(category_id)');
+    await db.execute('CREATE INDEX idx_budgets_period ON budgets(period)');
+    await db.execute('CREATE INDEX idx_budgets_active ON budgets(is_active)');
+    await db.execute('CREATE INDEX idx_budgets_dates ON budgets(start_date, end_date)');
   }
 
   static Future<void> _migrateToVersion(Database db, int version) async {
     switch (version) {
-      case 2:
-        // Add onboarding_completed column to existing app_settings table
-        await db.execute('ALTER TABLE app_settings ADD COLUMN onboarding_completed INTEGER DEFAULT 0');
+      // Migration logic will be added here when app is released
+      // For now, all tables are created in onCreate
+      default:
         break;
-      case 3:
-        // Example migration to version 3  
-        // await db.execute('CREATE TABLE transactions(id INTEGER PRIMARY KEY, amount REAL, date TEXT)');
-        break;
-      // Add more migrations as needed
     }
   }
 

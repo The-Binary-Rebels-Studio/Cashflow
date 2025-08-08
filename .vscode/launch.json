@@ -4,25 +4,23 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "cashflow",
             "request": "launch",
-            "type": "dart",
-            "preLaunchTask": "Build Dependencies"
+            "type": "dart"
         },
         {
             "name": "cashflow (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile",
-            "preLaunchTask": "Build Dependencies"
+            "flutterMode": "profile"
         },
         {
             "name": "cashflow (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release",
-            "preLaunchTask": "Build Dependencies"
+            "flutterMode": "release"
         }
     ]
 }
