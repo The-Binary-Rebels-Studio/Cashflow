@@ -379,4 +379,271 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get update => 'Update';
+
+  @override
+  String get budgetOverview => 'Budget Overview';
+
+  @override
+  String get totalBudget => 'Total Budget';
+
+  @override
+  String get spent => 'Spent';
+
+  @override
+  String get remaining => 'Remaining';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get budgetPeriodWeekly => 'Weekly';
+
+  @override
+  String get budgetPeriodMonthly => 'Monthly';
+
+  @override
+  String get budgetPeriodQuarterly => 'Quarterly';
+
+  @override
+  String get budgetPeriodYearly => 'Yearly';
+
+  @override
+  String get createBudgetPlan => 'Create Budget Plan';
+
+  @override
+  String get editBudgetPlan => 'Edit Budget Plan';
+
+  @override
+  String get planYourSpending => 'Plan Your Spending';
+
+  @override
+  String get updateYourBudget => 'Update Your Budget';
+
+  @override
+  String get setBudgetDescription =>
+      'Set spending limits to manage your finances better';
+
+  @override
+  String get modifyBudgetDescription => 'Modify your budget plan details';
+
+  @override
+  String get budgetName => 'Budget Name';
+
+  @override
+  String get budgetNameRequired => 'Please enter a budget name';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get selectCategory => 'Select a category';
+
+  @override
+  String get selectCategoryError => 'Please select a category';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get enterAmount => 'Enter amount';
+
+  @override
+  String get invalidAmount => 'Invalid amount';
+
+  @override
+  String get period => 'Period';
+
+  @override
+  String get selectPeriod => 'Select Period';
+
+  @override
+  String get noCategoriesAvailable => 'No Categories Available';
+
+  @override
+  String get createCategoriesFirst => 'Please create some categories first';
+
+  @override
+  String get noBudgetPlansYet => 'No Budget Plans Yet';
+
+  @override
+  String get deleteBudgetPlan => 'Delete Budget Plan';
+
+  @override
+  String get budgetCreatedSuccess => 'Budget plan created successfully';
+
+  @override
+  String get budgetUpdatedSuccess => 'Budget plan updated successfully';
+
+  @override
+  String get budgetDeletedSuccess => 'Budget plan deleted successfully';
+
+  @override
+  String get createNewBudgetPlan => 'Create New Budget Plan';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get sortByAmount => 'Amount';
+
+  @override
+  String get sortByName => 'Name';
+
+  @override
+  String get sortByDate => 'Date';
+
+  @override
+  String get sortByCategory => 'Category';
+
+  @override
+  String get ascending => 'Ascending';
+
+  @override
+  String get descending => 'Descending';
+
+  @override
+  String get setupBudgetDialog => 'Set up a new budget to track your spending';
+
+  @override
+  String get updateBudgetDialog => 'Update your budget plan';
+
+  @override
+  String get categoryTypeIncome => 'Income';
+
+  @override
+  String get categoryTypeExpense => 'Expense';
+
+  @override
+  String get categoryFoodDining => 'Food & Dining';
+
+  @override
+  String get categoryFoodDiningDesc =>
+      'Restaurants, groceries, and food delivery';
+
+  @override
+  String get categoryTransportation => 'Transportation';
+
+  @override
+  String get categoryTransportationDesc =>
+      'Gas, public transport, taxi, and car maintenance';
+
+  @override
+  String get categoryShopping => 'Shopping';
+
+  @override
+  String get categoryShoppingDesc =>
+      'Clothing, electronics, and general shopping';
+
+  @override
+  String get categoryBillsUtilities => 'Bills & Utilities';
+
+  @override
+  String get categoryBillsUtilitiesDesc =>
+      'Electricity, water, internet, phone bills';
+
+  @override
+  String get categoryHealthcare => 'Healthcare';
+
+  @override
+  String get categoryHealthcareDesc => 'Medical expenses, pharmacy, insurance';
+
+  @override
+  String get categoryEntertainment => 'Entertainment';
+
+  @override
+  String get categoryEntertainmentDesc =>
+      'Movies, games, subscriptions, hobbies';
+
+  @override
+  String get categoryEducation => 'Education';
+
+  @override
+  String get categoryEducationDesc =>
+      'Books, courses, tuition, school supplies';
+
+  @override
+  String get categoryTravel => 'Travel';
+
+  @override
+  String get categoryTravelDesc => 'Hotels, flights, vacation expenses';
+
+  @override
+  String get categorySalary => 'Salary';
+
+  @override
+  String get categorySalaryDesc => 'Monthly salary and wages';
+
+  @override
+  String get categoryFreelance => 'Freelance';
+
+  @override
+  String get categoryFreelanceDesc => 'Freelance projects and gigs';
+
+  @override
+  String get categoryBusiness => 'Business';
+
+  @override
+  String get categoryBusinessDesc => 'Business income and profit';
+
+  @override
+  String get categoryInvestment => 'Investment';
+
+  @override
+  String get categoryInvestmentDesc => 'Dividends, stock gains, crypto';
+
+  @override
+  String get categoryBonus => 'Bonus';
+
+  @override
+  String get categoryBonusDesc => 'Work bonus and incentives';
+
+  @override
+  String get categoryOtherIncome => 'Other Income';
+
+  @override
+  String get categoryOtherIncomeDesc => 'Other sources of income';
+
+  @override
+  String get noBudgetPlansMessage =>
+      'Start managing your spending by creating budget plans.';
+
+  @override
+  String get loadingBudgetPlans => 'Loading budget plans...';
+
+  @override
+  String deleteBudgetConfirmation(String budgetName) {
+    return 'Are you sure you want to delete \"$budgetName\"? This action cannot be undone.';
+  }
+
+  @override
+  String get pleaseSelectCategory => 'Please select a category';
+
+  @override
+  String get activePlans => 'Active Plans';
+
+  @override
+  String get budgetNameHint => 'e.g., Monthly Groceries';
+
+  @override
+  String get budgetAmountHint => '2.000.000';
+
+  @override
+  String get budgetNotesHint => 'Add notes about this budget...';
+
+  @override
+  String get budgetDescription => 'Description (Optional)';
+
+  @override
+  String selectCategoryWithCount(Object count) {
+    return 'Select Category ($count)';
+  }
+
+  @override
+  String get error => 'Error';
 }

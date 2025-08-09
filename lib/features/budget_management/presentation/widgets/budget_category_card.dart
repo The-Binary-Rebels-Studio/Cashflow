@@ -4,6 +4,7 @@ import 'package:cashflow/core/services/currency_service.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 
 class BudgetCategoryCard extends StatelessWidget {
   final CategoryEntity category;
@@ -104,7 +105,7 @@ class BudgetCategoryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          category.name,
+                          category.localizedName(context),
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

@@ -819,6 +819,516 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update'**
   String get update;
+
+  /// No description provided for @budgetOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Overview'**
+  String get budgetOverview;
+
+  /// No description provided for @totalBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Budget'**
+  String get totalBudget;
+
+  /// No description provided for @spent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get spent;
+
+  /// No description provided for @remaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get remaining;
+
+  /// No description provided for @progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progress;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @budgetPeriodWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get budgetPeriodWeekly;
+
+  /// No description provided for @budgetPeriodMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get budgetPeriodMonthly;
+
+  /// No description provided for @budgetPeriodQuarterly.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get budgetPeriodQuarterly;
+
+  /// No description provided for @budgetPeriodYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get budgetPeriodYearly;
+
+  /// No description provided for @createBudgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Budget Plan'**
+  String get createBudgetPlan;
+
+  /// No description provided for @editBudgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Budget Plan'**
+  String get editBudgetPlan;
+
+  /// No description provided for @planYourSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Your Spending'**
+  String get planYourSpending;
+
+  /// No description provided for @updateYourBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Your Budget'**
+  String get updateYourBudget;
+
+  /// No description provided for @setBudgetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set spending limits to manage your finances better'**
+  String get setBudgetDescription;
+
+  /// No description provided for @modifyBudgetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Modify your budget plan details'**
+  String get modifyBudgetDescription;
+
+  /// No description provided for @budgetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Name'**
+  String get budgetName;
+
+  /// No description provided for @budgetNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a budget name'**
+  String get budgetNameRequired;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @selectCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a category'**
+  String get selectCategory;
+
+  /// No description provided for @selectCategoryError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a category'**
+  String get selectCategoryError;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @enterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount'**
+  String get enterAmount;
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid amount'**
+  String get invalidAmount;
+
+  /// No description provided for @period.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get period;
+
+  /// No description provided for @selectPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Period'**
+  String get selectPeriod;
+
+  /// No description provided for @noCategoriesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Categories Available'**
+  String get noCategoriesAvailable;
+
+  /// No description provided for @createCategoriesFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please create some categories first'**
+  String get createCategoriesFirst;
+
+  /// No description provided for @noBudgetPlansYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Budget Plans Yet'**
+  String get noBudgetPlansYet;
+
+  /// No description provided for @deleteBudgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Budget Plan'**
+  String get deleteBudgetPlan;
+
+  /// No description provided for @budgetCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget plan created successfully'**
+  String get budgetCreatedSuccess;
+
+  /// No description provided for @budgetUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget plan updated successfully'**
+  String get budgetUpdatedSuccess;
+
+  /// No description provided for @budgetDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget plan deleted successfully'**
+  String get budgetDeletedSuccess;
+
+  /// No description provided for @createNewBudgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Budget Plan'**
+  String get createNewBudgetPlan;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// No description provided for @sortByAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get sortByAmount;
+
+  /// No description provided for @sortByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sortByName;
+
+  /// No description provided for @sortByDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get sortByDate;
+
+  /// No description provided for @sortByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get sortByCategory;
+
+  /// No description provided for @ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get ascending;
+
+  /// No description provided for @descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get descending;
+
+  /// No description provided for @setupBudgetDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a new budget to track your spending'**
+  String get setupBudgetDialog;
+
+  /// No description provided for @updateBudgetDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your budget plan'**
+  String get updateBudgetDialog;
+
+  /// No description provided for @categoryTypeIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get categoryTypeIncome;
+
+  /// No description provided for @categoryTypeExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get categoryTypeExpense;
+
+  /// No description provided for @categoryFoodDining.
+  ///
+  /// In en, this message translates to:
+  /// **'Food & Dining'**
+  String get categoryFoodDining;
+
+  /// No description provided for @categoryFoodDiningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurants, groceries, and food delivery'**
+  String get categoryFoodDiningDesc;
+
+  /// No description provided for @categoryTransportation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get categoryTransportation;
+
+  /// No description provided for @categoryTransportationDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas, public transport, taxi, and car maintenance'**
+  String get categoryTransportationDesc;
+
+  /// No description provided for @categoryShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get categoryShopping;
+
+  /// No description provided for @categoryShoppingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Clothing, electronics, and general shopping'**
+  String get categoryShoppingDesc;
+
+  /// No description provided for @categoryBillsUtilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills & Utilities'**
+  String get categoryBillsUtilities;
+
+  /// No description provided for @categoryBillsUtilitiesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Electricity, water, internet, phone bills'**
+  String get categoryBillsUtilitiesDesc;
+
+  /// No description provided for @categoryHealthcare.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthcare'**
+  String get categoryHealthcare;
+
+  /// No description provided for @categoryHealthcareDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical expenses, pharmacy, insurance'**
+  String get categoryHealthcareDesc;
+
+  /// No description provided for @categoryEntertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get categoryEntertainment;
+
+  /// No description provided for @categoryEntertainmentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Movies, games, subscriptions, hobbies'**
+  String get categoryEntertainmentDesc;
+
+  /// No description provided for @categoryEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get categoryEducation;
+
+  /// No description provided for @categoryEducationDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Books, courses, tuition, school supplies'**
+  String get categoryEducationDesc;
+
+  /// No description provided for @categoryTravel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get categoryTravel;
+
+  /// No description provided for @categoryTravelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Hotels, flights, vacation expenses'**
+  String get categoryTravelDesc;
+
+  /// No description provided for @categorySalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get categorySalary;
+
+  /// No description provided for @categorySalaryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly salary and wages'**
+  String get categorySalaryDesc;
+
+  /// No description provided for @categoryFreelance.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance'**
+  String get categoryFreelance;
+
+  /// No description provided for @categoryFreelanceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance projects and gigs'**
+  String get categoryFreelanceDesc;
+
+  /// No description provided for @categoryBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get categoryBusiness;
+
+  /// No description provided for @categoryBusinessDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Business income and profit'**
+  String get categoryBusinessDesc;
+
+  /// No description provided for @categoryInvestment.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment'**
+  String get categoryInvestment;
+
+  /// No description provided for @categoryInvestmentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dividends, stock gains, crypto'**
+  String get categoryInvestmentDesc;
+
+  /// No description provided for @categoryBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus'**
+  String get categoryBonus;
+
+  /// No description provided for @categoryBonusDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Work bonus and incentives'**
+  String get categoryBonusDesc;
+
+  /// No description provided for @categoryOtherIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Income'**
+  String get categoryOtherIncome;
+
+  /// No description provided for @categoryOtherIncomeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Other sources of income'**
+  String get categoryOtherIncomeDesc;
+
+  /// No description provided for @noBudgetPlansMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Start managing your spending by creating budget plans.'**
+  String get noBudgetPlansMessage;
+
+  /// No description provided for @loadingBudgetPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading budget plans...'**
+  String get loadingBudgetPlans;
+
+  /// No description provided for @deleteBudgetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{budgetName}\"? This action cannot be undone.'**
+  String deleteBudgetConfirmation(String budgetName);
+
+  /// No description provided for @pleaseSelectCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a category'**
+  String get pleaseSelectCategory;
+
+  /// No description provided for @activePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Plans'**
+  String get activePlans;
+
+  /// No description provided for @budgetNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Monthly Groceries'**
+  String get budgetNameHint;
+
+  /// No description provided for @budgetAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'2.000.000'**
+  String get budgetAmountHint;
+
+  /// No description provided for @budgetNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add notes about this budget...'**
+  String get budgetNotesHint;
+
+  /// No description provided for @budgetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Optional)'**
+  String get budgetDescription;
+
+  /// No description provided for @selectCategoryWithCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Category ({count})'**
+  String selectCategoryWithCount(Object count);
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate

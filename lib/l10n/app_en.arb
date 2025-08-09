@@ -139,5 +139,112 @@
   "budgetCategories": "Budget Categories",
   "budgetPlans": "Budget Plans",
   "add": "Add",
-  "update": "Update"
+  "update": "Update",
+
+  "budgetOverview": "Budget Overview",
+  "totalBudget": "Total Budget",
+  "spent": "Spent",
+  "remaining": "Remaining",
+  "progress": "Progress",
+  "edit": "Edit",
+  "delete": "Delete",
+  
+  "budgetPeriodWeekly": "Weekly",
+  "budgetPeriodMonthly": "Monthly", 
+  "budgetPeriodQuarterly": "Quarterly",
+  "budgetPeriodYearly": "Yearly",
+  
+  "createBudgetPlan": "Create Budget Plan",
+  "editBudgetPlan": "Edit Budget Plan",
+  "planYourSpending": "Plan Your Spending",
+  "updateYourBudget": "Update Your Budget",
+  "setBudgetDescription": "Set spending limits to manage your finances better",
+  "modifyBudgetDescription": "Modify your budget plan details",
+  
+  "budgetName": "Budget Name",
+  "budgetNameRequired": "Please enter a budget name",
+  "category": "Category",
+  "selectCategory": "Select a category",
+  "selectCategoryError": "Please select a category",
+  "amount": "Amount",
+  "enterAmount": "Enter amount",
+  "invalidAmount": "Invalid amount",
+  "period": "Period",
+  "selectPeriod": "Select Period",
+  
+  "noCategoriesAvailable": "No Categories Available",
+  "createCategoriesFirst": "Please create some categories first",
+  "noBudgetPlansYet": "No Budget Plans Yet",
+  
+  "deleteBudgetPlan": "Delete Budget Plan",
+  "budgetCreatedSuccess": "Budget plan created successfully",
+  "budgetUpdatedSuccess": "Budget plan updated successfully", 
+  "budgetDeletedSuccess": "Budget plan deleted successfully",
+  
+  "createNewBudgetPlan": "Create New Budget Plan",
+  "sortBy": "Sort by",
+  "sortByAmount": "Amount",
+  "sortByName": "Name", 
+  "sortByDate": "Date",
+  "sortByCategory": "Category",
+  "ascending": "Ascending",
+  "descending": "Descending",
+  
+  "setupBudgetDialog": "Set up a new budget to track your spending",
+  "updateBudgetDialog": "Update your budget plan",
+  
+  "categoryTypeIncome": "Income",
+  "categoryTypeExpense": "Expense",
+  
+  "categoryFoodDining": "Food & Dining",
+  "categoryFoodDiningDesc": "Restaurants, groceries, and food delivery",
+  "categoryTransportation": "Transportation",
+  "categoryTransportationDesc": "Gas, public transport, taxi, and car maintenance",
+  "categoryShopping": "Shopping", 
+  "categoryShoppingDesc": "Clothing, electronics, and general shopping",
+  "categoryBillsUtilities": "Bills & Utilities",
+  "categoryBillsUtilitiesDesc": "Electricity, water, internet, phone bills",
+  "categoryHealthcare": "Healthcare",
+  "categoryHealthcareDesc": "Medical expenses, pharmacy, insurance",
+  "categoryEntertainment": "Entertainment",
+  "categoryEntertainmentDesc": "Movies, games, subscriptions, hobbies",
+  "categoryEducation": "Education",
+  "categoryEducationDesc": "Books, courses, tuition, school supplies",
+  "categoryTravel": "Travel",
+  "categoryTravelDesc": "Hotels, flights, vacation expenses",
+  
+  "categorySalary": "Salary",
+  "categorySalaryDesc": "Monthly salary and wages",
+  "categoryFreelance": "Freelance",
+  "categoryFreelanceDesc": "Freelance projects and gigs", 
+  "categoryBusiness": "Business",
+  "categoryBusinessDesc": "Business income and profit",
+  "categoryInvestment": "Investment",
+  "categoryInvestmentDesc": "Dividends, stock gains, crypto",
+  "categoryBonus": "Bonus",
+  "categoryBonusDesc": "Work bonus and incentives",
+  "categoryOtherIncome": "Other Income",
+  "categoryOtherIncomeDesc": "Other sources of income",
+  
+  "noBudgetPlansMessage": "Start managing your spending by creating budget plans.",
+  "loadingBudgetPlans": "Loading budget plans...",
+  
+  "deleteBudgetConfirmation": "Are you sure you want to delete \"{budgetName}\"? This action cannot be undone.",
+  "@deleteBudgetConfirmation": {
+    "placeholders": {
+      "budgetName": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseSelectCategory": "Please select a category",
+  "activePlans": "Active Plans",
+  "budgetNameHint": "e.g., Monthly Groceries",
+  "budgetAmountHint": "2.000.000",
+  "budgetNotesHint": "Add notes about this budget...",
+  "budgetDescription": "Description (Optional)",
+  "enterAmount": "Enter amount",
+  "invalidAmount": "Invalid amount",
+  "selectCategoryWithCount": "Select Category ({count})",
+  "error": "Error"
 }

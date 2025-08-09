@@ -8,6 +8,7 @@ import 'package:cashflow/features/budget_management/presentation/cubit/budget_ma
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_overview_card.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_plan_item.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 
 class BudgetManagementPage extends StatelessWidget {
   const BudgetManagementPage({super.key});
@@ -77,14 +78,6 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                   fontSize: 20,
                 ),
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.more_vert, color: Colors.black87),
-                  onPressed: () {
-                    // TODO: Show options menu
-                  },
-                ),
-              ],
             ),
             
             // Budget Overview Section
@@ -110,7 +103,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                     Icon(Icons.tune, color: Colors.grey[600], size: 20),
                     const SizedBox(width: 12),
                     Text(
-                      'Sort by:',
+                      '${AppLocalizations.of(context)!.sortBy}:',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -131,7 +124,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                         _sortAscending ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                         color: const Color(0xFF667eea),
                       ),
-                      tooltip: _sortAscending ? 'Ascending' : 'Descending',
+                      tooltip: _sortAscending ? AppLocalizations.of(context)!.ascending : AppLocalizations.of(context)!.descending,
                     ),
                   ],
                 ),
@@ -162,9 +155,9 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                     elevation: 2,
                   ),
                   icon: const Icon(Icons.add, size: 22),
-                  label: const Text(
-                    'Create New Budget Plan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  label: Text(
+                    AppLocalizations.of(context)!.createNewBudgetPlan,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -184,10 +177,10 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
 
   Widget _buildSortDropdown() {
     final sortOptions = [
-      {'value': 'amount', 'label': 'Amount', 'icon': Icons.attach_money},
-      {'value': 'name', 'label': 'Name', 'icon': Icons.sort_by_alpha},
-      {'value': 'date', 'label': 'Date', 'icon': Icons.calendar_today},
-      {'value': 'category', 'label': 'Category', 'icon': Icons.category},
+      {'value': 'amount', 'labelKey': 'sortByAmount', 'icon': Icons.attach_money},
+      {'value': 'name', 'labelKey': 'sortByName', 'icon': Icons.sort_by_alpha},
+      {'value': 'date', 'labelKey': 'sortByDate', 'icon': Icons.calendar_today},
+      {'value': 'category', 'labelKey': 'sortByCategory', 'icon': Icons.category},
     ];
 
     final selectedOption = sortOptions.firstWhere(
@@ -214,7 +207,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                selectedOption['label'] as String,
+                _getLocalizedSortLabel(selectedOption['labelKey'] as String),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -235,10 +228,10 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
 
   void _showSortOptions() {
     final sortOptions = [
-      {'value': 'amount', 'label': 'Amount', 'icon': Icons.attach_money},
-      {'value': 'name', 'label': 'Name', 'icon': Icons.sort_by_alpha},
-      {'value': 'date', 'label': 'Date', 'icon': Icons.calendar_today},
-      {'value': 'category', 'label': 'Category', 'icon': Icons.category},
+      {'value': 'amount', 'labelKey': 'sortByAmount', 'icon': Icons.attach_money},
+      {'value': 'name', 'labelKey': 'sortByName', 'icon': Icons.sort_by_alpha},
+      {'value': 'date', 'labelKey': 'sortByDate', 'icon': Icons.calendar_today},
+      {'value': 'category', 'labelKey': 'sortByCategory', 'icon': Icons.category},
     ];
 
     showModalBottomSheet(
@@ -267,9 +260,9 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  const Text(
-                    'Sort by',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.sortBy,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -327,7 +320,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
-                              option['label'] as String,
+                              _getLocalizedSortLabel(option['labelKey'] as String),
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: isSelected
@@ -357,6 +350,17 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
         ),
       ),
     );
+  }
+
+  String _getLocalizedSortLabel(String key) {
+    final localizations = AppLocalizations.of(context)!;
+    switch (key) {
+      case 'sortByAmount': return localizations.sortByAmount;
+      case 'sortByName': return localizations.sortByName;
+      case 'sortByDate': return localizations.sortByDate;
+      case 'sortByCategory': return localizations.sortByCategory;
+      default: return key;
+    }
   }
 
 }
@@ -404,7 +408,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 16),
-                  Text('Loading budget plans...'),
+                  Text(AppLocalizations.of(context)!.loadingBudgetPlans),
                 ],
               ),
             ),
@@ -433,8 +437,8 @@ class _BudgetPlansSliver extends StatelessWidget {
               comparison = a.createdAt.compareTo(b.createdAt);
               break;
             case 'category':
-              final categoryA = state.categories.where((cat) => cat.id == a.categoryId).firstOrNull?.name ?? '';
-              final categoryB = state.categories.where((cat) => cat.id == b.categoryId).firstOrNull?.name ?? '';
+              final categoryA = state.categories.where((cat) => cat.id == a.categoryId).firstOrNull?.localizedName(context) ?? '';
+              final categoryB = state.categories.where((cat) => cat.id == b.categoryId).firstOrNull?.localizedName(context) ?? '';
               comparison = categoryA.compareTo(categoryB);
               break;
           }
@@ -504,7 +508,7 @@ class _BudgetPlansSliver extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'No Budget Plans Yet',
+              AppLocalizations.of(context)!.noBudgetPlansYet,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.grey[800],
@@ -513,7 +517,7 @@ class _BudgetPlansSliver extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Start managing your spending by creating budget plans.',
+              AppLocalizations.of(context)!.noBudgetPlansMessage,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[600],
               ),
@@ -530,18 +534,18 @@ class _BudgetPlansSliver extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.delete_outline, color: Colors.red, size: 24),
-            SizedBox(width: 12),
-            Text('Delete Budget Plan'),
+            const Icon(Icons.delete_outline, color: Colors.red, size: 24),
+            const SizedBox(width: 12),
+            Text(AppLocalizations.of(context)!.deleteBudgetPlan),
           ],
         ),
-        content: Text('Are you sure you want to delete "$budgetName"? This action cannot be undone.'),
+        content: Text(AppLocalizations.of(context)!.deleteBudgetConfirmation(budgetName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
+            child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: Colors.grey[600])),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -563,7 +567,7 @@ class _BudgetPlansSliver extends StatelessWidget {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),

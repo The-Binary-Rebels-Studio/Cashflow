@@ -4,6 +4,8 @@ import 'package:cashflow/core/services/currency_service.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetPlanItem extends StatelessWidget {
   final BudgetEntity budget;
@@ -108,7 +110,7 @@ class BudgetPlanItem extends StatelessWidget {
                       const SizedBox(height: 4),
                       if (category != null)
                         Text(
-                          category!.name,
+                          category!.localizedName(context),
                           style: TextStyle(
                             fontSize: 14,
                             color: categoryColor,
@@ -167,23 +169,23 @@ class BudgetPlanItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       itemBuilder: (context) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit_outlined, size: 18, color: Colors.blue),
-                              SizedBox(width: 12),
-                              Text('Edit'),
+                              const Icon(Icons.edit_outlined, size: 18, color: Colors.blue),
+                              const SizedBox(width: 12),
+                              Text(AppLocalizations.of(context)!.edit),
                             ],
                           ),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'delete',
                           child: Row(
                             children: [
-                              Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                              SizedBox(width: 12),
-                              Text('Delete', style: TextStyle(color: Colors.red)),
+                              const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                              const SizedBox(width: 12),
+                              Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
                             ],
                           ),
                         ),
@@ -207,7 +209,7 @@ class BudgetPlanItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Progress',
+                            AppLocalizations.of(context)!.progress,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey[600],
@@ -267,7 +269,7 @@ class BudgetPlanItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _StatItem(
-                        label: 'Spent',
+                        label: AppLocalizations.of(context)!.spent,
                         amount: '${currency.symbol}${totalSpent.toStringAsFixed(0)}',
                         color: Colors.red,
                       ),
@@ -275,7 +277,7 @@ class BudgetPlanItem extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _StatItem(
-                        label: 'Remaining',
+                        label: AppLocalizations.of(context)!.remaining,
                         amount: '${currency.symbol}${remaining.toStringAsFixed(0)}',
                         color: Colors.green,
                       ),
@@ -292,7 +294,7 @@ class BudgetPlanItem extends StatelessWidget {
               children: [
                 _InfoTag(
                   icon: Icons.schedule_outlined,
-                  text: _formatPeriod(budget.period),
+                  text: budget.period.localizedDisplayName(context),
                   color: Colors.blue,
                 ),
                 const SizedBox(width: 12),
@@ -309,18 +311,6 @@ class BudgetPlanItem extends StatelessWidget {
     );
   }
 
-  String _formatPeriod(BudgetPeriod period) {
-    switch (period) {
-      case BudgetPeriod.weekly:
-        return 'Weekly';
-      case BudgetPeriod.monthly:
-        return 'Monthly';
-      case BudgetPeriod.quarterly:
-        return 'Quarterly';
-      case BudgetPeriod.yearly:
-        return 'Yearly';
-    }
-  }
 
   String _formatDateRange(DateTime start, DateTime? end) {
     final startStr = '${start.day}/${start.month}';

@@ -382,4 +382,271 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get update => 'Perbarui';
+
+  @override
+  String get budgetOverview => 'Ikhtisar Anggaran';
+
+  @override
+  String get totalBudget => 'Total Anggaran';
+
+  @override
+  String get spent => 'Terpakai';
+
+  @override
+  String get remaining => 'Sisa';
+
+  @override
+  String get progress => 'Kemajuan';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Hapus';
+
+  @override
+  String get budgetPeriodWeekly => 'Mingguan';
+
+  @override
+  String get budgetPeriodMonthly => 'Bulanan';
+
+  @override
+  String get budgetPeriodQuarterly => 'Kuartalan';
+
+  @override
+  String get budgetPeriodYearly => 'Tahunan';
+
+  @override
+  String get createBudgetPlan => 'Buat Rencana Anggaran';
+
+  @override
+  String get editBudgetPlan => 'Edit Rencana Anggaran';
+
+  @override
+  String get planYourSpending => 'Rencanakan Pengeluaran Anda';
+
+  @override
+  String get updateYourBudget => 'Perbarui Anggaran Anda';
+
+  @override
+  String get setBudgetDescription =>
+      'Tetapkan batas pengeluaran untuk mengelola keuangan dengan lebih baik';
+
+  @override
+  String get modifyBudgetDescription => 'Ubah detail rencana anggaran Anda';
+
+  @override
+  String get budgetName => 'Nama Anggaran';
+
+  @override
+  String get budgetNameRequired => 'Silakan masukkan nama anggaran';
+
+  @override
+  String get category => 'Kategori';
+
+  @override
+  String get selectCategory => 'Pilih kategori';
+
+  @override
+  String get selectCategoryError => 'Silakan pilih kategori';
+
+  @override
+  String get amount => 'Jumlah';
+
+  @override
+  String get enterAmount => 'Masukkan jumlah';
+
+  @override
+  String get invalidAmount => 'Jumlah tidak valid';
+
+  @override
+  String get period => 'Periode';
+
+  @override
+  String get selectPeriod => 'Pilih Periode';
+
+  @override
+  String get noCategoriesAvailable => 'Tidak Ada Kategori Tersedia';
+
+  @override
+  String get createCategoriesFirst =>
+      'Silakan buat beberapa kategori terlebih dahulu';
+
+  @override
+  String get noBudgetPlansYet => 'Belum Ada Rencana Anggaran';
+
+  @override
+  String get deleteBudgetPlan => 'Hapus Rencana Anggaran';
+
+  @override
+  String get budgetCreatedSuccess => 'Rencana anggaran berhasil dibuat';
+
+  @override
+  String get budgetUpdatedSuccess => 'Rencana anggaran berhasil diperbarui';
+
+  @override
+  String get budgetDeletedSuccess => 'Rencana anggaran berhasil dihapus';
+
+  @override
+  String get createNewBudgetPlan => 'Buat Rencana Anggaran Baru';
+
+  @override
+  String get sortBy => 'Urutkan berdasarkan';
+
+  @override
+  String get sortByAmount => 'Jumlah';
+
+  @override
+  String get sortByName => 'Nama';
+
+  @override
+  String get sortByDate => 'Tanggal';
+
+  @override
+  String get sortByCategory => 'Kategori';
+
+  @override
+  String get ascending => 'Naik';
+
+  @override
+  String get descending => 'Turun';
+
+  @override
+  String get setupBudgetDialog =>
+      'Buat anggaran baru untuk melacak pengeluaran Anda';
+
+  @override
+  String get updateBudgetDialog => 'Perbarui rencana anggaran Anda';
+
+  @override
+  String get categoryTypeIncome => 'Pemasukan';
+
+  @override
+  String get categoryTypeExpense => 'Pengeluaran';
+
+  @override
+  String get categoryFoodDining => 'Makanan & Minum';
+
+  @override
+  String get categoryFoodDiningDesc =>
+      'Restoran, belanja bahan makanan, dan layanan pesan antar';
+
+  @override
+  String get categoryTransportation => 'Transportasi';
+
+  @override
+  String get categoryTransportationDesc =>
+      'Bensin, transportasi umum, taksi, dan perawatan kendaraan';
+
+  @override
+  String get categoryShopping => 'Belanja';
+
+  @override
+  String get categoryShoppingDesc => 'Pakaian, elektronik, dan belanja umum';
+
+  @override
+  String get categoryBillsUtilities => 'Tagihan & Utilitas';
+
+  @override
+  String get categoryBillsUtilitiesDesc =>
+      'Listrik, air, internet, tagihan telepon';
+
+  @override
+  String get categoryHealthcare => 'Kesehatan';
+
+  @override
+  String get categoryHealthcareDesc => 'Biaya medis, apotek, asuransi';
+
+  @override
+  String get categoryEntertainment => 'Hiburan';
+
+  @override
+  String get categoryEntertainmentDesc => 'Film, game, langganan, hobi';
+
+  @override
+  String get categoryEducation => 'Pendidikan';
+
+  @override
+  String get categoryEducationDesc =>
+      'Buku, kursus, uang sekolah, perlengkapan sekolah';
+
+  @override
+  String get categoryTravel => 'Travel';
+
+  @override
+  String get categoryTravelDesc => 'Hotel, penerbangan, biaya liburan';
+
+  @override
+  String get categorySalary => 'Gaji';
+
+  @override
+  String get categorySalaryDesc => 'Gaji bulanan dan upah';
+
+  @override
+  String get categoryFreelance => 'Freelance';
+
+  @override
+  String get categoryFreelanceDesc => 'Proyek freelance dan kerja sampingan';
+
+  @override
+  String get categoryBusiness => 'Bisnis';
+
+  @override
+  String get categoryBusinessDesc => 'Pendapatan dan keuntungan bisnis';
+
+  @override
+  String get categoryInvestment => 'Investasi';
+
+  @override
+  String get categoryInvestmentDesc => 'Dividen, keuntungan saham, kripto';
+
+  @override
+  String get categoryBonus => 'Bonus';
+
+  @override
+  String get categoryBonusDesc => 'Bonus kerja dan insentif';
+
+  @override
+  String get categoryOtherIncome => 'Pendapatan Lainnya';
+
+  @override
+  String get categoryOtherIncomeDesc => 'Sumber pendapatan lainnya';
+
+  @override
+  String get noBudgetPlansMessage =>
+      'Mulai kelola pengeluaran Anda dengan membuat rencana anggaran.';
+
+  @override
+  String get loadingBudgetPlans => 'Memuat rencana anggaran...';
+
+  @override
+  String deleteBudgetConfirmation(String budgetName) {
+    return 'Apakah Anda yakin ingin menghapus \"$budgetName\"? Tindakan ini tidak dapat dibatalkan.';
+  }
+
+  @override
+  String get pleaseSelectCategory => 'Silakan pilih kategori';
+
+  @override
+  String get activePlans => 'Rencana Aktif';
+
+  @override
+  String get budgetNameHint => 'misal: Belanja Bulanan';
+
+  @override
+  String get budgetAmountHint => '2.000.000';
+
+  @override
+  String get budgetNotesHint => 'Tambahkan catatan tentang anggaran ini...';
+
+  @override
+  String get budgetDescription => 'Deskripsi (Opsional)';
+
+  @override
+  String selectCategoryWithCount(Object count) {
+    return 'Pilih Kategori ($count)';
+  }
+
+  @override
+  String get error => 'Error';
 }

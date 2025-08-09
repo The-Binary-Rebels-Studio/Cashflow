@@ -8,6 +8,7 @@ import 'package:cashflow/features/budget_management/presentation/cubit/budget_ma
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 import 'package:cashflow/core/services/currency_service.dart';
 
 // Custom TextInputFormatter for thousands separator
@@ -21,7 +22,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   ) {
     // Remove all non-digits
     String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-    
+
     // If empty, return empty
     if (newText.isEmpty) {
       return newValue.copyWith(text: '');
@@ -35,7 +36,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     int originalLength = newValue.text.length;
     int formattedLength = formattedText.length;
     int lengthDifference = formattedLength - originalLength;
-    
+
     // Adjust cursor position
     selectionIndex += lengthDifference;
     if (selectionIndex > formattedLength) {
@@ -53,10 +54,10 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
 
   String _addThousandsSeparator(String value) {
     if (value.length <= 3) return value;
-    
+
     String result = '';
     int count = 0;
-    
+
     for (int i = value.length - 1; i >= 0; i--) {
       if (count == 3) {
         result = _separator + result;
@@ -65,7 +66,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
       result = value[i] + result;
       count++;
     }
-    
+
     return result;
   }
 }
@@ -79,14 +80,14 @@ String getRawNumber(String formattedText) {
 String formatNumberWithSeparator(double number) {
   final formatter = ThousandsSeparatorInputFormatter();
   final intValue = number.toInt().toString();
-  
+
   // Use formatter to add separators
   final textEditingValue = TextEditingValue(text: intValue);
   final formattedValue = formatter.formatEditUpdate(
     const TextEditingValue(text: ''),
     textEditingValue,
   );
-  
+
   return formattedValue.text;
 }
 
@@ -167,7 +168,9 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          isEditing ? 'Edit Budget Plan' : 'Create Budget Plan',
+          isEditing
+              ? AppLocalizations.of(context)!.editBudgetPlan
+              : AppLocalizations.of(context)!.createBudgetPlan,
           style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.bold,
@@ -249,8 +252,8 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                         const SizedBox(height: 16),
                         Text(
                           isEditing
-                              ? 'Update Your Budget'
-                              : 'Plan Your Spending',
+                              ? AppLocalizations.of(context)!.updateYourBudget
+                              : AppLocalizations.of(context)!.planYourSpending,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -261,8 +264,12 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                         const SizedBox(height: 8),
                         Text(
                           isEditing
-                              ? 'Modify your budget plan details'
-                              : 'Set spending limits to manage your finances better',
+                              ? AppLocalizations.of(
+                                  context,
+                                )!.modifyBudgetDescription
+                              : AppLocalizations.of(
+                                  context,
+                                )!.setBudgetDescription,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 14,
@@ -277,16 +284,18 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   // Budget Name
                   _buildFormSection(
-                    'Budget Name',
+                    AppLocalizations.of(context)!.budgetName,
                     TextFormField(
                       controller: _nameController,
                       decoration: _buildInputDecoration(
-                        hintText: 'e.g., Monthly Groceries',
+                        hintText: AppLocalizations.of(context)!.budgetNameHint,
                         prefixIcon: Icons.edit_outlined,
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a budget name';
+                          return AppLocalizations.of(
+                            context,
+                          )!.budgetNameRequired;
                         }
                         return null;
                       },
@@ -297,7 +306,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   // Category Selection
                   _buildFormSection(
-                    'Category',
+                    AppLocalizations.of(context)!.category,
                     BlocBuilder<BudgetManagementCubit, BudgetManagementState>(
                       builder: (context, state) {
                         final categories = state is BudgetManagementLoaded
@@ -336,7 +345,9 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                                 ] else ...[
                                   Expanded(
                                     child: Text(
-                                      'Select a category',
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.selectCategory,
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.grey[600],
@@ -364,7 +375,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                       Expanded(
                         flex: 3,
                         child: _buildFormSection(
-                          'Amount',
+                          AppLocalizations.of(context)!.amount,
                           BlocBuilder<CurrencyService, dynamic>(
                             builder: (context, currencyState) {
                               final currencyService = context
@@ -372,11 +383,12 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                               final currencySymbol =
                                   currencyService.selectedCurrency.symbol;
 
-
                               return TextFormField(
                                 controller: _amountController,
                                 decoration: InputDecoration(
-                                  hintText: '2.000.000',
+                                  hintText: AppLocalizations.of(
+                                    context,
+                                  )!.budgetAmountHint,
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(16),
                                     child: Text(
@@ -390,15 +402,22 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide(color: Colors.grey[300]!),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                    ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide(color: Colors.grey[300]!),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                    ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
-                                    borderSide: const BorderSide(color: Color(0xFF667eea), width: 2),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF667eea),
+                                      width: 2,
+                                    ),
                                   ),
                                   filled: true,
                                   fillColor: Colors.white,
@@ -410,13 +429,17 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                                 ],
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
-                                    return 'Enter amount';
+                                    return AppLocalizations.of(
+                                      context,
+                                    )!.enterAmount;
                                   }
                                   // Remove thousands separators for validation
                                   final rawValue = getRawNumber(value);
                                   final amount = double.tryParse(rawValue);
                                   if (amount == null || amount <= 0) {
-                                    return 'Invalid amount';
+                                    return AppLocalizations.of(
+                                      context,
+                                    )!.invalidAmount;
                                   }
                                   return null;
                                 },
@@ -429,7 +452,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                       Expanded(
                         flex: 2,
                         child: _buildFormSection(
-                          'Period',
+                          AppLocalizations.of(context)!.period,
                           GestureDetector(
                             onTap: _showPeriodPicker,
                             child: Container(
@@ -471,24 +494,21 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   // Description
                   _buildFormSection(
-                    'Description (Optional)',
+                    AppLocalizations.of(context)!.budgetDescription,
                     TextFormField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
-                        hintText: 'Add notes about this budget...',
-                        prefixIconConstraints: const BoxConstraints(
-                          minHeight: 0,
-                          minWidth: 0,
-                        ),
-                        prefix: Padding(
-                          padding: const EdgeInsets.only(top: 12, right: 8),
+                        hintText: AppLocalizations.of(context)!.budgetNotesHint,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 64,
+                          ), // Sesuaikan untuk multiline
                           child: Icon(
                             Icons.notes_outlined,
                             size: 20,
                             color: Colors.grey,
                           ),
                         ),
-
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide(color: Colors.grey[300]!),
@@ -507,8 +527,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: const EdgeInsets.all(16),
-                        alignLabelWithHint:
-                            true, // Align hint text properly with multiline
+                        alignLabelWithHint: true,
                       ),
                       maxLines: 4,
                       textInputAction: TextInputAction.done,
@@ -685,7 +704,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              category.name,
+              category.localizedName(context),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -743,7 +762,9 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
               child: Row(
                 children: [
                   Text(
-                    'Select Category (${categories.length})',
+                    AppLocalizations.of(
+                      context,
+                    )!.selectCategoryWithCount(categories.length),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -870,9 +891,12 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
               padding: const EdgeInsets.all(24),
               child: Row(
                 children: [
-                  const Text(
-                    'Select Period',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Text(
+                    AppLocalizations.of(context)!.selectPeriod,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Spacer(),
                   IconButton(
@@ -964,20 +988,25 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.delete_outline, color: Colors.red, size: 24),
-            SizedBox(width: 12),
-            Text('Delete Budget Plan'),
+            const Icon(Icons.delete_outline, color: Colors.red, size: 24),
+            const SizedBox(width: 12),
+            Text(AppLocalizations.of(context)!.deleteBudgetPlan),
           ],
         ),
         content: Text(
-          'Are you sure you want to delete "${widget.budget?.name}"? This action cannot be undone.',
+          AppLocalizations.of(
+            context,
+          )!.deleteBudgetConfirmation(widget.budget?.name ?? ''),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -994,7 +1023,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -1009,8 +1038,8 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
     // Validate category selection
     if (_selectedCategoryId == null || _selectedCategoryId!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a category'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseSelectCategory),
           backgroundColor: Colors.red,
         ),
       );
@@ -1057,7 +1086,9 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text(
+              '${AppLocalizations.of(context)!.error}: ${e.toString()}',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -1070,16 +1101,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
   }
 
   String _formatPeriod(BudgetPeriod period) {
-    switch (period) {
-      case BudgetPeriod.weekly:
-        return 'Weekly';
-      case BudgetPeriod.monthly:
-        return 'Monthly';
-      case BudgetPeriod.quarterly:
-        return 'Quarterly';
-      case BudgetPeriod.yearly:
-        return 'Yearly';
-    }
+    return period.localizedDisplayName(context);
   }
 
   IconData _getPeriodIcon(BudgetPeriod period) {

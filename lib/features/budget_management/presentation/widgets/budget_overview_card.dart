@@ -4,6 +4,7 @@ import 'package:cashflow/core/services/currency_service.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetOverviewCard extends StatelessWidget {
   const BudgetOverviewCard({super.key});
@@ -51,9 +52,9 @@ class BudgetOverviewCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Budget Overview',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.budgetOverview,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -66,7 +67,7 @@ class BudgetOverviewCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '$activePlans Active Plans',
+                        '$activePlans ${AppLocalizations.of(context)!.activePlans}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -84,9 +85,9 @@ class BudgetOverviewCard extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Total Budget',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.totalBudget,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.white70,
                           ),
@@ -132,7 +133,7 @@ class BudgetOverviewCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _StatItem(
-                        label: 'Spent',
+                        label: AppLocalizations.of(context)!.spent,
                         value: totalSpent,
                         color: Colors.orangeAccent,
                       ),
@@ -140,7 +141,7 @@ class BudgetOverviewCard extends StatelessWidget {
                     const SizedBox(width: 24),
                     Expanded(
                       child: _StatItem(
-                        label: 'Remaining',
+                        label: AppLocalizations.of(context)!.remaining,
                         value: remaining,
                         color: Colors.greenAccent,
                       ),

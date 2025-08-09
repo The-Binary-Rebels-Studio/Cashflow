@@ -91,7 +91,7 @@ class BudgetManagementCubit extends Cubit<BudgetManagementState> {
         period: period,
       );
       
-      emit(const BudgetManagementOperationSuccess('Budget plan created successfully'));
+      emit(const BudgetManagementOperationSuccess('budgetCreatedSuccess'));
       
       // Reload data
       await loadBudgetManagementData();
@@ -106,7 +106,7 @@ class BudgetManagementCubit extends Cubit<BudgetManagementState> {
       
       await _updateBudgetPlan(budget);
       
-      emit(const BudgetManagementOperationSuccess('Budget plan updated successfully'));
+      emit(const BudgetManagementOperationSuccess('budgetUpdatedSuccess'));
       
       // Reload data
       await loadBudgetManagementData();
@@ -121,7 +121,7 @@ class BudgetManagementCubit extends Cubit<BudgetManagementState> {
       
       await _deleteBudgetPlan(id);
       
-      emit(const BudgetManagementOperationSuccess('Budget plan deleted successfully'));
+      emit(const BudgetManagementOperationSuccess('budgetDeletedSuccess'));
       
       // Reload data
       await loadBudgetManagementData();
