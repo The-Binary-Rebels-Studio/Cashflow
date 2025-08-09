@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/di/injection.dart';
 import 'core/localization/locale_manager.dart';
 import 'core/services/currency_service.dart';
-import 'features/category/presentation/cubit/category_cubit.dart';
-import 'features/financial/presentation/cubit/budget_management_cubit.dart';
+import 'features/budget_management/presentation/cubit/budget_management_cubit.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
@@ -21,16 +20,12 @@ void main() async {
   final currencyService = getIt<CurrencyService>();
   await currencyService.initializeService();
   
-  final categoryCubit = getIt<CategoryCubit>();
-  await categoryCubit.initializeCategories();
-  
   final budgetManagementCubit = getIt<BudgetManagementCubit>();
   await budgetManagementCubit.initializeBudgetManagement();
   
   runApp(CashFlowApp(
     localeManager: localeManager,
     currencyService: currencyService,
-    categoryCubit: categoryCubit,
     budgetManagementCubit: budgetManagementCubit,
   ));
 }
@@ -38,14 +33,12 @@ void main() async {
 class CashFlowApp extends StatelessWidget {
   final LocaleManager localeManager;
   final CurrencyService currencyService;
-  final CategoryCubit categoryCubit;
   final BudgetManagementCubit budgetManagementCubit;
   
   const CashFlowApp({
     super.key,
     required this.localeManager,
     required this.currencyService,
-    required this.categoryCubit,
     required this.budgetManagementCubit,
   });
 
@@ -55,7 +48,6 @@ class CashFlowApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: localeManager),
         BlocProvider.value(value: currencyService),
-        BlocProvider.value(value: categoryCubit),
         BlocProvider.value(value: budgetManagementCubit),
       ],
       child: BlocBuilder<LocaleManager, Locale>(
