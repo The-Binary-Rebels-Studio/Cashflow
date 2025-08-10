@@ -9,6 +9,7 @@ import 'package:cashflow/features/transaction/presentation/cubit/transaction_cub
 import 'package:cashflow/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
+import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
 import 'package:cashflow/core/constants/app_constants.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
@@ -308,32 +309,48 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     try {
       final transactionCubit = context.read<TransactionCubit>();
       
-      // Get total spent in this budget's category within the budget period
-      final totalSpent = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
+      // Calculate current period for this recurring budget
+      final budgetModel = BudgetModel.fromEntity(budget);
+      final currentPeriodStart = budgetModel.getCurrentPeriodStart();
+      final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+      
+      // Get total spent using Result pattern for current period
+      final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
         budget.categoryId,
-        budget.startDate,
-        budget.endDate,
+        currentPeriodStart,
+        currentPeriodEnd,
       );
       
-      // Debug: Print calculation details
-      print('DEBUG Budget Calculation:');
-      print('  Budget Name: ${budget.name}');
-      print('  Budget Amount: ${budget.amount}');
-      print('  Category ID: ${budget.categoryId}');
-      print('  Period: ${budget.startDate} - ${budget.endDate}');
-      print('  Total Spent: $totalSpent');
-      print('  Total Spent (abs): ${totalSpent.abs()}');
-      
-      // Remaining = budget amount - absolute value of expenses (expenses are negative)
-      final remaining = budget.amount - totalSpent.abs();
-      
-      print('  Remaining: $remaining');
-      print('---');
-      
-      return remaining;
+      return result.when(
+        success: (totalSpent) {
+          // Debug: Print calculation details
+          debugPrint('DEBUG Recurring Budget Calculation:');
+          debugPrint('  Budget Name: ${budget.name}');
+          debugPrint('  Budget Amount: ${budget.amount}');
+          debugPrint('  Category ID: ${budget.categoryId}');
+          debugPrint('  Period Type: ${budget.period}');
+          debugPrint('  Current Period: $currentPeriodStart - $currentPeriodEnd');
+          debugPrint('  Total Spent (Current Period): $totalSpent');
+          debugPrint('  Total Spent (abs): ${totalSpent.abs()}');
+          
+          // Remaining = budget amount - absolute value of expenses (expenses are negative)
+          final remaining = budget.amount - totalSpent.abs();
+          
+          debugPrint('  Remaining: $remaining');
+          debugPrint('---');
+          
+          return remaining;
+        },
+        failure: (failure) {
+          debugPrint('DEBUG Error calculating remaining budget: ${failure.message}');
+          debugPrint('Failure type: ${failure.runtimeType}');
+          // If error, return budget amount as fallback
+          return budget.amount;
+        },
+      );
     } catch (e) {
-      print('DEBUG Error calculating remaining budget: $e');
-      // If there's an error, return full budget amount as fallback
+      debugPrint('DEBUG Unexpected error calculating remaining budget: $e');
+      // If unexpected error, return budget amount as fallback
       return budget.amount;
     }
   }
@@ -1681,13 +1698,13 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       );
 
       // Debug: Print transaction details
-      print('DEBUG Transaction Saving:');
-      print('  Title: $title');
-      print('  Amount: ${transaction.amount}');
-      print('  Type: ${_selectedType}');
-      print('  Category ID: $categoryId');
-      print('  Date: ${_selectedDate}');
-      print('---');
+      debugPrint('DEBUG Transaction Saving:');
+      debugPrint('  Title: $title');
+      debugPrint('  Amount: ${transaction.amount}');
+      debugPrint('  Type: $_selectedType');
+      debugPrint('  Category ID: $categoryId');
+      debugPrint('  Date: $_selectedDate');
+      debugPrint('---');
 
       // Save transaction using cubit
       final transactionCubit = context.read<TransactionCubit>();

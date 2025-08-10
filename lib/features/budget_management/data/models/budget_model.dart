@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 
 class BudgetModel extends BudgetEntity {
@@ -92,12 +93,85 @@ class BudgetModel extends BudgetEntity {
     );
   }
 
-  /// Check if this budget is currently active (within date range)
+  /// Check if this budget is currently active
+  /// For recurring budgets, they are always active if isActive = true
   bool get isCurrentlyActive {
-    final now = DateTime.now();
-    return isActive && 
-           now.isAfter(startDate) && 
-           now.isBefore(endDate);
+    return isActive;
+  }
+
+  /// Get the current period start date based on today's date
+  DateTime getCurrentPeriodStart([DateTime? referenceDate]) {
+    final now = referenceDate ?? DateTime.now();
+    
+    DateTime result;
+    switch (period) {
+      case BudgetPeriod.weekly:
+        // Start of current week (Monday)
+        final weekday = now.weekday;
+        result = DateTime(now.year, now.month, now.day).subtract(Duration(days: weekday - 1));
+        break;
+      case BudgetPeriod.monthly:
+        // Start of current month
+        result = DateTime(now.year, now.month, 1);
+        break;
+      case BudgetPeriod.quarterly:
+        // Start of current quarter
+        final quarterStartMonth = ((now.month - 1) ~/ 3) * 3 + 1;
+        result = DateTime(now.year, quarterStartMonth, 1);
+        break;
+      case BudgetPeriod.yearly:
+        // Start of current year
+        result = DateTime(now.year, 1, 1);
+        break;
+    }
+    
+    debugPrint('📅 [PERIOD DEBUG] Budget "$name" (${period.value}):');
+    debugPrint('   🕐 Reference date: ${now.day}/${now.month}/${now.year}');
+    debugPrint('   🏁 Period start: ${result.day}/${result.month}/${result.year}');
+    
+    final endDate = _calculateCurrentPeriodEnd(now);
+    debugPrint('   🏁 Period end: ${endDate.day}/${endDate.month}/${endDate.year}');
+    debugPrint('---');
+    
+    return result;
+  }
+
+  /// Private helper to calculate current period start without debug prints
+  DateTime _calculateCurrentPeriodStart(DateTime now) {
+    switch (period) {
+      case BudgetPeriod.weekly:
+        final weekday = now.weekday;
+        return DateTime(now.year, now.month, now.day).subtract(Duration(days: weekday - 1));
+      case BudgetPeriod.monthly:
+        return DateTime(now.year, now.month, 1);
+      case BudgetPeriod.quarterly:
+        final quarterStartMonth = ((now.month - 1) ~/ 3) * 3 + 1;
+        return DateTime(now.year, quarterStartMonth, 1);
+      case BudgetPeriod.yearly:
+        return DateTime(now.year, 1, 1);
+    }
+  }
+
+  /// Private helper to calculate current period end without debug prints
+  DateTime _calculateCurrentPeriodEnd(DateTime now) {
+    final currentStart = _calculateCurrentPeriodStart(now);
+    
+    switch (period) {
+      case BudgetPeriod.weekly:
+        return currentStart.add(const Duration(days: 6));
+      case BudgetPeriod.monthly:
+        return DateTime(currentStart.year, currentStart.month + 1, 1).subtract(const Duration(days: 1));
+      case BudgetPeriod.quarterly:
+        return DateTime(currentStart.year, currentStart.month + 3, 1).subtract(const Duration(days: 1));
+      case BudgetPeriod.yearly:
+        return DateTime(currentStart.year, 12, 31);
+    }
+  }
+
+  /// Get the current period end date based on today's date
+  DateTime getCurrentPeriodEnd([DateTime? referenceDate]) {
+    final now = referenceDate ?? DateTime.now();
+    return _calculateCurrentPeriodEnd(now);
   }
 
   /// Get progress percentage (0.0 to 1.0)

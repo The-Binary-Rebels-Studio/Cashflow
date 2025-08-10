@@ -5,6 +5,7 @@ import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
+import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
 import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
@@ -22,34 +23,51 @@ class BudgetPlanItem extends StatelessWidget {
     required this.onDelete,
   });
 
-  // Calculate actual spent amount for this budget
+  // Calculate actual spent amount for this budget using Result pattern
   Future<double> _calculateSpentAmount(BuildContext context) async {
     try {
       final transactionCubit = context.read<TransactionCubit>();
       
-      // Get total spent in this budget's category within the budget period
-      final totalSpent = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
+      // Calculate current period for this recurring budget
+      final budgetModel = BudgetModel.fromEntity(budget);
+      final currentPeriodStart = budgetModel.getCurrentPeriodStart();
+      final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+      
+      // Get total spent using Result pattern for current period
+      final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
         budget.categoryId,
-        budget.startDate,
-        budget.endDate,
+        currentPeriodStart,
+        currentPeriodEnd,
       );
       
-      // Debug: Print calculation details
-      print('🔍 [${DateTime.now().toIso8601String()}] BUDGET CALCULATION:');
-      print('   📊 Budget: ${budget.name} (${budget.amount})');
-      print('   🏷️  Category: ${budget.categoryId}');
-      print('   📅 Period: ${budget.startDate.day}/${budget.startDate.month} - ${budget.endDate.day}/${budget.endDate.month}');
-      print('   💰 Total Spent from DB: $totalSpent');
-      print('   📈 Spent (absolute): ${totalSpent.abs()}');
-      print('   ✅ Remaining: ${budget.amount - totalSpent.abs()}');
-      print('---');
-      
-      // Return absolute value since expenses are stored as negative
-      return totalSpent.abs();
+      return result.when(
+        success: (totalSpent) {
+          // Debug: Print calculation details
+          debugPrint('🔍 [${DateTime.now().toIso8601String()}] RECURRING BUDGET CALCULATION:');
+          debugPrint('   📊 Budget: ${budget.name} (${budget.amount})');
+          debugPrint('   🏷️  Category: ${budget.categoryId}');
+          debugPrint('   🔄 Period Type: ${budget.period}');
+          debugPrint('   📅 Current Period: ${currentPeriodStart.day}/${currentPeriodStart.month} - ${currentPeriodEnd.day}/${currentPeriodEnd.month}');
+          debugPrint('   💰 Total Spent (Current Period): $totalSpent');
+          debugPrint('   📈 Spent (absolute): ${totalSpent.abs()}');
+          debugPrint('   ✅ Remaining: ${budget.amount - totalSpent.abs()}');
+          debugPrint('---');
+          
+          // Return absolute value since expenses are stored as negative
+          return totalSpent.abs();
+        },
+        failure: (failure) {
+          debugPrint('🚨 ERROR calculating spent amount for ${budget.name}: ${failure.message}');
+          debugPrint('🚨 Failure type: ${failure.runtimeType}');
+          
+          // Return 0 as fallback for any error
+          return 0.0;
+        },
+      );
     } catch (e) {
-      print('🚨 ERROR calculating spent amount for ${budget.name}: $e');
-      print('🚨 Stack trace: ${StackTrace.current}');
-      // If error, return 0 as fallback
+      debugPrint('🚨 UNEXPECTED ERROR calculating spent amount for ${budget.name}: $e');
+      debugPrint('🚨 Stack trace: ${StackTrace.current}');
+      // If unexpected error, return 0 as fallback
       return 0.0;
     }
   }
@@ -373,7 +391,7 @@ class BudgetPlanItem extends StatelessWidget {
                 const SizedBox(width: 12),
                 _InfoTag(
                   icon: Icons.calendar_today_outlined,
-                  text: _formatDateRange(budget.startDate, budget.endDate),
+                  text: _formatPeriodDisplay(budget),
                   color: Colors.purple,
                 ),
               ],
@@ -387,13 +405,43 @@ class BudgetPlanItem extends StatelessWidget {
   }
 
 
-  String _formatDateRange(DateTime start, DateTime? end) {
-    final startStr = '${start.day}/${start.month}';
-    if (end != null) {
-      final endStr = '${end.day}/${end.month}';
-      return '$startStr - $endStr';
+  /// Format period display to show current period for recurring budget
+  String _formatPeriodDisplay(BudgetEntity budget) {
+    final budgetModel = BudgetModel.fromEntity(budget);
+    final currentPeriodStart = budgetModel.getCurrentPeriodStart();
+    
+    switch (budget.period) {
+      case BudgetPeriod.weekly:
+        return _getWeekRange(currentPeriodStart);
+      case BudgetPeriod.monthly:
+        return '${_getMonthName(currentPeriodStart)} ${currentPeriodStart.year}';
+      case BudgetPeriod.quarterly:
+        return '${_getQuarterName(currentPeriodStart)} ${currentPeriodStart.year}';
+      case BudgetPeriod.yearly:
+        return 'Tahun ${currentPeriodStart.year}';
     }
-    return startStr;
+  }
+  
+  String _getMonthName(DateTime date) {
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+    ];
+    return months[date.month];
+  }
+  
+  String _getQuarterName(DateTime date) {
+    final quarter = ((date.month - 1) ~/ 3) + 1;
+    return 'Q$quarter';
+  }
+  
+  String _getWeekRange(DateTime startDate) {
+    final endDate = startDate.add(const Duration(days: 6));
+    if (startDate.month == endDate.month) {
+      return '${startDate.day}-${endDate.day} ${_getMonthName(startDate)}';
+    } else {
+      return '${startDate.day} ${_getMonthName(startDate)} - ${endDate.day} ${_getMonthName(endDate)}';
+    }
   }
 
   IconData _getIconData(String iconCodePoint) {

@@ -4,32 +4,47 @@ import 'package:cashflow/core/services/currency_service.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
+import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
 import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetOverviewCard extends StatelessWidget {
   const BudgetOverviewCard({super.key});
 
-  // Calculate total spent across all budget plans
+  // Calculate total spent across all budget plans using Result pattern
   Future<double> _calculateTotalSpent(BuildContext context, BudgetManagementLoaded state) async {
     try {
       final transactionCubit = context.read<TransactionCubit>();
       double totalSpent = 0;
 
-      // Calculate spent amount for each budget plan
+      // Calculate spent amount for each budget plan using current period
       for (final budget in state.budgetPlans) {
-        final spentInBudget = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
+        // Calculate current period for this recurring budget
+        final budgetModel = BudgetModel.fromEntity(budget);
+        final currentPeriodStart = budgetModel.getCurrentPeriodStart();
+        final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+        
+        final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
           budget.categoryId,
-          budget.startDate,
-          budget.endDate,
+          currentPeriodStart,
+          currentPeriodEnd,
         );
-        totalSpent += spentInBudget.abs(); // Add absolute value (expenses are negative)
+        
+        result.fold(
+          onSuccess: (spentInBudget) {
+            totalSpent += spentInBudget.abs(); // Add absolute value (expenses are negative)
+          },
+          onFailure: (failure) {
+            debugPrint('🚨 Error calculating spent for budget ${budget.name}: ${failure.message}');
+            // Continue with 0 for this budget instead of failing completely
+          },
+        );
       }
 
-      print('🎯 TOTAL SPENT CALCULATION: $totalSpent across ${state.budgetPlans.length} budgets');
+      debugPrint('🎯 TOTAL SPENT CALCULATION: $totalSpent across ${state.budgetPlans.length} budgets');
       return totalSpent;
     } catch (e) {
-      print('🚨 Error calculating total spent: $e');
+      debugPrint('🚨 Unexpected error calculating total spent: $e');
       return 0.0;
     }
   }

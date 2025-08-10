@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:injectable/injectable.dart';
 import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
@@ -39,13 +40,21 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
   @override
   Future<List<BudgetModel>> getActiveBudgets() async {
-    final now = DateTime.now();
+    // For recurring budgets, we only need to check isActive flag
+    // Budget periods are calculated dynamically based on current date
     final List<Map<String, dynamic>> maps = await _database.query(
       _tableName,
-      where: 'is_active = ? AND start_date <= ? AND end_date >= ?',
-      whereArgs: [1, now.toIso8601String(), now.toIso8601String()],
+      where: 'is_active = ?',
+      whereArgs: [1],
       orderBy: 'created_at DESC',
     );
+
+    // Debug: Print active budgets found
+    debugPrint('🎯 [DEBUG] Active recurring budgets found: ${maps.length}');
+    for (final budget in maps) {
+      debugPrint('   ✅ ${budget['name']} (${budget['period']}): created=${budget['created_at']}');
+    }
+    debugPrint('---');
 
     return List.generate(maps.length, (i) => BudgetModel.fromMap(maps[i]));
   }

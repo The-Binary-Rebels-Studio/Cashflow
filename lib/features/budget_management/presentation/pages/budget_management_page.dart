@@ -416,9 +416,24 @@ class _BudgetPlansSliver extends StatelessWidget {
       listener: (context, state) {
         if (state is BudgetManagementOperationSuccess) {
           // Show success message for delete/update operations
+          String localizedMessage;
+          switch (state.message) {
+            case 'budgetCreatedSuccess':
+              localizedMessage = AppLocalizations.of(context)!.budgetCreatedSuccess;
+              break;
+            case 'budgetUpdatedSuccess':
+              localizedMessage = AppLocalizations.of(context)!.budgetUpdatedSuccess;
+              break;
+            case 'budgetDeletedSuccess':
+              localizedMessage = AppLocalizations.of(context)!.budgetDeletedSuccess;
+              break;
+            default:
+              localizedMessage = state.message; // Fallback to original message
+          }
+          
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
+              content: Text(localizedMessage),
               backgroundColor: Colors.green,
             ),
           );

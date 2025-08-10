@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:cashflow/core/error/failures.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/usecases/budget_management/budget_management_usecases.dart';
@@ -34,43 +35,60 @@ class BudgetManagementCubit extends Cubit<BudgetManagementState> {
   ) : super(BudgetManagementInitial());
 
   Future<void> initializeBudgetManagement() async {
-    try {
-      emit(BudgetManagementLoading());
-      
-      // Initialize predefined categories first
-      await _initializeBudgetCategories();
-      
-      // Load all data
-      await loadBudgetManagementData();
-    } catch (e) {
-      emit(BudgetManagementError('Failed to initialize budget management: ${e.toString()}'));
+    emit(BudgetManagementLoading());
+    
+    // Initialize predefined categories first
+    final initResult = await _initializeBudgetCategories();
+    
+    if (initResult.isFailure) {
+      emit(BudgetManagementError(_getErrorMessage(initResult.failure!)));
+      return;
     }
+    
+    // Load all data
+    await loadBudgetManagementData();
   }
 
   Future<void> loadBudgetManagementData() async {
-    try {
-      emit(BudgetManagementLoading());
-      
-      final categories = await _getBudgetCategories();
-      final expenseCategories = await _getExpenseBudgetCategories();
-      final incomeCategories = await _getIncomeBudgetCategories();
-      final budgetPlans = await _getBudgetPlans();
-      final activeBudgetPlans = await _getActiveBudgetPlans();
-      final budgetsByCategory = await _getBudgetsByCategory();
-      final budgetSummary = await _getBudgetSummary();
-      
-      emit(BudgetManagementLoaded(
-        categories: categories,
-        expenseCategories: expenseCategories,
-        incomeCategories: incomeCategories,
-        budgetPlans: budgetPlans,
-        activeBudgetPlans: activeBudgetPlans,
-        budgetsByCategory: budgetsByCategory,
-        budgetSummary: budgetSummary,
-      ));
-    } catch (e) {
-      emit(BudgetManagementError('Failed to load budget management data: ${e.toString()}'));
+    emit(BudgetManagementLoading());
+    
+    // Execute all use cases and collect results
+    final results = await Future.wait([
+      _getBudgetCategories(),
+      _getExpenseBudgetCategories(),
+      _getIncomeBudgetCategories(),
+      _getBudgetPlans(),
+      _getActiveBudgetPlans(),
+      _getBudgetsByCategory(),
+      _getBudgetSummary(),
+    ]);
+    
+    // Check if any operation failed
+    for (final result in results) {
+      if (result.isFailure) {
+        emit(BudgetManagementError(_getErrorMessage(result.failure!)));
+        return;
+      }
     }
+    
+    // All operations succeeded, extract values
+    final categories = results[0].value as List<CategoryEntity>;
+    final expenseCategories = results[1].value as List<CategoryEntity>;
+    final incomeCategories = results[2].value as List<CategoryEntity>;
+    final budgetPlans = results[3].value as List<BudgetEntity>;
+    final activeBudgetPlans = results[4].value as List<BudgetEntity>;
+    final budgetsByCategory = results[5].value as Map<CategoryEntity, List<BudgetEntity>>;
+    final budgetSummary = results[6].value as Map<String, double>;
+    
+    emit(BudgetManagementLoaded(
+      categories: categories,
+      expenseCategories: expenseCategories,
+      incomeCategories: incomeCategories,
+      budgetPlans: budgetPlans,
+      activeBudgetPlans: activeBudgetPlans,
+      budgetsByCategory: budgetsByCategory,
+      budgetSummary: budgetSummary,
+    ));
   }
 
   Future<void> createBudget({
@@ -80,53 +98,84 @@ class BudgetManagementCubit extends Cubit<BudgetManagementState> {
     required double amount,
     required BudgetPeriod period,
   }) async {
-    try {
-      emit(BudgetManagementLoading());
-      
-      await _createBudgetPlan(
-        name: name,
-        description: description,
-        categoryId: categoryId,
-        amount: amount,
-        period: period,
-      );
-      
-      emit(const BudgetManagementOperationSuccess('budgetCreatedSuccess'));
-      
-      // Reload data
-      await loadBudgetManagementData();
-    } catch (e) {
-      emit(BudgetManagementError('Failed to create budget plan: ${e.toString()}'));
-    }
+    emit(BudgetManagementLoading());
+    
+    final result = await _createBudgetPlan(
+      name: name,
+      description: description,
+      categoryId: categoryId,
+      amount: amount,
+      period: period,
+    );
+    
+    result.fold(
+      onSuccess: (_) async {
+        emit(const BudgetManagementOperationSuccess('budgetCreatedSuccess'));
+        // Reload data
+        await loadBudgetManagementData();
+      },
+      onFailure: (failure) => emit(BudgetManagementError(_getErrorMessage(failure))),
+    );
   }
 
   Future<void> updateBudget(BudgetEntity budget) async {
-    try {
-      emit(BudgetManagementLoading());
-      
-      await _updateBudgetPlan(budget);
-      
-      emit(const BudgetManagementOperationSuccess('budgetUpdatedSuccess'));
-      
-      // Reload data
-      await loadBudgetManagementData();
-    } catch (e) {
-      emit(BudgetManagementError('Failed to update budget plan: ${e.toString()}'));
-    }
+    emit(BudgetManagementLoading());
+    
+    final result = await _updateBudgetPlan(budget);
+    
+    result.fold(
+      onSuccess: (_) async {
+        emit(const BudgetManagementOperationSuccess('budgetUpdatedSuccess'));
+        // Reload data
+        await loadBudgetManagementData();
+      },
+      onFailure: (failure) => emit(BudgetManagementError(_getErrorMessage(failure))),
+    );
   }
 
   Future<void> deleteBudget(String id) async {
-    try {
-      emit(BudgetManagementLoading());
+    emit(BudgetManagementLoading());
+    
+    final result = await _deleteBudgetPlan(id);
+    
+    result.fold(
+      onSuccess: (_) async {
+        emit(const BudgetManagementOperationSuccess('budgetDeletedSuccess'));
+        // Reload data
+        await loadBudgetManagementData();
+      },
+      onFailure: (failure) => emit(BudgetManagementError(_getErrorMessage(failure))),
+    );
+  }
+
+  /// Convert AppFailure to user-friendly error message
+  String _getErrorMessage(AppFailure failure) {
+    switch (failure.runtimeType) {
+      case ValidationFailure:
+        final validationFailure = failure as ValidationFailure;
+        if (validationFailure.fieldErrors.isNotEmpty) {
+          final firstError = validationFailure.fieldErrors.values.first.first;
+          return firstError;
+        }
+        return validationFailure.message;
       
-      await _deleteBudgetPlan(id);
+      case BudgetNotFoundFailure:
+        return 'Budget not found. Please try again.';
       
-      emit(const BudgetManagementOperationSuccess('budgetDeletedSuccess'));
+      case CategoryNotFoundFailure:
+        return 'Category not found. Please select a valid category.';
       
-      // Reload data
-      await loadBudgetManagementData();
-    } catch (e) {
-      emit(BudgetManagementError('Failed to delete budget plan: ${e.toString()}'));
+      case NetworkFailure:
+        return 'Network error. Please check your connection and try again.';
+      
+      case DatabaseFailure:
+        return 'Database error. Please try again later.';
+      
+      case BusinessLogicFailure:
+        return failure.message;
+      
+      default:
+        return 'An unexpected error occurred. Please try again.';
     }
   }
 

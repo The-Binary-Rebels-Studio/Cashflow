@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:injectable/injectable.dart';
 import 'package:cashflow/features/transaction/data/models/transaction_model.dart';
@@ -80,11 +81,22 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
 
   @override
   Future<void> insertTransaction(TransactionModel transaction) async {
+    debugPrint('💾 [INSERT DEBUG] Inserting transaction:');
+    debugPrint('   📝 Title: ${transaction.title}');
+    debugPrint('   💰 Amount: ${transaction.amount}');
+    debugPrint('   🏷️  Category: ${transaction.categoryId}');
+    debugPrint('   📅 Date: ${transaction.date}');
+    debugPrint('   🏛️  Type: ${transaction.type}');
+    debugPrint('---');
+    
     await _database.insert(
       'transactions',
       transaction.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    
+    debugPrint('✅ Transaction inserted successfully');
+    debugPrint('---');
   }
 
   @override
@@ -126,10 +138,33 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
 
   @override
   Future<double> getTotalByCategoryAndDateRange(String categoryId, DateTime startDate, DateTime endDate) async {
+    // Use date-only comparison to avoid time precision issues
+    final startDateString = DateTime(startDate.year, startDate.month, startDate.day).toIso8601String();
+    final endDateString = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59).toIso8601String();
+    
+    debugPrint('🔍 [QUERY DEBUG] getTotalByCategoryAndDateRange:');
+    debugPrint('   🏷️  Category: $categoryId');
+    debugPrint('   📅 Period: $startDateString to $endDateString');
+    
+    // Debug: Show all transactions for this category first
+    final allTransactions = await _database.rawQuery(
+      'SELECT title, amount, date FROM transactions WHERE category_id = ? ORDER BY date DESC',
+      [categoryId],
+    );
+    debugPrint('   📊 All transactions for category $categoryId:');
+    for (final tx in allTransactions.take(5)) { // Show max 5 recent transactions
+      debugPrint('     - ${tx['title']}: ${tx['amount']} on ${tx['date']}');
+    }
+    
     final List<Map<String, dynamic>> result = await _database.rawQuery(
       'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE category_id = ? AND date >= ? AND date <= ?',
-      [categoryId, startDate.toIso8601String(), endDate.toIso8601String()],
+      [categoryId, startDateString, endDateString],
     );
-    return (result.first['total'] as num).toDouble();
+    
+    final total = (result.first['total'] as num).toDouble();
+    debugPrint('   💰 Total found: $total');
+    debugPrint('---');
+    
+    return total;
   }
 }
