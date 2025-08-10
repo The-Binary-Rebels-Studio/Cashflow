@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import '../repositories/onboarding_repository.dart';
+import 'package:cashflow/features/onboarding/domain/repositories/onboarding_repository.dart';
 
 @injectable
 class ResetOnboarding {

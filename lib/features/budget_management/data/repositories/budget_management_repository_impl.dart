@@ -1,11 +1,11 @@
 import 'package:injectable/injectable.dart';
-import '../datasources/budget_local_datasource.dart';
-import '../datasources/category_local_datasource.dart';
-import '../models/budget_model.dart';
-import '../models/category_model.dart';
-import '../../domain/entities/budget_entity.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/repositories/budget_management_repository.dart';
+import 'package:cashflow/features/budget_management/data/datasources/budget_local_datasource.dart';
+import 'package:cashflow/features/budget_management/data/datasources/category_local_datasource.dart';
+import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
+import 'package:cashflow/features/budget_management/data/models/category_model.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
 @Injectable(as: BudgetManagementRepository)
 class BudgetManagementRepositoryImpl implements BudgetManagementRepository {

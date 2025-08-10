@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../entities/app_locale.dart';
+import 'package:cashflow/features/localization/domain/entities/app_locale.dart';
 
 abstract class LocalizationRepository {
   Future<Locale?> getCurrentLocale();

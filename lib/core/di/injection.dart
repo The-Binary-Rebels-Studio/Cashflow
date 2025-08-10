@@ -7,7 +7,7 @@ final GetIt getIt = GetIt.instance;
 
 @InjectableInit(
   initializerName: 'init',
-  preferRelativeImports: true,
+  preferRelativeImports: false,
   asExtension: true,
 )
 Future<void> configureDependencies() async {

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 
 abstract class BudgetManagementState extends Equatable {
   const BudgetManagementState();

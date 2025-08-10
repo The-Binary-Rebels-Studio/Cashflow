@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
-import '../../domain/entities/onboarding_status.dart';
-import '../../domain/repositories/onboarding_repository.dart';
-import '../datasources/onboarding_local_datasource.dart';
+import 'package:cashflow/features/onboarding/domain/entities/onboarding_status.dart';
+import 'package:cashflow/features/onboarding/domain/repositories/onboarding_repository.dart';
+import 'package:cashflow/features/onboarding/data/datasources/onboarding_local_datasource.dart';
 
 @Injectable(as: OnboardingRepository)
 class OnboardingRepositoryImpl implements OnboardingRepository {

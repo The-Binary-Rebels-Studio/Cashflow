@@ -943,7 +943,7 @@ abstract class AppLocalizations {
   /// No description provided for @selectCategory.
   ///
   /// In en, this message translates to:
-  /// **'Select a category'**
+  /// **'Select Category'**
   String get selectCategory;
 
   /// No description provided for @selectCategoryError.
@@ -1329,6 +1329,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @addTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Transaction'**
+  String get addTransaction;
+
+  /// No description provided for @addIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Income'**
+  String get addIncome;
+
+  /// No description provided for @addExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get addExpense;
+
+  /// No description provided for @transactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get transactionTitle;
+
+  /// No description provided for @transactionTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Lunch at restaurant'**
+  String get transactionTitleHint;
+
+  /// No description provided for @transactionTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction title is required'**
+  String get transactionTitleRequired;
+
+  /// No description provided for @transactionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get transactionAmount;
+
+  /// No description provided for @transactionAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0.00'**
+  String get transactionAmountHint;
+
+  /// No description provided for @transactionAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required'**
+  String get transactionAmountRequired;
+
+  /// No description provided for @transactionAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get transactionAmountInvalid;
+
+  /// No description provided for @transactionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Optional)'**
+  String get transactionDescription;
+
+  /// No description provided for @transactionDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add notes about this transaction...'**
+  String get transactionDescriptionHint;
+
+  /// No description provided for @transactionCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get transactionCategory;
+
+  /// No description provided for @transactionCategoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a category'**
+  String get transactionCategoryRequired;
+
+  /// No description provided for @transactionTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select transaction type'**
+  String get transactionTypeRequired;
+
+  /// No description provided for @others.
+  ///
+  /// In en, this message translates to:
+  /// **'Others'**
+  String get others;
+
+  /// No description provided for @transactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get transactionDate;
+
+  /// No description provided for @transactionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get transactionType;
+
+  /// No description provided for @income.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get income;
+
+  /// No description provided for @expense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get expense;
+
+  /// No description provided for @budgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Remaining'**
+  String get budgetRemaining;
+
+  /// No description provided for @budgetOverLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Over Budget'**
+  String get budgetOverLimit;
+
+  /// No description provided for @budgetPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Preview'**
+  String get budgetPreview;
+
+  /// No description provided for @budgetUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get budgetUsed;
+
+  /// No description provided for @budgetTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get budgetTotal;
+
+  /// No description provided for @budgetAfterTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'After this transaction'**
+  String get budgetAfterTransaction;
+
+  /// No description provided for @saveTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Transaction'**
+  String get saveTransaction;
+
+  /// No description provided for @transactionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction saved successfully!'**
+  String get transactionSaved;
+
+  /// No description provided for @transactionSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save transaction'**
+  String get transactionSaveFailed;
 }
 
 class _AppLocalizationsDelegate

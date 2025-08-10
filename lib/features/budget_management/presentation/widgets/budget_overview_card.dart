@@ -4,27 +4,63 @@ import 'package:cashflow/core/services/currency_service.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
 import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetOverviewCard extends StatelessWidget {
   const BudgetOverviewCard({super.key});
 
+  // Calculate total spent across all budget plans
+  Future<double> _calculateTotalSpent(BuildContext context, BudgetManagementLoaded state) async {
+    try {
+      final transactionCubit = context.read<TransactionCubit>();
+      double totalSpent = 0;
+
+      // Calculate spent amount for each budget plan
+      for (final budget in state.budgetPlans) {
+        final spentInBudget = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
+          budget.categoryId,
+          budget.startDate,
+          budget.endDate,
+        );
+        totalSpent += spentInBudget.abs(); // Add absolute value (expenses are negative)
+      }
+
+      print('🎯 TOTAL SPENT CALCULATION: $totalSpent across ${state.budgetPlans.length} budgets');
+      return totalSpent;
+    } catch (e) {
+      print('🚨 Error calculating total spent: $e');
+      return 0.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BudgetManagementCubit, BudgetManagementState>(
       builder: (context, state) {
-        // Calculate totals
-        double totalBudget = 0;
-        double totalSpent = 0; // TODO: Calculate from actual transactions
-        int activePlans = 0;
-        
-        if (state is BudgetManagementLoaded) {
-          totalBudget = state.budgetPlans.fold(0, (sum, budget) => sum + budget.amount);
-          activePlans = state.activeBudgetPlans.length;
+        if (state is! BudgetManagementLoaded) {
+          // Loading or error state - show placeholder
+          return _buildOverviewCard(context, 0, 0, 0, 0, 0);
         }
-        
-        final remaining = totalBudget - totalSpent;
-        final spentPercentage = totalBudget > 0 ? (totalSpent / totalBudget) : 0.0;
+
+        return FutureBuilder<double>(
+          future: _calculateTotalSpent(context, state),
+          builder: (context, snapshot) {
+            // Calculate totals
+            final totalBudget = state.budgetPlans.fold(0.0, (sum, budget) => sum + budget.amount);
+            final activePlans = state.activeBudgetPlans.length;
+            final totalSpent = snapshot.data ?? 0.0;
+            final remaining = totalBudget - totalSpent;
+            final spentPercentage = totalBudget > 0 ? (totalSpent / totalBudget) : 0.0;
+
+            return _buildOverviewCard(context, totalBudget, totalSpent, remaining, spentPercentage, activePlans);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildOverviewCard(BuildContext context, double totalBudget, double totalSpent, double remaining, double spentPercentage, int activePlans) {
         
         return Container(
           width: double.infinity,
@@ -152,8 +188,6 @@ class BudgetOverviewCard extends StatelessWidget {
             ),
           ),
         );
-      },
-    );
   }
 }
 

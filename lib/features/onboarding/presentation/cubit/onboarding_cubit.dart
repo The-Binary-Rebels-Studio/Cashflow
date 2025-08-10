@@ -2,13 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../domain/usecases/get_onboarding_status.dart';
-import '../../domain/usecases/complete_onboarding.dart';
-import '../../domain/usecases/reset_onboarding.dart';
-import '../../domain/entities/onboarding_settings.dart';
-import '../../../localization/domain/usecases/change_locale.dart';
-import '../../../../core/services/currency_service.dart';
-import 'onboarding_state.dart';
+import 'package:cashflow/features/onboarding/domain/usecases/get_onboarding_status.dart';
+import 'package:cashflow/features/onboarding/domain/usecases/complete_onboarding.dart';
+import 'package:cashflow/features/onboarding/domain/usecases/reset_onboarding.dart';
+import 'package:cashflow/features/onboarding/domain/entities/onboarding_settings.dart';
+import 'package:cashflow/features/localization/domain/usecases/change_locale.dart';
+import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/features/onboarding/presentation/cubit/onboarding_state.dart';
 
 @injectable
 class OnboardingCubit extends Cubit<OnboardingState> {

@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
-import '../../entities/category_entity.dart';
-import '../../entities/budget_entity.dart';
-import '../../repositories/budget_management_repository.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
 @injectable
 class GetBudgetCategories {

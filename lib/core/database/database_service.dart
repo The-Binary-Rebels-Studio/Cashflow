@@ -82,6 +82,27 @@ class DatabaseService {
     await db.execute('CREATE INDEX idx_budgets_period ON budgets(period)');
     await db.execute('CREATE INDEX idx_budgets_active ON budgets(is_active)');
     await db.execute('CREATE INDEX idx_budgets_dates ON budgets(start_date, end_date)');
+    
+    await db.execute('''
+      CREATE TABLE transactions(
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        amount REAL NOT NULL,
+        category_id TEXT NOT NULL,
+        type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
+        date TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (category_id) REFERENCES categories (id)
+      )
+    ''');
+    
+    // Create indexes for transactions
+    await db.execute('CREATE INDEX idx_transactions_category ON transactions(category_id)');
+    await db.execute('CREATE INDEX idx_transactions_type ON transactions(type)');
+    await db.execute('CREATE INDEX idx_transactions_date ON transactions(date)');
+    await db.execute('CREATE INDEX idx_transactions_date_category ON transactions(date, category_id)');
   }
 
   static Future<void> _migrateToVersion(Database db, int version) async {

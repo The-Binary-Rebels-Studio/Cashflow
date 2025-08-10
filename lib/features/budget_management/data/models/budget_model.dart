@@ -1,4 +1,4 @@
-import '../../domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 
 class BudgetModel extends BudgetEntity {
   const BudgetModel({

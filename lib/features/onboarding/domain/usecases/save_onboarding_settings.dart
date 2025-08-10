@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
-import '../entities/onboarding_settings.dart';
-import '../repositories/onboarding_repository.dart';
-import '../../../localization/domain/usecases/change_locale.dart';
+import 'package:cashflow/features/onboarding/domain/entities/onboarding_settings.dart';
+import 'package:cashflow/features/onboarding/domain/repositories/onboarding_repository.dart';
+import 'package:cashflow/features/localization/domain/usecases/change_locale.dart';
 
 @injectable
 class SaveOnboardingSettings {

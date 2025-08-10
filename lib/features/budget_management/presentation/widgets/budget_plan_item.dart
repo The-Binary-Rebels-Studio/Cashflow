@@ -5,6 +5,7 @@ import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetPlanItem extends StatelessWidget {
@@ -21,11 +22,83 @@ class BudgetPlanItem extends StatelessWidget {
     required this.onDelete,
   });
 
+  // Calculate actual spent amount for this budget
+  Future<double> _calculateSpentAmount(BuildContext context) async {
+    try {
+      final transactionCubit = context.read<TransactionCubit>();
+      
+      // Get total spent in this budget's category within the budget period
+      final totalSpent = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
+        budget.categoryId,
+        budget.startDate,
+        budget.endDate,
+      );
+      
+      // Debug: Print calculation details
+      print('🔍 [${DateTime.now().toIso8601String()}] BUDGET CALCULATION:');
+      print('   📊 Budget: ${budget.name} (${budget.amount})');
+      print('   🏷️  Category: ${budget.categoryId}');
+      print('   📅 Period: ${budget.startDate.day}/${budget.startDate.month} - ${budget.endDate.day}/${budget.endDate.month}');
+      print('   💰 Total Spent from DB: $totalSpent');
+      print('   📈 Spent (absolute): ${totalSpent.abs()}');
+      print('   ✅ Remaining: ${budget.amount - totalSpent.abs()}');
+      print('---');
+      
+      // Return absolute value since expenses are stored as negative
+      return totalSpent.abs();
+    } catch (e) {
+      print('🚨 ERROR calculating spent amount for ${budget.name}: $e');
+      print('🚨 Stack trace: ${StackTrace.current}');
+      // If error, return 0 as fallback
+      return 0.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final totalSpent = 0.0; // TODO: Calculate from actual transactions
-    final remaining = budget.amount - totalSpent;
-    final spentPercentage = budget.amount > 0 ? (totalSpent / budget.amount) : 0.0;
+    return FutureBuilder<double>(
+      key: Key('budget_${budget.id}_${DateTime.now().millisecondsSinceEpoch}'), // Force refresh
+      future: _calculateSpentAmount(context),
+      builder: (context, snapshot) {
+        // Show loading state while calculating
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: Colors.grey[200]!,
+                width: 1,
+              ),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'Loading ${budget.name}...',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        final totalSpent = snapshot.data ?? 0.0;
+        final remaining = budget.amount - totalSpent;
+        final spentPercentage = budget.amount > 0 ? (totalSpent / budget.amount) : 0.0;
     
     // Safe parsing of category color
     Color categoryColor;
@@ -308,6 +381,8 @@ class BudgetPlanItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+      },
     );
   }
 

@@ -1,5 +1,5 @@
-import '../entities/budget_entity.dart';
-import '../entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 
 abstract class BudgetManagementRepository {
   // Category operations

@@ -442,7 +442,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get category => 'Category';
 
   @override
-  String get selectCategory => 'Select a category';
+  String get selectCategory => 'Select Category';
 
   @override
   String get selectCategoryError => 'Please select a category';
@@ -646,4 +646,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get addTransaction => 'Add Transaction';
+
+  @override
+  String get addIncome => 'Add Income';
+
+  @override
+  String get addExpense => 'Add Expense';
+
+  @override
+  String get transactionTitle => 'Title';
+
+  @override
+  String get transactionTitleHint => 'e.g., Lunch at restaurant';
+
+  @override
+  String get transactionTitleRequired => 'Transaction title is required';
+
+  @override
+  String get transactionAmount => 'Amount';
+
+  @override
+  String get transactionAmountHint => '0.00';
+
+  @override
+  String get transactionAmountRequired => 'Amount is required';
+
+  @override
+  String get transactionAmountInvalid => 'Please enter a valid amount';
+
+  @override
+  String get transactionDescription => 'Description (Optional)';
+
+  @override
+  String get transactionDescriptionHint =>
+      'Add notes about this transaction...';
+
+  @override
+  String get transactionCategory => 'Category';
+
+  @override
+  String get transactionCategoryRequired => 'Please select a category';
+
+  @override
+  String get transactionTypeRequired => 'Please select transaction type';
+
+  @override
+  String get others => 'Others';
+
+  @override
+  String get transactionDate => 'Date';
+
+  @override
+  String get transactionType => 'Type';
+
+  @override
+  String get income => 'Income';
+
+  @override
+  String get expense => 'Expense';
+
+  @override
+  String get budgetRemaining => 'Budget Remaining';
+
+  @override
+  String get budgetOverLimit => 'Over Budget';
+
+  @override
+  String get budgetPreview => 'Budget Preview';
+
+  @override
+  String get budgetUsed => 'Used';
+
+  @override
+  String get budgetTotal => 'Total';
+
+  @override
+  String get budgetAfterTransaction => 'After this transaction';
+
+  @override
+  String get saveTransaction => 'Save Transaction';
+
+  @override
+  String get transactionSaved => 'Transaction saved successfully!';
+
+  @override
+  String get transactionSaveFailed => 'Failed to save transaction';
 }

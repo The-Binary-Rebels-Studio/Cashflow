@@ -445,7 +445,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get category => 'Kategori';
 
   @override
-  String get selectCategory => 'Pilih kategori';
+  String get selectCategory => 'Pilih Kategori';
 
   @override
   String get selectCategoryError => 'Silakan pilih kategori';
@@ -649,4 +649,92 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get addTransaction => 'Tambah Transaksi';
+
+  @override
+  String get addIncome => 'Tambah Pemasukan';
+
+  @override
+  String get addExpense => 'Tambah Pengeluaran';
+
+  @override
+  String get transactionTitle => 'Judul';
+
+  @override
+  String get transactionTitleHint => 'contoh: Makan siang di restoran';
+
+  @override
+  String get transactionTitleRequired => 'Judul transaksi diperlukan';
+
+  @override
+  String get transactionAmount => 'Jumlah';
+
+  @override
+  String get transactionAmountHint => '0.00';
+
+  @override
+  String get transactionAmountRequired => 'Jumlah diperlukan';
+
+  @override
+  String get transactionAmountInvalid => 'Mohon masukkan jumlah yang valid';
+
+  @override
+  String get transactionDescription => 'Deskripsi (Opsional)';
+
+  @override
+  String get transactionDescriptionHint =>
+      'Tambahkan catatan tentang transaksi ini...';
+
+  @override
+  String get transactionCategory => 'Kategori';
+
+  @override
+  String get transactionCategoryRequired => 'Mohon pilih kategori';
+
+  @override
+  String get transactionTypeRequired => 'Mohon pilih jenis transaksi';
+
+  @override
+  String get others => 'Lainnya';
+
+  @override
+  String get transactionDate => 'Tanggal';
+
+  @override
+  String get transactionType => 'Jenis';
+
+  @override
+  String get income => 'Pemasukan';
+
+  @override
+  String get expense => 'Pengeluaran';
+
+  @override
+  String get budgetRemaining => 'Sisa Anggaran';
+
+  @override
+  String get budgetOverLimit => 'Melebihi Anggaran';
+
+  @override
+  String get budgetPreview => 'Pratinjau Anggaran';
+
+  @override
+  String get budgetUsed => 'Terpakai';
+
+  @override
+  String get budgetTotal => 'Total';
+
+  @override
+  String get budgetAfterTransaction => 'Setelah transaksi ini';
+
+  @override
+  String get saveTransaction => 'Simpan Transaksi';
+
+  @override
+  String get transactionSaved => 'Transaksi berhasil disimpan!';
+
+  @override
+  String get transactionSaveFailed => 'Gagal menyimpan transaksi';
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../shared/widgets/main_navigation.dart';
+import 'package:cashflow/shared/widgets/main_navigation.dart';
 
 class NavigationHelper {
   static void navigateToTab(BuildContext context, int tabIndex) {

@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:injectable/injectable.dart';
-import '../models/category_model.dart';
-import '../../domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/data/models/category_model.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 
 abstract class CategoryLocalDataSource {
   Future<List<CategoryModel>> getAllCategories();

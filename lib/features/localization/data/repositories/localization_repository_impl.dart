@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:flutter/material.dart';
-import '../../domain/entities/app_locale.dart';
-import '../../domain/repositories/localization_repository.dart';
-import '../datasources/localization_local_datasource.dart';
+import 'package:cashflow/features/localization/domain/entities/app_locale.dart';
+import 'package:cashflow/features/localization/domain/repositories/localization_repository.dart';
+import 'package:cashflow/features/localization/data/datasources/localization_local_datasource.dart';
 
 @Injectable(as: LocalizationRepository)
 class LocalizationRepositoryImpl implements LocalizationRepository {

@@ -1,4 +1,4 @@
-import '../entities/onboarding_status.dart';
+import 'package:cashflow/features/onboarding/domain/entities/onboarding_status.dart';
 
 abstract class OnboardingRepository {
   Future<OnboardingStatus> getOnboardingStatus();

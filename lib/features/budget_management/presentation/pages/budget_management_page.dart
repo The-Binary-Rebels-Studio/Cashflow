@@ -9,6 +9,7 @@ import 'package:cashflow/features/budget_management/presentation/cubit/budget_ma
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_overview_card.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_plan_item.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 
 class BudgetManagementPage extends StatelessWidget {
   const BudgetManagementPage({super.key});
@@ -19,6 +20,7 @@ class BudgetManagementPage extends StatelessWidget {
       providers: [
         BlocProvider.value(value: getIt<BudgetManagementCubit>()),
         BlocProvider.value(value: getIt<CurrencyService>()),
+        BlocProvider.value(value: getIt<TransactionCubit>()),
       ],
       child: const _BudgetManagementView(),
     );
@@ -33,7 +35,7 @@ class _BudgetManagementView extends StatefulWidget {
 }
 
 class _BudgetManagementViewState extends State<_BudgetManagementView> {
-  String _sortBy = 'amount'; // amount, name, date
+  String _sortBy = 'amount';
   bool _sortAscending = false;
 
   @override
@@ -41,10 +43,19 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
     super.initState();
     // Initialize budget management data when page loads
     context.read<BudgetManagementCubit>().initializeBudgetManagement();
+
+    // Also initialize transaction data for budget calculations
+    context.read<TransactionCubit>().loadTransactions();
   }
 
   Future<void> refreshData() async {
     await context.read<BudgetManagementCubit>().loadBudgetManagementData();
+
+    // Also refresh transaction data for up-to-date budget calculations
+    if (mounted) {
+      await context.read<TransactionCubit>().loadTransactions();
+    }
+
     if (mounted) {
       setState(() {});
     }
@@ -79,7 +90,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 ),
               ),
             ),
-            
+
             // Budget Overview Section
             SliverToBoxAdapter(
               child: Padding(
@@ -87,7 +98,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 child: const BudgetOverviewCard(),
               ),
             ),
-            
+
             // Filter and Sort Section
             SliverToBoxAdapter(
               child: Container(
@@ -111,9 +122,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildSortDropdown(),
-                    ),
+                    Expanded(child: _buildSortDropdown()),
                     IconButton(
                       onPressed: () {
                         setState(() {
@@ -121,16 +130,20 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                         });
                       },
                       icon: Icon(
-                        _sortAscending ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        _sortAscending
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
                         color: const Color(0xFF667eea),
                       ),
-                      tooltip: _sortAscending ? AppLocalizations.of(context)!.ascending : AppLocalizations.of(context)!.descending,
+                      tooltip: _sortAscending
+                          ? AppLocalizations.of(context)!.ascending
+                          : AppLocalizations.of(context)!.descending,
                     ),
                   ],
                 ),
               ),
             ),
-            
+
             // Add Budget Button
             SliverToBoxAdapter(
               child: Container(
@@ -157,12 +170,15 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                   icon: const Icon(Icons.add, size: 22),
                   label: Text(
                     AppLocalizations.of(context)!.createNewBudgetPlan,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
             ),
-            
+
             // Budget Plans List
             _BudgetPlansSliver(
               sortBy: _sortBy,
@@ -177,10 +193,18 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
 
   Widget _buildSortDropdown() {
     final sortOptions = [
-      {'value': 'amount', 'labelKey': 'sortByAmount', 'icon': Icons.attach_money},
+      {
+        'value': 'amount',
+        'labelKey': 'sortByAmount',
+        'icon': Icons.attach_money,
+      },
       {'value': 'name', 'labelKey': 'sortByName', 'icon': Icons.sort_by_alpha},
       {'value': 'date', 'labelKey': 'sortByDate', 'icon': Icons.calendar_today},
-      {'value': 'category', 'labelKey': 'sortByCategory', 'icon': Icons.category},
+      {
+        'value': 'category',
+        'labelKey': 'sortByCategory',
+        'icon': Icons.category,
+      },
     ];
 
     final selectedOption = sortOptions.firstWhere(
@@ -215,11 +239,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 ),
               ),
             ),
-            Icon(
-              Icons.keyboard_arrow_down,
-              size: 16,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.keyboard_arrow_down, size: 16, color: Colors.grey[600]),
           ],
         ),
       ),
@@ -228,10 +248,18 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
 
   void _showSortOptions() {
     final sortOptions = [
-      {'value': 'amount', 'labelKey': 'sortByAmount', 'icon': Icons.attach_money},
+      {
+        'value': 'amount',
+        'labelKey': 'sortByAmount',
+        'icon': Icons.attach_money,
+      },
       {'value': 'name', 'labelKey': 'sortByName', 'icon': Icons.sort_by_alpha},
       {'value': 'date', 'labelKey': 'sortByDate', 'icon': Icons.calendar_today},
-      {'value': 'category', 'labelKey': 'sortByCategory', 'icon': Icons.category},
+      {
+        'value': 'category',
+        'labelKey': 'sortByCategory',
+        'icon': Icons.category,
+      },
     ];
 
     showModalBottomSheet(
@@ -320,7 +348,9 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
-                              _getLocalizedSortLabel(option['labelKey'] as String),
+                              _getLocalizedSortLabel(
+                                option['labelKey'] as String,
+                              ),
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: isSelected
@@ -355,14 +385,18 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
   String _getLocalizedSortLabel(String key) {
     final localizations = AppLocalizations.of(context)!;
     switch (key) {
-      case 'sortByAmount': return localizations.sortByAmount;
-      case 'sortByName': return localizations.sortByName;
-      case 'sortByDate': return localizations.sortByDate;
-      case 'sortByCategory': return localizations.sortByCategory;
-      default: return key;
+      case 'sortByAmount':
+        return localizations.sortByAmount;
+      case 'sortByName':
+        return localizations.sortByName;
+      case 'sortByDate':
+        return localizations.sortByDate;
+      case 'sortByCategory':
+        return localizations.sortByCategory;
+      default:
+        return key;
     }
   }
-
 }
 
 class _BudgetPlansSliver extends StatelessWidget {
@@ -378,7 +412,6 @@ class _BudgetPlansSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocConsumer<BudgetManagementCubit, BudgetManagementState>(
       listener: (context, state) {
         if (state is BudgetManagementOperationSuccess) {
@@ -392,10 +425,7 @@ class _BudgetPlansSliver extends StatelessWidget {
         } else if (state is BudgetManagementError) {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
       },
@@ -416,16 +446,14 @@ class _BudgetPlansSliver extends StatelessWidget {
         }
 
         if (state is! BudgetManagementLoaded || state.budgetPlans.isEmpty) {
-          return SliverFillRemaining(
-            child: _buildEmptyState(context),
-          );
+          return SliverFillRemaining(child: _buildEmptyState(context));
         }
 
         // Sort budget plans based on selected criteria
         final sortedBudgets = List<dynamic>.from(state.budgetPlans);
         sortedBudgets.sort((a, b) {
           int comparison = 0;
-          
+
           switch (sortBy) {
             case 'amount':
               comparison = a.amount.compareTo(b.amount);
@@ -437,43 +465,60 @@ class _BudgetPlansSliver extends StatelessWidget {
               comparison = a.createdAt.compareTo(b.createdAt);
               break;
             case 'category':
-              final categoryA = state.categories.where((cat) => cat.id == a.categoryId).firstOrNull?.localizedName(context) ?? '';
-              final categoryB = state.categories.where((cat) => cat.id == b.categoryId).firstOrNull?.localizedName(context) ?? '';
+              final categoryA =
+                  state.categories
+                      .where((cat) => cat.id == a.categoryId)
+                      .firstOrNull
+                      ?.localizedName(context) ??
+                  '';
+              final categoryB =
+                  state.categories
+                      .where((cat) => cat.id == b.categoryId)
+                      .firstOrNull
+                      ?.localizedName(context) ??
+                  '';
               comparison = categoryA.compareTo(categoryB);
               break;
           }
-          
+
           return sortAscending ? comparison : -comparison;
         });
 
         return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final budget = sortedBudgets[index];
-              final category = state.categories
-                  .where((cat) => cat.id == budget.categoryId)
-                  .firstOrNull;
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final budget = sortedBudgets[index];
+            final category = state.categories
+                .where((cat) => cat.id == budget.categoryId)
+                .firstOrNull;
 
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: BudgetPlanItem(
-                  budget: budget,
-                  category: category,
-                  onEdit: () async {
-                    await context.pushNamed('create_budget', extra: {'budget': budget});
-                    // Refresh data after returning from edit budget page
-                    if (context.mounted) {
-                      context.read<BudgetManagementCubit>().loadBudgetManagementData();
-                    }
-                  },
-                  onDelete: () {
-                    _showDeleteConfirmation(context, budget.id, budget.name, onRefreshNeeded);
-                  },
-                ),
-              );
-            },
-            childCount: sortedBudgets.length,
-          ),
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: BudgetPlanItem(
+                budget: budget,
+                category: category,
+                onEdit: () async {
+                  await context.pushNamed(
+                    'create_budget',
+                    extra: {'budget': budget},
+                  );
+                  // Refresh data after returning from edit budget page
+                  if (context.mounted) {
+                    context
+                        .read<BudgetManagementCubit>()
+                        .loadBudgetManagementData();
+                  }
+                },
+                onDelete: () {
+                  _showDeleteConfirmation(
+                    context,
+                    budget.id,
+                    budget.name,
+                    onRefreshNeeded,
+                  );
+                },
+              ),
+            );
+          }, childCount: sortedBudgets.length),
         );
       },
     );
@@ -493,10 +538,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Colors.grey[300]!,
-                    Colors.grey[100]!,
-                  ],
+                  colors: [Colors.grey[300]!, Colors.grey[100]!],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -518,9 +560,9 @@ class _BudgetPlansSliver extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.noBudgetPlansMessage,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
           ],
@@ -529,7 +571,12 @@ class _BudgetPlansSliver extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, String budgetId, String budgetName, Future<void> Function() onRefreshNeeded) {
+  void _showDeleteConfirmation(
+    BuildContext context,
+    String budgetId,
+    String budgetName,
+    Future<void> Function() onRefreshNeeded,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -541,21 +588,26 @@ class _BudgetPlansSliver extends StatelessWidget {
             Text(AppLocalizations.of(context)!.deleteBudgetPlan),
           ],
         ),
-        content: Text(AppLocalizations.of(context)!.deleteBudgetConfirmation(budgetName)),
+        content: Text(
+          AppLocalizations.of(context)!.deleteBudgetConfirmation(budgetName),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: Colors.grey[600])),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
           ),
           ElevatedButton(
             onPressed: () async {
               final cubit = context.read<BudgetManagementCubit>();
               Navigator.of(context).pop(); // Close dialog first
-              
+
               try {
                 // Delete budget and wait for completion
                 await cubit.deleteBudget(budgetId);
-                
+
                 // Use callback to refresh data and UI
                 await onRefreshNeeded();
               } catch (e) {
@@ -565,7 +617,9 @@ class _BudgetPlansSliver extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: Text(AppLocalizations.of(context)!.delete),
           ),

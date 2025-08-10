@@ -7,13 +7,13 @@ import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/core/models/locale_model.dart';
 import 'package:cashflow/core/localization/locale_manager.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import '../cubit/onboarding_cubit.dart';
-import '../cubit/onboarding_state.dart';
-import '../widgets/currency_selection_modal.dart';
-import '../widgets/locale_selection_modal.dart';
-import '../../domain/entities/onboarding_settings.dart';
-import '../../domain/usecases/save_onboarding_settings.dart';
-import '../../../localization/domain/usecases/change_locale.dart';
+import 'package:cashflow/features/onboarding/presentation/cubit/onboarding_cubit.dart';
+import 'package:cashflow/features/onboarding/presentation/cubit/onboarding_state.dart';
+import 'package:cashflow/features/onboarding/presentation/widgets/currency_selection_modal.dart';
+import 'package:cashflow/features/onboarding/presentation/widgets/locale_selection_modal.dart';
+import 'package:cashflow/features/onboarding/domain/entities/onboarding_settings.dart';
+import 'package:cashflow/features/onboarding/domain/usecases/save_onboarding_settings.dart';
+import 'package:cashflow/features/localization/domain/usecases/change_locale.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});

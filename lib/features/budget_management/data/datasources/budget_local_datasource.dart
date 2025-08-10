@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:injectable/injectable.dart';
-import '../models/budget_model.dart';
-import '../../domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 
 abstract class BudgetLocalDataSource {
   Future<List<BudgetModel>> getAllBudgets();

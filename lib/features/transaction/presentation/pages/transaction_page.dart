@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/transaction_header.dart';
-import '../widgets/transaction_list.dart';
-import '../widgets/transaction_fab.dart';
+import 'package:cashflow/features/transaction/presentation/widgets/transaction_header.dart';
+import 'package:cashflow/features/transaction/presentation/widgets/transaction_list.dart';
+import 'package:cashflow/features/transaction/presentation/widgets/transaction_fab.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});

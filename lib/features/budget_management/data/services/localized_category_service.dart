@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import '../models/predefined_categories_data.dart';
-import '../models/category_model.dart';
-import '../../domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/data/models/predefined_categories_data.dart';
+import 'package:cashflow/features/budget_management/data/models/category_model.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 
 @injectable
 class LocalizedCategoryService {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../features/home/presentation/pages/home_page.dart';
-import '../../features/transaction/presentation/pages/transaction_page.dart';
-import '../../features/profile/presentation/pages/profile_page.dart';
+import 'package:cashflow/features/home/presentation/pages/home_page.dart';
+import 'package:cashflow/features/transaction/presentation/pages/transaction_page.dart';
+import 'package:cashflow/features/profile/presentation/pages/profile_page.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class MainNavigation extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import '../repositories/localization_repository.dart';
-import '../../../../core/localization/locale_manager.dart';
+import 'package:cashflow/features/localization/domain/repositories/localization_repository.dart';
+import 'package:cashflow/core/localization/locale_manager.dart';
 
 @injectable
 class ChangeLocale {

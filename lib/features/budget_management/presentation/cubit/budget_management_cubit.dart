@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/budget_entity.dart';
-import '../../domain/usecases/budget_management/budget_management_usecases.dart';
-import 'budget_management_state.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/usecases/budget_management/budget_management_usecases.dart';
+import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
 
 @injectable
 class BudgetManagementCubit extends Cubit<BudgetManagementState> {

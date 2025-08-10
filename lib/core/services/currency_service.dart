@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../models/currency_model.dart';
-import '../database/database_service.dart';
+import 'package:cashflow/core/models/currency_model.dart';
+import 'package:cashflow/core/database/database_service.dart';
 
 @singleton
 class CurrencyService extends Cubit<CurrencyModel> {

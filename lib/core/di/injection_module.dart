@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
-import '../database/database_service.dart';
+import 'package:cashflow/core/database/database_service.dart';
 
 @module
 abstract class InjectionModule {
