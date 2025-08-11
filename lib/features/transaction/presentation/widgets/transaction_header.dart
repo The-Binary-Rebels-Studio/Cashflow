@@ -21,6 +21,7 @@ class TransactionHeader extends StatelessWidget {
   final ValueChanged<String> onPeriodChanged;
   final ValueChanged<String> onBudgetChanged;
   final ValueChanged<String> onSortChanged;
+  final VoidCallback? onBudgetsRefreshed;
 
   const TransactionHeader({
     super.key,
@@ -37,6 +38,7 @@ class TransactionHeader extends StatelessWidget {
     required this.onPeriodChanged,
     required this.onBudgetChanged,
     required this.onSortChanged,
+    this.onBudgetsRefreshed,
   });
 
   // Format amount for compact display in summary cards
@@ -275,6 +277,7 @@ class TransactionHeader extends StatelessWidget {
           budgets: budgets,
           selectedBudget: selectedBudget,
           onBudgetChanged: onBudgetChanged,
+          onBudgetsRefreshed: onBudgetsRefreshed,
         ),
       ),
     );
@@ -344,7 +347,7 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90, // Fixed height for consistency
+      height: 100, // Increased height to accommodate 2-line titles
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
@@ -366,8 +369,10 @@ class _SummaryCard extends StatelessWidget {
                     color: color,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
+                    height: 1.2,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                  maxLines: 2,
                 ),
               ),
             ],
@@ -385,7 +390,6 @@ class _SummaryCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
                 maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -429,8 +433,10 @@ class _FilterChip extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: Colors.grey[700],
+                  height: 1.2,
                 ),
-                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                maxLines: 2,
               ),
             ),
           ],
