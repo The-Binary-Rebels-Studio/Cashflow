@@ -737,4 +737,125 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get transactionSaveFailed => 'Gagal menyimpan transaksi';
+
+  @override
+  String get filterToday => 'Hari Ini';
+
+  @override
+  String get filterThisWeek => 'Minggu Ini';
+
+  @override
+  String get filterThisMonth => 'Bulan Ini';
+
+  @override
+  String get filterThisYear => 'Tahun Ini';
+
+  @override
+  String get dateToday => 'Hari Ini';
+
+  @override
+  String get dateYesterday => 'Kemarin';
+
+  @override
+  String get transactionDetails => 'Detail Transaksi';
+
+  @override
+  String get deleteTransaction => 'Hapus Transaksi';
+
+  @override
+  String get deleteTransactionConfirmation =>
+      'Apakah Anda yakin ingin menghapus transaksi ini?';
+
+  @override
+  String get transactionDeleted => 'Transaksi berhasil dihapus';
+
+  @override
+  String get editTransaction => 'Edit Transaksi';
+
+  @override
+  String get budgetImpact => 'Dampak Anggaran';
+
+  @override
+  String get currentBudgetUsage => 'Penggunaan Anggaran Saat Ini';
+
+  @override
+  String get afterThisTransaction => 'Setelah transaksi ini';
+
+  @override
+  String get budgetStatus => 'Status Anggaran';
+
+  @override
+  String get withinBudget => 'Dalam Anggaran';
+
+  @override
+  String get overBudget => 'Melebihi Anggaran';
+
+  @override
+  String get budgetPlan => 'Rencana Anggaran';
+
+  @override
+  String get noBudgetPlan => 'Tidak ada rencana anggaran';
+
+  @override
+  String get deleteConfirmationTitle => 'Hapus Transaksi';
+
+  @override
+  String get deleteConfirmationMessage =>
+      'Apakah Anda yakin ingin menghapus transaksi ini?';
+
+  @override
+  String get deleteConfirmationWarning =>
+      'Tindakan ini tidak dapat dibatalkan.';
+
+  @override
+  String get all => 'Semua';
+
+  @override
+  String get balance => 'Saldo';
+
+  @override
+  String get retry => 'Coba Lagi';
+
+  @override
+  String get transactionNotFound => 'Transaksi tidak ditemukan';
+
+  @override
+  String get details => 'Detail';
+
+  @override
+  String get type => 'Jenis';
+
+  @override
+  String get description => 'Deskripsi';
+
+  @override
+  String get time => 'Waktu';
+
+  @override
+  String get budget => 'Anggaran';
+
+  @override
+  String get timeline => 'Timeline';
+
+  @override
+  String get created => 'Dibuat';
+
+  @override
+  String get lastUpdated => 'Terakhir Diperbarui';
+
+  @override
+  String get editFunctionalityComingSoon => 'Fitur edit akan segera hadir';
+
+  @override
+  String get noTransactionsFound => 'Tidak ada transaksi ditemukan';
+
+  @override
+  String get tryAdjustingFilters => 'Coba sesuaikan pencarian atau filter Anda';
+
+  @override
+  String get startAddingTransactions =>
+      'Mulai tambahkan pemasukan dan pengeluaran Anda';
+
+  @override
+  String get thisBudgetIsOverBy => 'Anggaran ini melebihi sebesar';
 }

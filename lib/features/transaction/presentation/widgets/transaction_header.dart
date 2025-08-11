@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_state.dart';
+import 'package:cashflow/features/transaction/presentation/widgets/budget_selector_sheet.dart';
 
 class TransactionHeader extends StatelessWidget {
   final bool isSearching;
   final String searchQuery;
   final String selectedPeriod;
-  final String selectedCategory;
+  final String selectedBudget;
   final String sortBy;
   final List<String> periods;
-  final List<String> categories;
+  final List<String> budgets;
   final List<String> sortOptions;
   final VoidCallback onSearchToggle;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<String> onPeriodChanged;
-  final ValueChanged<String> onCategoryChanged;
+  final ValueChanged<String> onBudgetChanged;
   final ValueChanged<String> onSortChanged;
 
   const TransactionHeader({
@@ -23,17 +27,46 @@ class TransactionHeader extends StatelessWidget {
     required this.isSearching,
     required this.searchQuery,
     required this.selectedPeriod,
-    required this.selectedCategory,
+    required this.selectedBudget,
     required this.sortBy,
     required this.periods,
-    required this.categories,
+    required this.budgets,
     required this.sortOptions,
     required this.onSearchToggle,
     required this.onSearchChanged,
     required this.onPeriodChanged,
-    required this.onCategoryChanged,
+    required this.onBudgetChanged,
     required this.onSortChanged,
   });
+
+  // Format amount for compact display in summary cards
+  String _formatCompactAmount(double amount) {
+    final currencyService = GetIt.instance<CurrencyService>();
+    final currency = currencyService.selectedCurrency;
+    final symbol = currency.symbol;
+    
+    // For very large amounts, use compact format
+    if (amount.abs() >= 1000000000) {
+      // Billions
+      final billions = amount / 1000000000;
+      return '${amount >= 0 ? '+' : '-'}$symbol${billions.toStringAsFixed(1)}B';
+    } else if (amount.abs() >= 1000000) {
+      // Millions
+      final millions = amount / 1000000;
+      return '${amount >= 0 ? '+' : '-'}$symbol${millions.toStringAsFixed(1)}M';
+    } else if (amount.abs() >= 100000) {
+      // Hundreds of thousands - show as K
+      final thousands = amount / 1000;
+      return '${amount >= 0 ? '+' : '-'}$symbol${thousands.toStringAsFixed(0)}K';
+    } else {
+      // Regular format but more compact (no space between symbol and amount)
+      final formattedAmount = amount.abs().toStringAsFixed(0).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]},',
+      );
+      return '${amount >= 0 ? '+' : '-'}$symbol$formattedAmount';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,38 +132,78 @@ class TransactionHeader extends StatelessWidget {
   }
 
   Widget _buildSummaryCards(BuildContext context, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: _SummaryCard(
-              title: l10n.dashboardIncome,
-              amount: GetIt.instance<CurrencyService>().formatAmount(8500000),
-              color: Colors.green,
-              icon: Icons.trending_up,
+    return BlocBuilder<TransactionCubit, TransactionState>(
+      builder: (context, state) {
+        if (state is TransactionLoaded) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _SummaryCard(
+                    title: l10n.dashboardIncome,
+                    amount: _formatCompactAmount(state.totalIncome),
+                    color: Colors.green,
+                    icon: Icons.trending_up,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _SummaryCard(
+                    title: AppLocalizations.of(context)!.expense,
+                    amount: _formatCompactAmount(-state.totalExpense),
+                    color: Colors.red,
+                    icon: Icons.trending_down,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _SummaryCard(
+                    title: AppLocalizations.of(context)!.balance,
+                    amount: _formatCompactAmount(state.balance),
+                    color: Colors.blue,
+                    icon: Icons.account_balance_wallet,
+                  ),
+                ),
+              ],
             ),
+          );
+        }
+        
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: _SummaryCard(
+                  title: l10n.dashboardIncome,
+                  amount: _formatCompactAmount(0),
+                  color: Colors.green,
+                  icon: Icons.trending_up,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SummaryCard(
+                  title: AppLocalizations.of(context)!.expense,
+                  amount: _formatCompactAmount(0),
+                  color: Colors.red,
+                  icon: Icons.trending_down,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SummaryCard(
+                  title: AppLocalizations.of(context)!.balance,
+                  amount: _formatCompactAmount(0),
+                  color: Colors.blue,
+                  icon: Icons.account_balance_wallet,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _SummaryCard(
-              title: 'Expense',
-              amount: GetIt.instance<CurrencyService>().formatAmount(-2750000),
-              color: Colors.red,
-              icon: Icons.trending_down,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _SummaryCard(
-              title: 'Balance',
-              amount: GetIt.instance<CurrencyService>().formatAmount(5750000),
-              color: Colors.blue,
-              icon: Icons.account_balance_wallet,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -151,9 +224,9 @@ class TransactionHeader extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: _FilterChip(
-                  label: selectedCategory,
-                  icon: Icons.category,
-                  onTap: () => _showCategorySelector(context),
+                  label: selectedBudget,
+                  icon: Icons.account_balance_wallet,
+                  onTap: () => _showBudgetSelector(context),
                 ),
               ),
               const SizedBox(width: 8),
@@ -184,17 +257,25 @@ class TransactionHeader extends StatelessWidget {
     );
   }
 
-  void _showCategorySelector(BuildContext context) {
+  void _showBudgetSelector(BuildContext context) {
+    // Store the original context that has access to BlocProvider
+    final parentContext = context;
+    
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => _buildSelectorSheet(
-        'Select Category',
-        categories,
-        selectedCategory,
-        onCategoryChanged,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: BudgetSelectorSheet(
+          parentContext: parentContext, // Pass the parent context
+          budgets: budgets,
+          selectedBudget: selectedBudget,
+          onBudgetChanged: onBudgetChanged,
+        ),
       ),
     );
   }
@@ -263,6 +344,7 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 90, // Fixed height for consistency
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
@@ -271,6 +353,7 @@ class _SummaryCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space evenly
         children: [
           Row(
             children: [
@@ -289,13 +372,21 @@ class _SummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            amount,
-            style: TextStyle(
-              color: color,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+          // Amount with better handling for large numbers
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                amount,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ],

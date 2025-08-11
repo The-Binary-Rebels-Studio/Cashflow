@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_state.dart';
+import 'package:cashflow/features/transaction/domain/entities/transaction_with_category.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
 class TransactionList extends StatefulWidget {
   final String searchQuery;
   final String selectedPeriod;
-  final String selectedCategory;
+  final String selectedBudget;
   final String sortBy;
 
   const TransactionList({
     super.key,
     required this.searchQuery,
     required this.selectedPeriod,
-    required this.selectedCategory,
+    required this.selectedBudget,
     required this.sortBy,
   });
 
@@ -22,13 +29,13 @@ class TransactionList extends StatefulWidget {
 }
 
 class _TransactionListState extends State<TransactionList> {
-  List<TransactionGroup> _transactionGroups = [];
-  bool _isLoading = false;
+  List<BudgetEntity> _budgets = [];
 
   @override
   void initState() {
     super.initState();
-    _loadTransactions();
+    _loadBudgets();
+    context.read<TransactionCubit>().loadTransactions();
   }
 
   @override
@@ -36,120 +43,94 @@ class _TransactionListState extends State<TransactionList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.searchQuery != widget.searchQuery ||
         oldWidget.selectedPeriod != widget.selectedPeriod ||
-        oldWidget.selectedCategory != widget.selectedCategory ||
+        oldWidget.selectedBudget != widget.selectedBudget ||
         oldWidget.sortBy != widget.sortBy) {
-      _loadTransactions();
+      context.read<TransactionCubit>().loadTransactions();
     }
   }
 
-  void _loadTransactions() {
-    setState(() {
-      _isLoading = true;
-    });
-
-    Future.delayed(const Duration(milliseconds: 500), () {
-      final mockTransactions = _generateMockTransactions();
-      final filteredTransactions = _filterTransactions(mockTransactions);
-      final groupedTransactions = _groupTransactionsByDate(filteredTransactions);
-      
+  Future<void> _loadBudgets() async {
+    try {
+      final budgetRepository = GetIt.instance<BudgetManagementRepository>();
+      final budgets = await budgetRepository.getAllBudgets();
       setState(() {
-        _transactionGroups = groupedTransactions;
-        _isLoading = false;
+        _budgets = budgets;
       });
-    });
+    } catch (e) {
+      debugPrint('Failed to load budgets: $e');
+    }
   }
 
-  List<TransactionItem> _generateMockTransactions() {
-    return [
-      TransactionItem(
-        id: '1',
-        title: 'Starbucks Coffee',
-        category: 'Food & Dining',
-        amount: -45000,
-        date: DateTime.now(),
-        icon: Icons.local_cafe,
-        color: Colors.orange,
-      ),
-      TransactionItem(
-        id: '2',
-        title: 'Grab Transport',
-        category: 'Transportation',
-        amount: -25000,
-        date: DateTime.now().subtract(const Duration(hours: 2)),
-        icon: Icons.directions_car,
-        color: Colors.blue,
-      ),
-      TransactionItem(
-        id: '3',
-        title: 'Salary Deposit',
-        category: 'Income',
-        amount: 8500000,
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        icon: Icons.account_balance_wallet,
-        color: Colors.green,
-      ),
-      TransactionItem(
-        id: '4',
-        title: 'Grocery Shopping',
-        category: 'Shopping',
-        amount: -150000,
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        icon: Icons.shopping_cart,
-        color: Colors.purple,
-      ),
-      TransactionItem(
-        id: '5',
-        title: 'Netflix Subscription',
-        category: 'Bills',
-        amount: -199000,
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        icon: Icons.subscriptions,
-        color: Colors.red,
-      ),
-      TransactionItem(
-        id: '6',
-        title: 'Freelance Payment',
-        category: 'Income',
-        amount: 2500000,
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        icon: Icons.work,
-        color: Colors.green,
-      ),
-    ];
+  List<TransactionWithCategory> _filterTransactionsByBudget(
+    List<TransactionWithCategory> transactions,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    if (widget.selectedBudget == l10n.all) return transactions;
+    
+    final selectedBudget = _budgets.firstWhere(
+      (budget) => budget.name == widget.selectedBudget,
+      orElse: () => _budgets.first,
+    );
+    
+    return transactions.where((transaction) => 
+      transaction.transaction.categoryId == selectedBudget.categoryId).toList();
   }
 
-  List<TransactionItem> _filterTransactions(List<TransactionItem> transactions) {
-    return transactions.where((transaction) {
+  List<TransactionWithCategory> _filterTransactions(
+    List<TransactionWithCategory> transactions,
+  ) {
+    var filtered = _filterTransactionsByBudget(transactions);
+    
+    return filtered.where((transaction) {
       bool matchesSearch = widget.searchQuery.isEmpty ||
-          transaction.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-          transaction.category.toLowerCase().contains(widget.searchQuery.toLowerCase());
+          transaction.transaction.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
+          transaction.category.name.toLowerCase().contains(widget.searchQuery.toLowerCase());
       
-      bool matchesCategory = widget.selectedCategory == 'All' ||
-          transaction.category == widget.selectedCategory;
+      bool matchesPeriod = _matchesPeriodFilter(transaction.transaction.date);
       
-      return matchesSearch && matchesCategory;
+      return matchesSearch && matchesPeriod;
     }).toList();
   }
 
-  List<TransactionGroup> _groupTransactionsByDate(List<TransactionItem> transactions) {
-    final sortedTransactions = List<TransactionItem>.from(transactions);
+  bool _matchesPeriodFilter(DateTime transactionDate) {
+    final now = DateTime.now();
+    final l10n = AppLocalizations.of(context)!;
     
-    switch (widget.sortBy) {
-      case 'Amount':
-        sortedTransactions.sort((a, b) => b.amount.abs().compareTo(a.amount.abs()));
-        break;
-      case 'Category':
-        sortedTransactions.sort((a, b) => a.category.compareTo(b.category));
-        break;
-      case 'Date':
-      default:
-        sortedTransactions.sort((a, b) => b.date.compareTo(a.date));
+    if (widget.selectedPeriod == l10n.filterToday) {
+      return DateTime(transactionDate.year, transactionDate.month, transactionDate.day) ==
+          DateTime(now.year, now.month, now.day);
+    } else if (widget.selectedPeriod == l10n.filterThisWeek) {
+      final weekStart = now.subtract(Duration(days: now.weekday - 1));
+      return transactionDate.isAfter(weekStart) && transactionDate.isBefore(now.add(const Duration(days: 1)));
+    } else if (widget.selectedPeriod == l10n.filterThisMonth) {
+      return transactionDate.year == now.year && transactionDate.month == now.month;
+    } else if (widget.selectedPeriod == l10n.filterThisYear) {
+      return transactionDate.year == now.year;
+    } else {
+      return true;
+    }
+  }
+
+  List<TransactionGroup> _groupTransactionsByDate(
+    List<TransactionWithCategory> transactions,
+  ) {
+    final sortedTransactions = List<TransactionWithCategory>.from(transactions);
+    
+    final l10n = AppLocalizations.of(context)!;
+    
+    if (widget.sortBy == l10n.sortByAmount) {
+      sortedTransactions.sort((a, b) => b.transaction.amount.abs().compareTo(a.transaction.amount.abs()));
+    } else if (widget.sortBy == l10n.sortByCategory) {
+      sortedTransactions.sort((a, b) => a.category.name.compareTo(b.category.name));
+    } else {
+      // Default to date sorting
+      sortedTransactions.sort((a, b) => b.transaction.date.compareTo(a.transaction.date));
     }
 
-    final Map<String, List<TransactionItem>> grouped = {};
+    final Map<String, List<TransactionWithCategory>> grouped = {};
     
     for (final transaction in sortedTransactions) {
-      final dateKey = _formatDateKey(transaction.date);
+      final dateKey = _formatDateKey(transaction.transaction.date);
       if (!grouped.containsKey(dateKey)) {
         grouped[dateKey] = [];
       }
@@ -167,11 +148,12 @@ class _TransactionListState extends State<TransactionList> {
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
     final transactionDate = DateTime(date.year, date.month, date.day);
+    final l10n = AppLocalizations.of(context)!;
 
     if (transactionDate == today) {
-      return 'Today';
+      return l10n.dateToday;
     } else if (transactionDate == yesterday) {
-      return 'Yesterday';
+      return l10n.dateYesterday;
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }
@@ -179,29 +161,71 @@ class _TransactionListState extends State<TransactionList> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_transactionGroups.isEmpty) {
-      return _EmptyState(
-        searchQuery: widget.searchQuery,
-        selectedCategory: widget.selectedCategory,
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: () async {
-        _loadTransactions();
+    return BlocBuilder<TransactionCubit, TransactionState>(
+      builder: (context, state) {
+        if (state is TransactionLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        
+        if (state is TransactionError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[400],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Error loading transactions',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  state.message,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => context.read<TransactionCubit>().loadTransactions(),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+        
+        if (state is TransactionLoaded) {
+          final filteredTransactions = _filterTransactions(state.transactions);
+          final groupedTransactions = _groupTransactionsByDate(filteredTransactions);
+          
+          if (groupedTransactions.isEmpty) {
+            return _EmptyState(
+              searchQuery: widget.searchQuery,
+              selectedBudget: widget.selectedBudget,
+            );
+          }
+          
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<TransactionCubit>().loadTransactions();
+            },
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: groupedTransactions.length,
+              itemBuilder: (context, index) {
+                final group = groupedTransactions[index];
+                return _TransactionGroup(group: group);
+              },
+            ),
+          );
+        }
+        
+        return const SizedBox.shrink();
       },
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _transactionGroups.length,
-        itemBuilder: (context, index) {
-          final group = _transactionGroups[index];
-          return _TransactionGroup(group: group);
-        },
-      ),
     );
   }
 }
@@ -255,44 +279,73 @@ class _TransactionGroup extends StatelessWidget {
     );
   }
 
-  String _calculateDayTotal(List<TransactionItem> transactions) {
-    final total = transactions.fold<double>(0, (sum, item) => sum + item.amount);
+  String _calculateDayTotal(List<TransactionWithCategory> transactions) {
+    final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
     return GetIt.instance<CurrencyService>().formatAmount(total);
   }
 
-  Color _getDayTotalColor(List<TransactionItem> transactions) {
-    final total = transactions.fold<double>(0, (sum, item) => sum + item.amount);
+  Color _getDayTotalColor(List<TransactionWithCategory> transactions) {
+    final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
     return total >= 0 ? Colors.green : Colors.red;
   }
 }
 
 class _TransactionTile extends StatelessWidget {
-  final TransactionItem transaction;
+  final TransactionWithCategory transaction;
 
   const _TransactionTile({required this.transaction});
 
+  IconData _getCategoryIcon(String categoryName) {
+    final name = categoryName.toLowerCase();
+    if (name.contains('food') || name.contains('dining')) return Icons.restaurant;
+    if (name.contains('transport') || name.contains('travel')) return Icons.directions_car;
+    if (name.contains('shopping') || name.contains('retail')) return Icons.shopping_cart;
+    if (name.contains('bill') || name.contains('utility')) return Icons.receipt;
+    if (name.contains('entertainment')) return Icons.movie;
+    if (name.contains('health') || name.contains('medical')) return Icons.local_hospital;
+    if (name.contains('education')) return Icons.school;
+    if (name.contains('income') || name.contains('salary')) return Icons.account_balance_wallet;
+    return Icons.attach_money;
+  }
+
+  Color _getCategoryColor(String categoryName) {
+    final name = categoryName.toLowerCase();
+    if (name.contains('food')) return Colors.orange;
+    if (name.contains('transport')) return Colors.blue;
+    if (name.contains('shopping')) return Colors.purple;
+    if (name.contains('bill')) return Colors.red;
+    if (name.contains('entertainment')) return Colors.pink;
+    if (name.contains('health')) return Colors.teal;
+    if (name.contains('education')) return Colors.indigo;
+    if (name.contains('income')) return Colors.green;
+    return Colors.grey;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isPositive = transaction.amount >= 0;
-    final displayAmount = GetIt.instance<CurrencyService>().formatAmount(transaction.amount);
+    final isPositive = transaction.transaction.amount >= 0;
+    final displayAmount = GetIt.instance<CurrencyService>().formatAmount(transaction.transaction.amount);
+    final categoryIcon = _getCategoryIcon(transaction.category.name);
+    final categoryColor = _getCategoryColor(transaction.category.name);
     
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      onTap: () => _navigateToDetail(context),
       leading: Container(
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: transaction.color.withValues(alpha: 0.1),
+          color: categoryColor.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
-          transaction.icon,
-          color: transaction.color,
+          categoryIcon,
+          color: categoryColor,
           size: 24,
         ),
       ),
       title: Text(
-        transaction.title,
+        transaction.transaction.title,
         style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 16,
@@ -301,7 +354,7 @@ class _TransactionTile extends StatelessWidget {
       subtitle: Row(
         children: [
           Text(
-            transaction.category,
+            transaction.category.name,
             style: const TextStyle(
               color: Colors.grey,
               fontSize: 14,
@@ -309,7 +362,7 @@ class _TransactionTile extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            '${transaction.date.hour.toString().padLeft(2, '0')}:${transaction.date.minute.toString().padLeft(2, '0')}',
+            '${transaction.transaction.date.hour.toString().padLeft(2, '0')}:${transaction.transaction.date.minute.toString().padLeft(2, '0')}',
             style: TextStyle(
               color: Colors.grey[400],
               fontSize: 12,
@@ -327,15 +380,24 @@ class _TransactionTile extends StatelessWidget {
       ),
     );
   }
+
+  void _navigateToDetail(BuildContext context) {
+    context.pushNamed(
+      'transaction_detail',
+      pathParameters: {
+        'transactionId': transaction.transaction.id,
+      },
+    );
+  }
 }
 
 class _EmptyState extends StatelessWidget {
   final String searchQuery;
-  final String selectedCategory;
+  final String selectedBudget;
 
   const _EmptyState({
     required this.searchQuery,
-    required this.selectedCategory,
+    required this.selectedBudget,
   });
 
   @override
@@ -349,7 +411,7 @@ class _EmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              searchQuery.isNotEmpty || selectedCategory != 'All'
+              searchQuery.isNotEmpty || selectedBudget != AppLocalizations.of(context)!.all
                   ? Icons.search_off
                   : Icons.receipt_long_outlined,
               size: 80,
@@ -357,8 +419,8 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              searchQuery.isNotEmpty || selectedCategory != 'All'
-                  ? 'No transactions found'
+              searchQuery.isNotEmpty || selectedBudget != AppLocalizations.of(context)!.all
+                  ? AppLocalizations.of(context)!.noTransactionsFound
                   : l10n.dashboardMoreTransactionsSoon,
               style: TextStyle(
                 fontSize: 18,
@@ -368,9 +430,9 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              searchQuery.isNotEmpty || selectedCategory != 'All'
-                  ? 'Try adjusting your search or filters'
-                  : 'Start adding your income and expenses',
+              searchQuery.isNotEmpty || selectedBudget != AppLocalizations.of(context)!.all
+                  ? AppLocalizations.of(context)!.tryAdjustingFilters
+                  : AppLocalizations.of(context)!.startAddingTransactions,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[500],
@@ -386,30 +448,10 @@ class _EmptyState extends StatelessWidget {
 
 class TransactionGroup {
   final String date;
-  final List<TransactionItem> transactions;
+  final List<TransactionWithCategory> transactions;
 
   TransactionGroup({
     required this.date,
     required this.transactions,
-  });
-}
-
-class TransactionItem {
-  final String id;
-  final String title;
-  final String category;
-  final double amount;
-  final DateTime date;
-  final IconData icon;
-  final Color color;
-
-  TransactionItem({
-    required this.id,
-    required this.title,
-    required this.category,
-    required this.amount,
-    required this.date,
-    required this.icon,
-    required this.color,
   });
 }

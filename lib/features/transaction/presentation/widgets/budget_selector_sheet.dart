@@ -1,0 +1,749 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:cashflow/l10n/app_localizations.dart';
+import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
+import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+
+class BudgetSelectorSheet extends StatefulWidget {
+  final BuildContext parentContext; // Context that has access to BlocProvider
+  final List<String> budgets;
+  final String selectedBudget;
+  final ValueChanged<String> onBudgetChanged;
+
+  const BudgetSelectorSheet({
+    super.key,
+    required this.parentContext,
+    required this.budgets,
+    required this.selectedBudget,
+    required this.onBudgetChanged,
+  });
+
+  @override
+  State<BudgetSelectorSheet> createState() => _BudgetSelectorSheetState();
+}
+
+class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
+  late TextEditingController _searchController;
+  late List<String> _filteredBudgets;
+  List<BudgetEntity> _budgetEntities = [];
+  List<CategoryEntity> _categoryEntities = [];
+  Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _filteredBudgets = widget.budgets;
+    _loadBudgetDetails();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadBudgetDetails() async {
+    try {
+      final budgetRepository = GetIt.instance<BudgetManagementRepository>();
+      final budgets = await budgetRepository.getAllBudgets();
+      final categories = await budgetRepository.getAllCategories();
+      setState(() {
+        _budgetEntities = budgets;
+        _categoryEntities = categories;
+      });
+    } catch (e) {
+      debugPrint('Failed to load budget details: $e');
+    }
+  }
+
+  BudgetEntity? _getBudgetEntity(String budgetName) {
+    final l10n = AppLocalizations.of(context)!;
+    if (budgetName == l10n.all) return null;
+    try {
+      return _budgetEntities.firstWhere((b) => b.name == budgetName);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  CategoryEntity? _getCategoryForBudget(BudgetEntity budget) {
+    try {
+      return _categoryEntities.firstWhere((c) => c.id == budget.categoryId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  IconData _getBudgetIcon(BudgetEntity? budget) {
+    if (budget == null) return Icons.dashboard;
+    
+    final category = _getCategoryForBudget(budget);
+    if (category == null) {
+      // Fallback to meaningful icon based on budget name
+      return _getFallbackIconByName(budget.name);
+    }
+    
+    try {
+      return IconData(
+        int.parse(category.iconCodePoint),
+        fontFamily: 'MaterialIcons',
+      );
+    } catch (e) {
+      // If parsing fails, fallback to meaningful icon based on category name
+      return _getFallbackIconByCategory(category.name);
+    }
+  }
+
+  IconData _getFallbackIconByName(String budgetName) {
+    final name = budgetName.toLowerCase();
+    
+    // Food & Dining
+    if (name.contains('makanan') || name.contains('food') || name.contains('makan') || 
+        name.contains('restoran') || name.contains('coffee') || name.contains('cafe')) {
+      return Icons.restaurant;
+    }
+    // Transportation
+    else if (name.contains('transport') || name.contains('bensin') || name.contains('fuel') ||
+             name.contains('uber') || name.contains('grab') || name.contains('ojek') ||
+             name.contains('travel') || name.contains('perjalanan')) {
+      return Icons.directions_car;
+    }
+    // Shopping & Retail
+    else if (name.contains('belanja') || name.contains('shopping') || name.contains('retail') ||
+             name.contains('pakaian') || name.contains('fashion') || name.contains('elektronik')) {
+      return Icons.shopping_cart;
+    }
+    // Bills & Utilities
+    else if (name.contains('tagihan') || name.contains('listrik') || name.contains('air') ||
+             name.contains('internet') || name.contains('telepon') || name.contains('bill') ||
+             name.contains('utilities')) {
+      return Icons.receipt;
+    }
+    // Entertainment
+    else if (name.contains('hiburan') || name.contains('entertainment') || name.contains('movie') ||
+             name.contains('game') || name.contains('netflix') || name.contains('spotify')) {
+      return Icons.movie;
+    }
+    // Health & Medical
+    else if (name.contains('kesehatan') || name.contains('health') || name.contains('medical') ||
+             name.contains('dokter') || name.contains('obat') || name.contains('hospital')) {
+      return Icons.local_hospital;
+    }
+    // Education
+    else if (name.contains('pendidikan') || name.contains('education') || name.contains('sekolah') ||
+             name.contains('kursus') || name.contains('buku') || name.contains('course')) {
+      return Icons.school;
+    }
+    // Income
+    else if (name.contains('gaji') || name.contains('salary') || name.contains('income') ||
+             name.contains('pendapatan') || name.contains('bonus')) {
+      return Icons.account_balance_wallet;
+    }
+    // Savings & Investment
+    else if (name.contains('tabungan') || name.contains('saving') || name.contains('investasi') ||
+             name.contains('investment') || name.contains('deposito')) {
+      return Icons.savings;
+    }
+    // Home & Family
+    else if (name.contains('rumah') || name.contains('home') || name.contains('family') ||
+             name.contains('keluarga')) {
+      return Icons.home;
+    }
+    // Default
+    else {
+      return Icons.account_balance_wallet;
+    }
+  }
+
+  IconData _getFallbackIconByCategory(String categoryName) {
+    final name = categoryName.toLowerCase();
+    
+    // Similar logic but for category names
+    if (name.contains('food') || name.contains('dining') || name.contains('makanan')) {
+      return Icons.restaurant;
+    }
+    else if (name.contains('transport') || name.contains('travel')) {
+      return Icons.directions_car;
+    }
+    else if (name.contains('shopping') || name.contains('retail') || name.contains('belanja')) {
+      return Icons.shopping_cart;
+    }
+    else if (name.contains('bills') || name.contains('utilities') || name.contains('tagihan')) {
+      return Icons.receipt;
+    }
+    else if (name.contains('entertainment') || name.contains('hiburan')) {
+      return Icons.movie;
+    }
+    else if (name.contains('health') || name.contains('medical') || name.contains('kesehatan')) {
+      return Icons.local_hospital;
+    }
+    else if (name.contains('education') || name.contains('pendidikan')) {
+      return Icons.school;
+    }
+    else if (name.contains('income') || name.contains('pendapatan')) {
+      return Icons.account_balance_wallet;
+    }
+    else if (name.contains('saving') || name.contains('tabungan') || name.contains('investment')) {
+      return Icons.savings;
+    }
+    else if (name.contains('home') || name.contains('rumah')) {
+      return Icons.home;
+    }
+    else {
+      return Icons.account_balance_wallet; // Default
+    }
+  }
+
+  Color _getBudgetColor(BudgetEntity? budget) {
+    if (budget == null) return Colors.blue;
+    
+    final category = _getCategoryForBudget(budget);
+    if (category == null) {
+      // Fallback to meaningful color based on budget name
+      return _getFallbackColorByName(budget.name);
+    }
+    
+    try {
+      // First try to use the stored color value from database
+      return Color(int.parse('0xFF${category.colorValue.replaceFirst('#', '')}'));
+    } catch (e) {
+      // If parsing fails, fallback to meaningful color based on category name
+      return _getFallbackColorByCategory(category.name);
+    }
+  }
+
+  Color _getFallbackColorByName(String budgetName) {
+    final name = budgetName.toLowerCase();
+    
+    // Food & Dining
+    if (name.contains('makanan') || name.contains('food') || name.contains('makan') || 
+        name.contains('restoran') || name.contains('coffee') || name.contains('cafe')) {
+      return Colors.orange;
+    }
+    // Transportation
+    else if (name.contains('transport') || name.contains('bensin') || name.contains('fuel') ||
+             name.contains('uber') || name.contains('grab') || name.contains('ojek') ||
+             name.contains('travel') || name.contains('perjalanan')) {
+      return Colors.blue;
+    }
+    // Shopping & Retail
+    else if (name.contains('belanja') || name.contains('shopping') || name.contains('retail') ||
+             name.contains('pakaian') || name.contains('fashion') || name.contains('elektronik')) {
+      return Colors.purple;
+    }
+    // Bills & Utilities
+    else if (name.contains('tagihan') || name.contains('listrik') || name.contains('air') ||
+             name.contains('internet') || name.contains('telepon') || name.contains('bill') ||
+             name.contains('utilities')) {
+      return Colors.red;
+    }
+    // Entertainment
+    else if (name.contains('hiburan') || name.contains('entertainment') || name.contains('movie') ||
+             name.contains('game') || name.contains('netflix') || name.contains('spotify')) {
+      return Colors.pink;
+    }
+    // Health & Medical
+    else if (name.contains('kesehatan') || name.contains('health') || name.contains('medical') ||
+             name.contains('dokter') || name.contains('obat') || name.contains('hospital')) {
+      return Colors.teal;
+    }
+    // Education
+    else if (name.contains('pendidikan') || name.contains('education') || name.contains('sekolah') ||
+             name.contains('kursus') || name.contains('buku') || name.contains('course')) {
+      return Colors.indigo;
+    }
+    // Income
+    else if (name.contains('gaji') || name.contains('salary') || name.contains('income') ||
+             name.contains('pendapatan') || name.contains('bonus')) {
+      return Colors.green;
+    }
+    // Savings & Investment
+    else if (name.contains('tabungan') || name.contains('saving') || name.contains('investasi') ||
+             name.contains('investment') || name.contains('deposito')) {
+      return Colors.cyan;
+    }
+    // Default
+    else {
+      return Colors.grey;
+    }
+  }
+
+  Color _getFallbackColorByCategory(String categoryName) {
+    final name = categoryName.toLowerCase();
+    
+    // Similar logic but for category names
+    if (name.contains('food') || name.contains('dining') || name.contains('makanan')) {
+      return Colors.orange;
+    }
+    else if (name.contains('transport') || name.contains('travel')) {
+      return Colors.blue;
+    }
+    else if (name.contains('shopping') || name.contains('retail') || name.contains('belanja')) {
+      return Colors.purple;
+    }
+    else if (name.contains('bills') || name.contains('utilities') || name.contains('tagihan')) {
+      return Colors.red;
+    }
+    else if (name.contains('entertainment') || name.contains('hiburan')) {
+      return Colors.pink;
+    }
+    else if (name.contains('health') || name.contains('medical') || name.contains('kesehatan')) {
+      return Colors.teal;
+    }
+    else if (name.contains('education') || name.contains('pendidikan')) {
+      return Colors.indigo;
+    }
+    else if (name.contains('income') || name.contains('pendapatan')) {
+      return Colors.green;
+    }
+    else if (name.contains('saving') || name.contains('tabungan') || name.contains('investment')) {
+      return Colors.cyan;
+    }
+    else {
+      return Colors.green; // Default for budgets
+    }
+  }
+
+  void _onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        if (query.isEmpty) {
+          _filteredBudgets = widget.budgets;
+        } else {
+          _filteredBudgets = widget.budgets
+              .where((budget) {
+                if (budget.toLowerCase().contains(query.toLowerCase())) {
+                  return true;
+                }
+                // Also search in budget descriptions
+                final budgetEntity = _getBudgetEntity(budget);
+                if (budgetEntity != null) {
+                  return budgetEntity.description.toLowerCase().contains(query.toLowerCase());
+                }
+                return false;
+              })
+              .toList();
+        }
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Select Budget',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          
+          // Search Input
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search budgets...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        _onSearchChanged('');
+                      },
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              filled: true,
+              fillColor: Colors.grey[50],
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+            onChanged: _onSearchChanged,
+          ),
+          const SizedBox(height: 16),
+          
+          // Budget Count Info
+          if (_searchController.text.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                '${_filteredBudgets.length} of ${widget.budgets.length} budgets',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          
+          // Budget List
+          Flexible(
+            child: _filteredBudgets.isEmpty
+                ? _buildEmptyState()
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _filteredBudgets.length,
+                    itemBuilder: (context, index) {
+                      final budget = _filteredBudgets[index];
+                      final isSelected = widget.selectedBudget == budget;
+                      final isAllOption = budget == AppLocalizations.of(context)!.all;
+                      final budgetEntity = _getBudgetEntity(budget);
+
+                      return _BudgetTile(
+                        key: Key('budget_tile_$budget'),
+                        parentContext: widget.parentContext, // Pass parent context
+                        budget: budget,
+                        budgetEntity: budgetEntity,
+                        isSelected: isSelected,
+                        isAllOption: isAllOption,
+                        budgetIcon: _getBudgetIcon(budgetEntity),
+                        budgetColor: _getBudgetColor(budgetEntity),
+                        onTap: () {
+                          widget.onBudgetChanged(budget);
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 48,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No budgets found',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Try adjusting your search term',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[500],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                _searchController.clear();
+                _onSearchChanged('');
+              },
+              child: const Text('Clear search'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BudgetTile extends StatelessWidget {
+  final BuildContext parentContext; // Context that has access to BlocProvider
+  final String budget;
+  final BudgetEntity? budgetEntity;
+  final bool isSelected;
+  final bool isAllOption;
+  final IconData budgetIcon;
+  final Color budgetColor;
+  final VoidCallback onTap;
+
+  const _BudgetTile({
+    super.key,
+    required this.parentContext,
+    required this.budget,
+    required this.budgetEntity,
+    required this.isSelected,
+    required this.isAllOption,
+    required this.budgetIcon,
+    required this.budgetColor,
+    required this.onTap,
+  });
+
+  // Calculate actual spent amount for this budget using the same logic as Budget Management
+  Future<double> _calculateSpentAmount(BuildContext context) async {
+    if (budgetEntity == null) {
+      debugPrint('🚨 [BUDGET SELECTOR DEBUG] budgetEntity is null!');
+      return 0.0;
+    }
+    
+    try {
+      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Starting calculation for: ${budgetEntity!.name}');
+      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Budget amount: ${budgetEntity!.amount}');
+      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Category ID: ${budgetEntity!.categoryId}');
+      
+      final transactionCubit = parentContext.read<TransactionCubit>();
+      debugPrint('🔍 [BUDGET SELECTOR DEBUG] TransactionCubit found: ${transactionCubit.runtimeType}');
+      
+      // Calculate current period for this recurring budget
+      final budgetModel = BudgetModel.fromEntity(budgetEntity!);
+      final currentPeriodStart = budgetModel.getCurrentPeriodStart();
+      final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+      
+      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Period: ${currentPeriodStart.day}/${currentPeriodStart.month}/${currentPeriodStart.year} - ${currentPeriodEnd.day}/${currentPeriodEnd.month}/${currentPeriodEnd.year}');
+      
+      // Get total spent using Result pattern for current period
+      final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
+        budgetEntity!.categoryId,
+        currentPeriodStart,
+        currentPeriodEnd,
+      );
+      
+      return result.when(
+        success: (totalSpent) {
+          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Query successful!');
+          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Raw totalSpent: $totalSpent');
+          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Absolute totalSpent: ${totalSpent.abs()}');
+          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Calculated remaining: ${budgetEntity!.amount - totalSpent.abs()}');
+          debugPrint('🔍 [BUDGET SELECTOR DEBUG] ---');
+          
+          // Return absolute value since expenses are stored as negative
+          return totalSpent.abs();
+        },
+        failure: (failure) {
+          debugPrint('🚨 [BUDGET SELECTOR ERROR] calculating spent amount for ${budgetEntity!.name}: ${failure.message}');
+          debugPrint('🚨 [BUDGET SELECTOR ERROR] Failure type: ${failure.runtimeType}');
+          return 0.0;
+        },
+      );
+    } catch (e, stackTrace) {
+      debugPrint('🚨 [BUDGET SELECTOR UNEXPECTED ERROR] calculating spent amount for ${budgetEntity!.name}: $e');
+      debugPrint('🚨 [BUDGET SELECTOR STACK TRACE] $stackTrace');
+      return 0.0;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currencyService = GetIt.instance<CurrencyService>();
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: isSelected
+                    ? const Color(0xFF667eea)
+                    : Colors.grey[200]!,
+                width: isSelected ? 2 : 1,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              color: isSelected
+                  ? const Color(0xFF667eea).withValues(alpha: 0.05)
+                  : Colors.white,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: budgetColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    budgetIcon,
+                    color: budgetColor,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              budget,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: isSelected ? const Color(0xFF667eea) : Colors.black87,
+                              ),
+                            ),
+                          ),
+                          if (budgetEntity != null) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: _getPeriodColor().withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: _getPeriodColor().withValues(alpha: 0.3)),
+                              ),
+                              child: Text(
+                                budgetEntity!.period.displayName,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: _getPeriodColor(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      _buildSubtitle(context, currencyService),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                if (isSelected)
+                  const Icon(
+                    Icons.check_circle,
+                    color: Color(0xFF667eea),
+                    size: 24,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubtitle(BuildContext context, CurrencyService currencyService) {
+    if (isAllOption) {
+      return Text(
+        'Show all transactions',
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.grey[600],
+        ),
+      );
+    }
+    
+    if (budgetEntity == null) {
+      return Text(
+        'Budget details loading...',
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.grey[600],
+        ),
+      );
+    }
+    
+    return FutureBuilder<double>(
+      future: _calculateSpentAmount(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text(
+            'Calculating remaining...',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          );
+        }
+        
+        final totalSpent = snapshot.data ?? 0.0;
+        final remaining = budgetEntity!.amount - totalSpent;
+        
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (budgetEntity!.description.isNotEmpty) ...[
+              Text(
+                budgetEntity!.description,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            Text(
+              'Sisa: ${currencyService.formatAmount(remaining)} dari ${currencyService.formatAmount(budgetEntity!.amount)}',
+              style: TextStyle(
+                fontSize: 12,
+                color: remaining > 0 ? Colors.green[600] : Colors.red[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Color _getPeriodColor() {
+    if (budgetEntity == null) return Colors.grey;
+    
+    switch (budgetEntity!.period) {
+      case BudgetPeriod.weekly:
+        return Colors.orange;
+      case BudgetPeriod.monthly:
+        return Colors.blue;
+      case BudgetPeriod.quarterly:
+        return Colors.purple;
+      case BudgetPeriod.yearly:
+        return Colors.red;
+    }
+  }
+}

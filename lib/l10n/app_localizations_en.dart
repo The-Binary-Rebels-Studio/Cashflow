@@ -734,4 +734,123 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transactionSaveFailed => 'Failed to save transaction';
+
+  @override
+  String get filterToday => 'Today';
+
+  @override
+  String get filterThisWeek => 'This Week';
+
+  @override
+  String get filterThisMonth => 'This Month';
+
+  @override
+  String get filterThisYear => 'This Year';
+
+  @override
+  String get dateToday => 'Today';
+
+  @override
+  String get dateYesterday => 'Yesterday';
+
+  @override
+  String get transactionDetails => 'Transaction Details';
+
+  @override
+  String get deleteTransaction => 'Delete Transaction';
+
+  @override
+  String get deleteTransactionConfirmation =>
+      'Are you sure you want to delete this transaction?';
+
+  @override
+  String get transactionDeleted => 'Transaction deleted successfully';
+
+  @override
+  String get editTransaction => 'Edit Transaction';
+
+  @override
+  String get budgetImpact => 'Budget Impact';
+
+  @override
+  String get currentBudgetUsage => 'Current Budget Usage';
+
+  @override
+  String get afterThisTransaction => 'After this transaction';
+
+  @override
+  String get budgetStatus => 'Budget Status';
+
+  @override
+  String get withinBudget => 'Within Budget';
+
+  @override
+  String get overBudget => 'Over Budget';
+
+  @override
+  String get budgetPlan => 'Budget Plan';
+
+  @override
+  String get noBudgetPlan => 'No budget plan';
+
+  @override
+  String get deleteConfirmationTitle => 'Delete Transaction';
+
+  @override
+  String get deleteConfirmationMessage =>
+      'Are you sure you want to delete this transaction?';
+
+  @override
+  String get deleteConfirmationWarning => 'This action cannot be undone.';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get balance => 'Balance';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get transactionNotFound => 'Transaction not found';
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get time => 'Time';
+
+  @override
+  String get budget => 'Budget';
+
+  @override
+  String get timeline => 'Timeline';
+
+  @override
+  String get created => 'Created';
+
+  @override
+  String get lastUpdated => 'Last Updated';
+
+  @override
+  String get editFunctionalityComingSoon => 'Edit functionality coming soon';
+
+  @override
+  String get noTransactionsFound => 'No transactions found';
+
+  @override
+  String get tryAdjustingFilters => 'Try adjusting your search or filters';
+
+  @override
+  String get startAddingTransactions => 'Start adding your income and expenses';
+
+  @override
+  String get thisBudgetIsOverBy => 'This budget is over by';
 }

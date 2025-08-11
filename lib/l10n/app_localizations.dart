@@ -1503,6 +1503,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save transaction'**
   String get transactionSaveFailed;
+
+  /// No description provided for @filterToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get filterToday;
+
+  /// No description provided for @filterThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get filterThisWeek;
+
+  /// No description provided for @filterThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get filterThisMonth;
+
+  /// No description provided for @filterThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This Year'**
+  String get filterThisYear;
+
+  /// No description provided for @dateToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dateToday;
+
+  /// No description provided for @dateYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dateYesterday;
+
+  /// No description provided for @transactionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get transactionDetails;
+
+  /// No description provided for @deleteTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Transaction'**
+  String get deleteTransaction;
+
+  /// No description provided for @deleteTransactionConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this transaction?'**
+  String get deleteTransactionConfirmation;
+
+  /// No description provided for @transactionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction deleted successfully'**
+  String get transactionDeleted;
+
+  /// No description provided for @editTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Transaction'**
+  String get editTransaction;
+
+  /// No description provided for @budgetImpact.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Impact'**
+  String get budgetImpact;
+
+  /// No description provided for @currentBudgetUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Budget Usage'**
+  String get currentBudgetUsage;
+
+  /// No description provided for @afterThisTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'After this transaction'**
+  String get afterThisTransaction;
+
+  /// No description provided for @budgetStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Status'**
+  String get budgetStatus;
+
+  /// No description provided for @withinBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Within Budget'**
+  String get withinBudget;
+
+  /// No description provided for @overBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Over Budget'**
+  String get overBudget;
+
+  /// No description provided for @budgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Plan'**
+  String get budgetPlan;
+
+  /// No description provided for @noBudgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget plan'**
+  String get noBudgetPlan;
+
+  /// No description provided for @deleteConfirmationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Transaction'**
+  String get deleteConfirmationTitle;
+
+  /// No description provided for @deleteConfirmationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this transaction?'**
+  String get deleteConfirmationMessage;
+
+  /// No description provided for @deleteConfirmationWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteConfirmationWarning;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balance;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @transactionNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction not found'**
+  String get transactionNotFound;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get time;
+
+  /// No description provided for @budget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budget;
+
+  /// No description provided for @timeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get timeline;
+
+  /// No description provided for @created.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get created;
+
+  /// No description provided for @lastUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get lastUpdated;
+
+  /// No description provided for @editFunctionalityComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit functionality coming soon'**
+  String get editFunctionalityComingSoon;
+
+  /// No description provided for @noTransactionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions found'**
+  String get noTransactionsFound;
+
+  /// No description provided for @tryAdjustingFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search or filters'**
+  String get tryAdjustingFilters;
+
+  /// No description provided for @startAddingTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Start adding your income and expenses'**
+  String get startAddingTransactions;
+
+  /// No description provided for @thisBudgetIsOverBy.
+  ///
+  /// In en, this message translates to:
+  /// **'This budget is over by'**
+  String get thisBudgetIsOverBy;
 }
 
 class _AppLocalizationsDelegate

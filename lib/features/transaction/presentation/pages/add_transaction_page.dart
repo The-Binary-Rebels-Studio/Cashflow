@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +20,6 @@ class TransactionItem {
   final String id;
   final String name;
   final double remainingAmount; // Only for budget plans
-  final bool isOthers;
   final bool isBudgetPlan; // true for budget plans, false for categories
   final String displayName;
   final String description;
@@ -32,7 +32,6 @@ class TransactionItem {
     required this.id,
     required this.name,
     required this.remainingAmount,
-    required this.isOthers,
     required this.isBudgetPlan,
     required this.displayName,
     required this.description,
@@ -66,7 +65,6 @@ class TransactionItem {
       id: budget.id,
       name: budget.name,
       remainingAmount: remainingAmount,
-      isOthers: false,
       isBudgetPlan: true,
       displayName: budget.name,
       description: 'Sisa budget yang tersedia',
@@ -100,7 +98,6 @@ class TransactionItem {
       id: category.id,
       name: category.name,
       remainingAmount: 0,
-      isOthers: false,
       isBudgetPlan: false,
       displayName: category.name,
       description: category.description,
@@ -110,20 +107,6 @@ class TransactionItem {
     );
   }
 
-  // Create Others option
-  factory TransactionItem.others(TransactionType type) {
-    return TransactionItem(
-      id: type == TransactionType.expense ? 'others_expense' : 'others_income',
-      name: 'Others',
-      remainingAmount: 0,
-      isOthers: true,
-      isBudgetPlan: false,
-      displayName: type == TransactionType.expense ? 'Lainnya (Pengeluaran)' : 'Lainnya (Pemasukan)',
-      description: 'Transaksi tidak terkait budget atau kategori',
-      icon: Icons.more_horiz,
-      color: Colors.grey,
-    );
-  }
 }
 
 // Custom TextInputFormatter for thousands separator  
@@ -232,9 +215,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
 
-  // Static Others option for standalone transactions
-  static const String _othersExpenseId = 'others_expense';
-  static const String _othersIncomeId = 'others_income';
 
   @override
   void initState() {
@@ -296,10 +276,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       }
     }
 
-    // Always add Others option as fallback
-    if (_selectedType != null) {
-      transactionItems.add(TransactionItem.others(_selectedType!));
-    }
 
     return transactionItems;
   }
@@ -409,19 +385,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Select Others option as fallback
-              setState(() {
-                _selectedItemId = _othersExpenseId;
-              });
-            },
-            child: Text(
-              'Pakai "Lainnya"',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -1034,7 +997,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (!transactionItem.isOthers) ...[
+                if (true) ...[
                   Text(
                     transactionItem.description,
                     style: TextStyle(
@@ -1349,8 +1312,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     final budgetState = context.read<BudgetManagementCubit>().state;
     final transactionItems = await _getAvailableTransactionItems(budgetState);
 
-    // Check if only "Others" option is available (meaning no budget plans exist for expense)
-    final realItems = transactionItems.where((item) => !item.isOthers).toList();
+    // Check if no budget plans exist for expense
+    final realItems = transactionItems;
     
     if (realItems.isEmpty && _selectedType == TransactionType.expense) {
       _showNoBudgetDialog();
@@ -1360,268 +1323,27 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     if (mounted) {
       showModalBottomSheet(
         context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.7,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (modalContext) => _EnhancedBudgetSelector(
+          transactionItems: transactionItems,
+          selectedItemId: _selectedItemId,
+          onItemSelected: (itemId) {
+            setState(() {
+              _selectedItemId = itemId;
+            });
+          },
+          formatCurrency: _formatCurrency,
+          onCreateBudget: () async {
+            Navigator.pop(modalContext);
+            await context.push(AppConstants.budgetManagementRoute);
+            // Refresh data when returning from budget management
+            if (mounted) {
+              _refreshBudgetData();
+            }
+          },
         ),
-        child: Column(
-          children: [
-            // Handle bar
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                children: [
-                  Text(
-                    'Pilih Budget Plan (${transactionItems.length})',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.grey[100],
-                      padding: const EdgeInsets.all(8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Check if only Others option exists
-            if (realItems.isEmpty && transactionItems.isNotEmpty) ...[
-              // Show guidance when only Others option available
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: Colors.blue[600],
-                      size: 32,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Belum Ada Budget Plan',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.blue[800],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Untuk tracking pengeluaran yang lebih baik, buat budget plan terlebih dahulu.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.blue[700],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          await context.push(AppConstants.budgetManagementRoute);
-                          // Refresh data when returning from budget management
-                          if (mounted) {
-                            _refreshBudgetData();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF667eea),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        icon: const Icon(Icons.add_circle_outline, size: 20),
-                        label: const Text(
-                          'Buat Budget Plan',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            
-            // Budget Items List
-            Expanded(
-              child: transactionItems.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.account_balance_wallet_outlined,
-                            size: 64,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No Budget Plans Available',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      itemCount: transactionItems.length,
-                      itemBuilder: (context, index) {
-                        final transactionItem = transactionItems[index];
-                        final isSelected = transactionItem.id == _selectedItemId;
-
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  _selectedItemId = transactionItem.id;
-                                });
-                                Navigator.pop(context);
-                              },
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? const Color(0xFF667eea)
-                                        : Colors.grey[200]!,
-                                    width: isSelected ? 2 : 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: isSelected
-                                      ? const Color(0xFF667eea).withValues(alpha: 0.05)
-                                      : Colors.white,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: transactionItem.color.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(transactionItem.icon, color: transactionItem.color, size: 20),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  transactionItem.displayName,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: isSelected ? const Color(0xFF667eea) : Colors.black87,
-                                                  ),
-                                                ),
-                                              ),
-                                              if (transactionItem.isOthers) ...[
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.orange.withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(4),
-                                                    border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-                                                  ),
-                                                  child: Text(
-                                                    'No Budget',
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: Colors.orange[700],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ],
-                                          ),
-                                          if (transactionItem.isBudgetPlan) ...[
-                                            Text(
-                                              'Sisa: ${_formatCurrency(transactionItem.remainingAmount)} dari ${_formatCurrency(transactionItem.budget?.amount ?? 0)}',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: transactionItem.remainingAmount > 0 ? Colors.green[600] : Colors.red[600],
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ] else ...[
-                                            Text(
-                                              transactionItem.description,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey[600],
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                    if (isSelected)
-                                      const Icon(
-                                        Icons.check_circle,
-                                        color: Color(0xFF667eea),
-                                        size: 24,
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
+      );
     }
   }
 
@@ -1643,7 +1365,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     if (_selectedItemId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Mohon pilih budget plan atau lainnya'),
+          content: Text('Mohon pilih budget plan'),
           backgroundColor: Colors.red,
         ),
       );
@@ -1746,5 +1468,436 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+}
+
+class _EnhancedBudgetSelector extends StatefulWidget {
+  final List<TransactionItem> transactionItems;
+  final String? selectedItemId;
+  final ValueChanged<String> onItemSelected;
+  final String Function(double) formatCurrency;
+  final VoidCallback onCreateBudget;
+
+  const _EnhancedBudgetSelector({
+    required this.transactionItems,
+    required this.selectedItemId,
+    required this.onItemSelected,
+    required this.formatCurrency,
+    required this.onCreateBudget,
+  });
+
+  @override
+  State<_EnhancedBudgetSelector> createState() => _EnhancedBudgetSelectorState();
+}
+
+class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
+  late TextEditingController _searchController;
+  late List<TransactionItem> _filteredItems;
+  Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _filteredItems = widget.transactionItems;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        if (query.isEmpty) {
+          _filteredItems = widget.transactionItems;
+        } else {
+          _filteredItems = widget.transactionItems
+              .where((item) {
+                final searchQuery = query.toLowerCase();
+                // Search in name
+                if (item.name.toLowerCase().contains(searchQuery)) {
+                  return true;
+                }
+                // Search in description
+                if (item.description.toLowerCase().contains(searchQuery)) {
+                  return true;
+                }
+                // Search in budget description if available
+                if (item.budget != null && item.budget!.description.toLowerCase().contains(searchQuery)) {
+                  return true;
+                }
+                return false;
+              })
+              .toList();
+        }
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        children: [
+          // Handle bar
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          
+          // Header
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Pilih Budget Plan',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            ),
+          ),
+          
+          // Search Input
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Cari budget plan...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          _onSearchChanged('');
+                        },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF667eea)),
+                ),
+                filled: true,
+                fillColor: Colors.grey[50],
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              ),
+              onChanged: _onSearchChanged,
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Results count
+          if (_searchController.text.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '${_filteredItems.length} dari ${widget.transactionItems.length} budget plans',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          
+          const SizedBox(height: 8),
+          
+          // Check if no budget plans exist
+          if (widget.transactionItems.isEmpty) ...[
+            // Show guidance when no budget plans are available
+            Expanded(
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Colors.blue[600],
+                        size: 48,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Belum Ada Budget Plan',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue[800],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Untuk tracking pengeluaran yang lebih baik, buat budget plan terlebih dahulu.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue[700],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: widget.onCreateBudget,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF667eea),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const Icon(Icons.add_circle_outline, size: 20),
+                          label: const Text(
+                            'Buat Budget Plan',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ] else ...[
+            // Budget Items List
+            Expanded(
+              child: _filteredItems.isEmpty
+                  ? _buildEmptySearchState()
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: _filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final transactionItem = _filteredItems[index];
+                        final isSelected = transactionItem.id == widget.selectedItemId;
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                widget.onItemSelected(transactionItem.id);
+                                Navigator.pop(context);
+                              },
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? const Color(0xFF667eea)
+                                        : Colors.grey[200]!,
+                                    width: isSelected ? 2 : 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: isSelected
+                                      ? const Color(0xFF667eea).withValues(alpha: 0.05)
+                                      : Colors.white,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: transactionItem.color.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(
+                                        transactionItem.icon,
+                                        color: transactionItem.color,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  transactionItem.displayName,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: isSelected ? const Color(0xFF667eea) : Colors.black87,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (transactionItem.isBudgetPlan && transactionItem.budget != null) ...[
+                                                Container(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    color: _getPeriodColor(transactionItem.budget!.period).withValues(alpha: 0.1),
+                                                    borderRadius: BorderRadius.circular(4),
+                                                    border: Border.all(color: _getPeriodColor(transactionItem.budget!.period).withValues(alpha: 0.3)),
+                                                  ),
+                                                  child: Text(
+                                                    transactionItem.budget!.period.displayName,
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: _getPeriodColor(transactionItem.budget!.period),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                          const SizedBox(height: 4),
+                                          if (transactionItem.isBudgetPlan) ...[
+                                            Text(
+                                              'Sisa: ${widget.formatCurrency(transactionItem.remainingAmount)} dari ${widget.formatCurrency(transactionItem.budget?.amount ?? 0)}',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: transactionItem.remainingAmount > 0 ? Colors.green[600] : Colors.red[600],
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ] else ...[
+                                            Text(
+                                              transactionItem.description,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    if (isSelected)
+                                      const Icon(
+                                        Icons.check_circle,
+                                        color: Color(0xFF667eea),
+                                        size: 24,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+          
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptySearchState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 48,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Tidak ada budget plan ditemukan',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Coba sesuaikan kata kunci pencarian',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[500],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                _searchController.clear();
+                _onSearchChanged('');
+              },
+              child: const Text('Hapus pencarian'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getPeriodColor(BudgetPeriod period) {
+    switch (period) {
+      case BudgetPeriod.weekly:
+        return Colors.orange;
+      case BudgetPeriod.monthly:
+        return Colors.blue;
+      case BudgetPeriod.quarterly:
+        return Colors.purple;
+      case BudgetPeriod.yearly:
+        return Colors.red;
+    }
   }
 }

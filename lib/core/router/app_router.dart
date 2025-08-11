@@ -4,6 +4,7 @@ import 'package:cashflow/features/profile/presentation/pages/bug_report_page.dar
 import 'package:cashflow/features/settings/presentation/pages/settings_page.dart';
 import 'package:cashflow/features/budget_management/presentation/pages/budget_management_page.dart';
 import 'package:cashflow/features/budget_management/presentation/pages/create_budget_page.dart';
+import 'package:cashflow/features/transaction/presentation/pages/transaction_detail_page.dart';
 import 'package:cashflow/shared/widgets/main_navigation.dart';
 import 'package:cashflow/features/onboarding/domain/usecases/get_onboarding_status.dart';
 import 'package:cashflow/core/di/injection.dart';
@@ -80,6 +81,14 @@ class AppRouter {
           final budgetData = state.extra as Map<String, dynamic>?;
           final budget = budgetData?['budget'];
           return CreateBudgetPage(budget: budget);
+        },
+      ),
+      GoRoute(
+        path: '/transaction-detail/:transactionId',
+        name: 'transaction_detail',
+        builder: (context, state) {
+          final transactionId = state.pathParameters['transactionId']!;
+          return TransactionDetailPage(transactionId: transactionId);
         },
       ),
     ],

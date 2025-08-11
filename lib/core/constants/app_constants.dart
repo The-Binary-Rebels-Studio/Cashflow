@@ -8,6 +8,7 @@ class AppConstants {
   static const String bugReportRoute = '/bug-report';
   static const String settingsRoute = '/settings';
   static const String budgetManagementRoute = '/budget-management';
+  static const String transactionDetailRoute = '/transaction-detail';
 
   // Database
   static const String databaseName = 'cashflow_db';
