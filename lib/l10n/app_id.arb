@@ -322,5 +322,20 @@
   "withinBudget": "Dalam Anggaran",
   "overBudget": "Melebihi Anggaran",
   "thisBudgetIsOverBy": "Anggaran ini melebihi sebesar",
-  "spent": "Terpakai"
+  "spent": "Terpakai",
+  "selectBudget": "Pilih Anggaran",
+  "showAllTransactions": "Tampilkan semua transaksi",
+  "noBudgetPlans": "Tidak Ada Rencana Anggaran",
+  "createBudgetPlan": "Buat Rencana Anggaran",
+  "selectBudgetPlan": "Pilih Rencana Anggaran",
+  "searchBudgets": "Cari rencana anggaran...",
+  "noBudgetsFound": "Tidak ada rencana anggaran ditemukan",
+  "tryAdjustingSearchTerm": "Coba sesuaikan kata pencarian Anda",
+  "clearSearch": "Bersihkan pencarian",
+  "budgetDetailsLoading": "Memuat detail anggaran...",
+  "calculatingRemaining": "Menghitung sisa...",
+  "budgetCount": "{count} dari {total} rencana anggaran",
+  "createBudgetPlanDescription": "Untuk melacak pengeluaran dengan baik, Anda perlu membuat rencana anggaran terlebih dahulu.",
+  "whatWouldYouLikeToDo": "Apa yang ingin Anda lakukan?",
+  "createBudgetPlanToTrack": "Buat rencana anggaran terlebih dahulu untuk tracking pengeluaran yang lebih baik."
 }

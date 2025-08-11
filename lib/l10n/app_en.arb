@@ -329,5 +329,30 @@
   "withinBudget": "Within Budget",
   "overBudget": "Over Budget",
   "thisBudgetIsOverBy": "This budget is over by",
-  "spent": "Spent"
+  "spent": "Spent",
+  "selectBudget": "Select Budget",
+  "showAllTransactions": "Show all transactions",
+  "noBudgetPlans": "No Budget Plans",
+  "createBudgetPlan": "Create Budget Plan",
+  "selectBudgetPlan": "Select Budget Plan",
+  "searchBudgets": "Search budgets...",
+  "noBudgetsFound": "No budgets found",
+  "tryAdjustingSearchTerm": "Try adjusting your search term",
+  "clearSearch": "Clear search",
+  "budgetDetailsLoading": "Budget details loading...",
+  "calculatingRemaining": "Calculating remaining...",
+  "budgetCount": "{count} of {total} budgets",
+  "@budgetCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "createBudgetPlanDescription": "To track expenses properly, you need to create budget plans first.",
+  "whatWouldYouLikeToDo": "What would you like to do?",
+  "createBudgetPlanToTrack": "Create budget plans first for better expense tracking."
 }

@@ -858,4 +858,50 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get thisBudgetIsOverBy => 'This budget is over by';
+
+  @override
+  String get selectBudget => 'Select Budget';
+
+  @override
+  String get showAllTransactions => 'Show all transactions';
+
+  @override
+  String get noBudgetPlans => 'No Budget Plans';
+
+  @override
+  String get selectBudgetPlan => 'Select Budget Plan';
+
+  @override
+  String get searchBudgets => 'Search budgets...';
+
+  @override
+  String get noBudgetsFound => 'No budgets found';
+
+  @override
+  String get tryAdjustingSearchTerm => 'Try adjusting your search term';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get budgetDetailsLoading => 'Budget details loading...';
+
+  @override
+  String get calculatingRemaining => 'Calculating remaining...';
+
+  @override
+  String budgetCount(int count, int total) {
+    return '$count of $total budgets';
+  }
+
+  @override
+  String get createBudgetPlanDescription =>
+      'To track expenses properly, you need to create budget plans first.';
+
+  @override
+  String get whatWouldYouLikeToDo => 'What would you like to do?';
+
+  @override
+  String get createBudgetPlanToTrack =>
+      'Create budget plans first for better expense tracking.';
 }

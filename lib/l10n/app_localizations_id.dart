@@ -858,4 +858,50 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get thisBudgetIsOverBy => 'Anggaran ini melebihi sebesar';
+
+  @override
+  String get selectBudget => 'Pilih Anggaran';
+
+  @override
+  String get showAllTransactions => 'Tampilkan semua transaksi';
+
+  @override
+  String get noBudgetPlans => 'Tidak Ada Rencana Anggaran';
+
+  @override
+  String get selectBudgetPlan => 'Pilih Rencana Anggaran';
+
+  @override
+  String get searchBudgets => 'Cari rencana anggaran...';
+
+  @override
+  String get noBudgetsFound => 'Tidak ada rencana anggaran ditemukan';
+
+  @override
+  String get tryAdjustingSearchTerm => 'Coba sesuaikan kata pencarian Anda';
+
+  @override
+  String get clearSearch => 'Bersihkan pencarian';
+
+  @override
+  String get budgetDetailsLoading => 'Memuat detail anggaran...';
+
+  @override
+  String get calculatingRemaining => 'Menghitung sisa...';
+
+  @override
+  String budgetCount(int count, int total) {
+    return '$count dari $total rencana anggaran';
+  }
+
+  @override
+  String get createBudgetPlanDescription =>
+      'Untuk melacak pengeluaran dengan baik, Anda perlu membuat rencana anggaran terlebih dahulu.';
+
+  @override
+  String get whatWouldYouLikeToDo => 'Apa yang ingin Anda lakukan?';
+
+  @override
+  String get createBudgetPlanToTrack =>
+      'Buat rencana anggaran terlebih dahulu untuk tracking pengeluaran yang lebih baik.';
 }

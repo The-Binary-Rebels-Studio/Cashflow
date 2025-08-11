@@ -1737,6 +1737,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This budget is over by'**
   String get thisBudgetIsOverBy;
+
+  /// No description provided for @selectBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Budget'**
+  String get selectBudget;
+
+  /// No description provided for @showAllTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all transactions'**
+  String get showAllTransactions;
+
+  /// No description provided for @noBudgetPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No Budget Plans'**
+  String get noBudgetPlans;
+
+  /// No description provided for @selectBudgetPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Budget Plan'**
+  String get selectBudgetPlan;
+
+  /// No description provided for @searchBudgets.
+  ///
+  /// In en, this message translates to:
+  /// **'Search budgets...'**
+  String get searchBudgets;
+
+  /// No description provided for @noBudgetsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No budgets found'**
+  String get noBudgetsFound;
+
+  /// No description provided for @tryAdjustingSearchTerm.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search term'**
+  String get tryAdjustingSearchTerm;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @budgetDetailsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget details loading...'**
+  String get budgetDetailsLoading;
+
+  /// No description provided for @calculatingRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating remaining...'**
+  String get calculatingRemaining;
+
+  /// No description provided for @budgetCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} budgets'**
+  String budgetCount(int count, int total);
+
+  /// No description provided for @createBudgetPlanDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'To track expenses properly, you need to create budget plans first.'**
+  String get createBudgetPlanDescription;
+
+  /// No description provided for @whatWouldYouLikeToDo.
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to do?'**
+  String get whatWouldYouLikeToDo;
+
+  /// No description provided for @createBudgetPlanToTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Create budget plans first for better expense tracking.'**
+  String get createBudgetPlanToTrack;
 }
 
 class _AppLocalizationsDelegate
