@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/transaction_header.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/transaction_list.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/transaction_fab.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -13,7 +15,8 @@ class TransactionPage extends StatefulWidget {
   State<TransactionPage> createState() => _TransactionPageState();
 }
 
-class _TransactionPageState extends State<TransactionPage> {
+class _TransactionPageState extends State<TransactionPage> 
+    with AutomaticKeepAliveClientMixin {
   late String _selectedPeriod;
   late String _selectedBudget;
   late String _sortBy;
@@ -25,9 +28,16 @@ class _TransactionPageState extends State<TransactionPage> {
   late List<String> _sortOptions;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
     _loadBudgets();
+    // Load transactions when page is first created
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TransactionCubit>().loadTransactions();
+    });
   }
 
   @override
@@ -64,8 +74,17 @@ class _TransactionPageState extends State<TransactionPage> {
     }
   }
 
+  // Public method to refresh transactions from external call (like tab change)
+  void refreshTransactions() {
+    // Refresh transaction data via cubit
+    context.read<TransactionCubit>().loadTransactions();
+    // Also refresh budget data in case it changed
+    _loadBudgets();
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required by AutomaticKeepAliveClientMixin
     return Scaffold(
         body: SafeArea(
           child: Column(
@@ -104,6 +123,10 @@ class _TransactionPageState extends State<TransactionPage> {
                   setState(() {
                     _sortBy = sort;
                   });
+                },
+                onBudgetsRefreshed: () {
+                  // Refresh budget list when BudgetSelectorSheet detects changes
+                  _loadBudgets();
                 },
               ),
               Expanded(

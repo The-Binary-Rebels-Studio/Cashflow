@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/features/home/presentation/pages/home_page.dart';
 import 'package:cashflow/features/transaction/presentation/pages/transaction_page.dart';
 import 'package:cashflow/features/profile/presentation/pages/profile_page.dart';
+import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -18,6 +20,7 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   late int _selectedIndex;
+  int _previousIndex = 0;
 
   @override
   void initState() {
@@ -27,8 +30,23 @@ class _MainNavigationState extends State<MainNavigation> {
 
   void _onItemTapped(int index) {
     setState(() {
+      _previousIndex = _selectedIndex;
       _selectedIndex = index;
     });
+    
+    // Notify pages about tab change for potential refresh
+    if (index == 1 && _previousIndex != 1) { // Transaction tab and coming from different tab
+      // Trigger refresh for transaction page only when switching TO transaction tab
+      _triggerTransactionRefresh();
+    }
+  }
+  
+  void _triggerTransactionRefresh() {
+    // This will be called when transaction tab becomes active
+    // Refresh transactions via cubit
+    if (mounted) {
+      context.read<TransactionCubit>().loadTransactions();
+    }
   }
 
 
