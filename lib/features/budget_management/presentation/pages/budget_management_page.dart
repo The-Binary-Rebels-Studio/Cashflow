@@ -528,6 +528,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                     context,
                     budget.id,
                     budget.name,
+                    category?.iconCodePoint ?? '',
                     onRefreshNeeded,
                   );
                 },
@@ -590,56 +591,245 @@ class _BudgetPlansSliver extends StatelessWidget {
     BuildContext context,
     String budgetId,
     String budgetName,
+    String categoryIconCodePoint,
     Future<void> Function() onRefreshNeeded,
   ) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            const Icon(Icons.delete_outline, color: Colors.red, size: 24),
-            const SizedBox(width: 12),
-            Text(AppLocalizations.of(context)!.deleteBudgetPlan),
-          ],
-        ),
-        content: Text(
-          AppLocalizations.of(context)!.deleteBudgetConfirmation(budgetName),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              AppLocalizations.of(context)!.cancel,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.red[400]!, Colors.red[600]!],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final cubit = context.read<BudgetManagementCubit>();
-              Navigator.of(context).pop(); // Close dialog first
-
-              try {
-                // Delete budget and wait for completion
-                await cubit.deleteBudget(budgetId);
-
-                // Use callback to refresh data and UI
-                await onRefreshNeeded();
-              } catch (e) {
-                // Error will be handled by BlocConsumer listener
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            child: Text(AppLocalizations.of(context)!.delete),
-          ),
-        ],
+            
+            // Header section with icon and title
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  // Icon
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.white,
+                      size: 36,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  
+                  // Title
+                  Text(
+                    AppLocalizations.of(context)!.deleteBudgetPlan,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  // Subtitle
+                  Text(
+                    AppLocalizations.of(context)!.deleteBudgetConfirmation(budgetName),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white.withValues(alpha: 0.9),
+                      height: 1.3,
+                    ),
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                  ),
+                ],
+              ),
+            ),
+            
+            // Content section with white background
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Budget name preview
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          _getIconData(categoryIconCodePoint),
+                          color: Colors.red[600],
+                          size: 24,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          budgetName,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Warning message
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.orange[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.orange[200]!),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.orange[700],
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context)!.deleteConfirmationWarning,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Action buttons
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.cancel,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final cubit = context.read<BudgetManagementCubit>();
+                        Navigator.of(context).pop(); // Close dialog first
+
+                        try {
+                          // Delete budget and wait for completion
+                          await cubit.deleteBudget(budgetId);
+
+                          // Use callback to refresh data and UI
+                          await onRefreshNeeded();
+                        } catch (e) {
+                          // Error will be handled by BlocConsumer listener
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.red[600],
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.delete,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  IconData _getIconData(String iconCodePoint) {
+    try {
+      return IconData(
+        int.parse(iconCodePoint),
+        fontFamily: 'MaterialIcons',
+      );
+    } catch (e) {
+      return Icons.category;
+    }
   }
 }

@@ -141,138 +141,204 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
   Future<bool> _showDeleteConfirmationDialog() async {
     final l10n = AppLocalizations.of(context)!;
-    return await showDialog<bool>(
+    final theme = Theme.of(context);
+    
+    return await showModalBottomSheet<bool>(
           context: context,
-          barrierDismissible: true,
-          builder: (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.red[400]!, Colors.red[600]!],
+              ),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
-            elevation: 8,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Warning Icon
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.red[50],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red[600],
-                      size: 32,
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Container(
+                  margin: const EdgeInsets.only(top: 12),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  const SizedBox(height: 20),
-                  
-                  // Title
-                  Text(
-                    l10n.deleteConfirmationTitle,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Message
-                  Text(
-                    l10n.deleteConfirmationMessage,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Transaction Preview
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[200]!),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          _transaction?.transaction.title ?? '',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
+                ),
+                
+                // Header section with icon and title
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      // Icon
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          GetIt.instance<CurrencyService>().formatAmount(
-                            _transaction?.transaction.amount ?? 0,
-                          ),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: (_transaction?.transaction.amount ?? 0) >= 0
-                                ? Colors.green[600]
-                                : Colors.red[600],
-                          ),
-                          textAlign: TextAlign.center,
+                        child: Icon(
+                          Icons.delete_outline_rounded,
+                          color: Colors.white,
+                          size: 36,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      
+                      // Title
+                      Text(
+                        l10n.deleteConfirmationTitle,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          height: 1.2,
+                        ),
+                        textAlign: TextAlign.center,
+                        softWrap: true,
+                      ),
+                      const SizedBox(height: 8),
+                      
+                      // Subtitle
+                      Text(
+                        l10n.deleteConfirmationMessage,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.3,
+                        ),
+                        textAlign: TextAlign.center,
+                        softWrap: true,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  
-                  // Warning
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red[50],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red[200]!),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.warning_amber,
-                          color: Colors.red[600],
-                          size: 20,
+                ),
+                
+                // Content section with white background
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // Transaction preview
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            l10n.deleteConfirmationWarning,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.red[700],
-                              fontWeight: FontWeight.w500,
+                        child: Column(
+                          children: [
+                            Icon(
+                              _getCategoryIcon(),
+                              color: Colors.red[600],
+                              size: 24,
                             ),
-                          ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _transaction?.transaction.title ?? '',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              GetIt.instance<CurrencyService>().formatAmount(
+                                _transaction?.transaction.amount ?? 0,
+                              ),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: (_transaction?.transaction.amount ?? 0) >= 0
+                                    ? theme.colorScheme.primary
+                                    : Colors.red[600],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Warning message
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.orange[50],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.orange[200]!),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.orange[700],
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                l10n.deleteConfirmationWarning,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.orange[800],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                  
-                  // Actions
-                  Row(
+                ),
+                
+                // Action buttons
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Row(
                     children: [
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.of(context).pop(false),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            foregroundColor: Colors.white,
+                            side: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text(l10n.cancel),
+                          child: Text(
+                            l10n.cancel,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -280,21 +346,27 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         child: ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red[600],
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.red[600],
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 0,
                           ),
-                          child: Text(l10n.delete),
+                          child: Text(
+                            l10n.delete,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ) ??
