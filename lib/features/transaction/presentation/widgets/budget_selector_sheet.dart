@@ -15,6 +15,7 @@ class BudgetSelectorSheet extends StatefulWidget {
   final List<String> budgets;
   final String selectedBudget;
   final ValueChanged<String> onBudgetChanged;
+  final VoidCallback? onBudgetsRefreshed;
 
   const BudgetSelectorSheet({
     super.key,
@@ -22,6 +23,7 @@ class BudgetSelectorSheet extends StatefulWidget {
     required this.budgets,
     required this.selectedBudget,
     required this.onBudgetChanged,
+    this.onBudgetsRefreshed,
   });
 
   @override
@@ -55,10 +57,14 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
       final budgetRepository = GetIt.instance<BudgetManagementRepository>();
       final budgets = await budgetRepository.getAllBudgets();
       final categories = await budgetRepository.getAllCategories();
+
       setState(() {
         _budgetEntities = budgets;
         _categoryEntities = categories;
       });
+
+      // Notify parent that budgets might have changed
+      widget.onBudgetsRefreshed?.call();
     } catch (e) {
       debugPrint('Failed to load budget details: $e');
     }
@@ -84,13 +90,13 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
   IconData _getBudgetIcon(BudgetEntity? budget) {
     if (budget == null) return Icons.dashboard;
-    
+
     final category = _getCategoryForBudget(budget);
     if (category == null) {
       // Fallback to meaningful icon based on budget name
       return _getFallbackIconByName(budget.name);
     }
-    
+
     try {
       return IconData(
         int.parse(category.iconCodePoint),
@@ -104,57 +110,94 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
   IconData _getFallbackIconByName(String budgetName) {
     final name = budgetName.toLowerCase();
-    
+
     // Food & Dining
-    if (name.contains('makanan') || name.contains('food') || name.contains('makan') || 
-        name.contains('restoran') || name.contains('coffee') || name.contains('cafe')) {
+    if (name.contains('makanan') ||
+        name.contains('food') ||
+        name.contains('makan') ||
+        name.contains('restoran') ||
+        name.contains('coffee') ||
+        name.contains('cafe')) {
       return Icons.restaurant;
     }
     // Transportation
-    else if (name.contains('transport') || name.contains('bensin') || name.contains('fuel') ||
-             name.contains('uber') || name.contains('grab') || name.contains('ojek') ||
-             name.contains('travel') || name.contains('perjalanan')) {
+    else if (name.contains('transport') ||
+        name.contains('bensin') ||
+        name.contains('fuel') ||
+        name.contains('uber') ||
+        name.contains('grab') ||
+        name.contains('ojek') ||
+        name.contains('travel') ||
+        name.contains('perjalanan')) {
       return Icons.directions_car;
     }
     // Shopping & Retail
-    else if (name.contains('belanja') || name.contains('shopping') || name.contains('retail') ||
-             name.contains('pakaian') || name.contains('fashion') || name.contains('elektronik')) {
+    else if (name.contains('belanja') ||
+        name.contains('shopping') ||
+        name.contains('retail') ||
+        name.contains('pakaian') ||
+        name.contains('fashion') ||
+        name.contains('elektronik')) {
       return Icons.shopping_cart;
     }
     // Bills & Utilities
-    else if (name.contains('tagihan') || name.contains('listrik') || name.contains('air') ||
-             name.contains('internet') || name.contains('telepon') || name.contains('bill') ||
-             name.contains('utilities')) {
+    else if (name.contains('tagihan') ||
+        name.contains('listrik') ||
+        name.contains('air') ||
+        name.contains('internet') ||
+        name.contains('telepon') ||
+        name.contains('bill') ||
+        name.contains('utilities')) {
       return Icons.receipt;
     }
     // Entertainment
-    else if (name.contains('hiburan') || name.contains('entertainment') || name.contains('movie') ||
-             name.contains('game') || name.contains('netflix') || name.contains('spotify')) {
+    else if (name.contains('hiburan') ||
+        name.contains('entertainment') ||
+        name.contains('movie') ||
+        name.contains('game') ||
+        name.contains('netflix') ||
+        name.contains('spotify')) {
       return Icons.movie;
     }
     // Health & Medical
-    else if (name.contains('kesehatan') || name.contains('health') || name.contains('medical') ||
-             name.contains('dokter') || name.contains('obat') || name.contains('hospital')) {
+    else if (name.contains('kesehatan') ||
+        name.contains('health') ||
+        name.contains('medical') ||
+        name.contains('dokter') ||
+        name.contains('obat') ||
+        name.contains('hospital')) {
       return Icons.local_hospital;
     }
     // Education
-    else if (name.contains('pendidikan') || name.contains('education') || name.contains('sekolah') ||
-             name.contains('kursus') || name.contains('buku') || name.contains('course')) {
+    else if (name.contains('pendidikan') ||
+        name.contains('education') ||
+        name.contains('sekolah') ||
+        name.contains('kursus') ||
+        name.contains('buku') ||
+        name.contains('course')) {
       return Icons.school;
     }
     // Income
-    else if (name.contains('gaji') || name.contains('salary') || name.contains('income') ||
-             name.contains('pendapatan') || name.contains('bonus')) {
+    else if (name.contains('gaji') ||
+        name.contains('salary') ||
+        name.contains('income') ||
+        name.contains('pendapatan') ||
+        name.contains('bonus')) {
       return Icons.account_balance_wallet;
     }
     // Savings & Investment
-    else if (name.contains('tabungan') || name.contains('saving') || name.contains('investasi') ||
-             name.contains('investment') || name.contains('deposito')) {
+    else if (name.contains('tabungan') ||
+        name.contains('saving') ||
+        name.contains('investasi') ||
+        name.contains('investment') ||
+        name.contains('deposito')) {
       return Icons.savings;
     }
     // Home & Family
-    else if (name.contains('rumah') || name.contains('home') || name.contains('family') ||
-             name.contains('keluarga')) {
+    else if (name.contains('rumah') ||
+        name.contains('home') ||
+        name.contains('family') ||
+        name.contains('keluarga')) {
       return Icons.home;
     }
     // Default
@@ -165,55 +208,57 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
   IconData _getFallbackIconByCategory(String categoryName) {
     final name = categoryName.toLowerCase();
-    
+
     // Similar logic but for category names
-    if (name.contains('food') || name.contains('dining') || name.contains('makanan')) {
+    if (name.contains('food') ||
+        name.contains('dining') ||
+        name.contains('makanan')) {
       return Icons.restaurant;
-    }
-    else if (name.contains('transport') || name.contains('travel')) {
+    } else if (name.contains('transport') || name.contains('travel')) {
       return Icons.directions_car;
-    }
-    else if (name.contains('shopping') || name.contains('retail') || name.contains('belanja')) {
+    } else if (name.contains('shopping') ||
+        name.contains('retail') ||
+        name.contains('belanja')) {
       return Icons.shopping_cart;
-    }
-    else if (name.contains('bills') || name.contains('utilities') || name.contains('tagihan')) {
+    } else if (name.contains('bills') ||
+        name.contains('utilities') ||
+        name.contains('tagihan')) {
       return Icons.receipt;
-    }
-    else if (name.contains('entertainment') || name.contains('hiburan')) {
+    } else if (name.contains('entertainment') || name.contains('hiburan')) {
       return Icons.movie;
-    }
-    else if (name.contains('health') || name.contains('medical') || name.contains('kesehatan')) {
+    } else if (name.contains('health') ||
+        name.contains('medical') ||
+        name.contains('kesehatan')) {
       return Icons.local_hospital;
-    }
-    else if (name.contains('education') || name.contains('pendidikan')) {
+    } else if (name.contains('education') || name.contains('pendidikan')) {
       return Icons.school;
-    }
-    else if (name.contains('income') || name.contains('pendapatan')) {
+    } else if (name.contains('income') || name.contains('pendapatan')) {
       return Icons.account_balance_wallet;
-    }
-    else if (name.contains('saving') || name.contains('tabungan') || name.contains('investment')) {
+    } else if (name.contains('saving') ||
+        name.contains('tabungan') ||
+        name.contains('investment')) {
       return Icons.savings;
-    }
-    else if (name.contains('home') || name.contains('rumah')) {
+    } else if (name.contains('home') || name.contains('rumah')) {
       return Icons.home;
-    }
-    else {
+    } else {
       return Icons.account_balance_wallet; // Default
     }
   }
 
   Color _getBudgetColor(BudgetEntity? budget) {
     if (budget == null) return Colors.blue;
-    
+
     final category = _getCategoryForBudget(budget);
     if (category == null) {
       // Fallback to meaningful color based on budget name
       return _getFallbackColorByName(budget.name);
     }
-    
+
     try {
       // First try to use the stored color value from database
-      return Color(int.parse('0xFF${category.colorValue.replaceFirst('#', '')}'));
+      return Color(
+        int.parse('0xFF${category.colorValue.replaceFirst('#', '')}'),
+      );
     } catch (e) {
       // If parsing fails, fallback to meaningful color based on category name
       return _getFallbackColorByCategory(category.name);
@@ -222,52 +267,87 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
   Color _getFallbackColorByName(String budgetName) {
     final name = budgetName.toLowerCase();
-    
+
     // Food & Dining
-    if (name.contains('makanan') || name.contains('food') || name.contains('makan') || 
-        name.contains('restoran') || name.contains('coffee') || name.contains('cafe')) {
+    if (name.contains('makanan') ||
+        name.contains('food') ||
+        name.contains('makan') ||
+        name.contains('restoran') ||
+        name.contains('coffee') ||
+        name.contains('cafe')) {
       return Colors.orange;
     }
     // Transportation
-    else if (name.contains('transport') || name.contains('bensin') || name.contains('fuel') ||
-             name.contains('uber') || name.contains('grab') || name.contains('ojek') ||
-             name.contains('travel') || name.contains('perjalanan')) {
+    else if (name.contains('transport') ||
+        name.contains('bensin') ||
+        name.contains('fuel') ||
+        name.contains('uber') ||
+        name.contains('grab') ||
+        name.contains('ojek') ||
+        name.contains('travel') ||
+        name.contains('perjalanan')) {
       return Colors.blue;
     }
     // Shopping & Retail
-    else if (name.contains('belanja') || name.contains('shopping') || name.contains('retail') ||
-             name.contains('pakaian') || name.contains('fashion') || name.contains('elektronik')) {
+    else if (name.contains('belanja') ||
+        name.contains('shopping') ||
+        name.contains('retail') ||
+        name.contains('pakaian') ||
+        name.contains('fashion') ||
+        name.contains('elektronik')) {
       return Colors.purple;
     }
     // Bills & Utilities
-    else if (name.contains('tagihan') || name.contains('listrik') || name.contains('air') ||
-             name.contains('internet') || name.contains('telepon') || name.contains('bill') ||
-             name.contains('utilities')) {
+    else if (name.contains('tagihan') ||
+        name.contains('listrik') ||
+        name.contains('air') ||
+        name.contains('internet') ||
+        name.contains('telepon') ||
+        name.contains('bill') ||
+        name.contains('utilities')) {
       return Colors.red;
     }
     // Entertainment
-    else if (name.contains('hiburan') || name.contains('entertainment') || name.contains('movie') ||
-             name.contains('game') || name.contains('netflix') || name.contains('spotify')) {
+    else if (name.contains('hiburan') ||
+        name.contains('entertainment') ||
+        name.contains('movie') ||
+        name.contains('game') ||
+        name.contains('netflix') ||
+        name.contains('spotify')) {
       return Colors.pink;
     }
     // Health & Medical
-    else if (name.contains('kesehatan') || name.contains('health') || name.contains('medical') ||
-             name.contains('dokter') || name.contains('obat') || name.contains('hospital')) {
+    else if (name.contains('kesehatan') ||
+        name.contains('health') ||
+        name.contains('medical') ||
+        name.contains('dokter') ||
+        name.contains('obat') ||
+        name.contains('hospital')) {
       return Colors.teal;
     }
     // Education
-    else if (name.contains('pendidikan') || name.contains('education') || name.contains('sekolah') ||
-             name.contains('kursus') || name.contains('buku') || name.contains('course')) {
+    else if (name.contains('pendidikan') ||
+        name.contains('education') ||
+        name.contains('sekolah') ||
+        name.contains('kursus') ||
+        name.contains('buku') ||
+        name.contains('course')) {
       return Colors.indigo;
     }
     // Income
-    else if (name.contains('gaji') || name.contains('salary') || name.contains('income') ||
-             name.contains('pendapatan') || name.contains('bonus')) {
+    else if (name.contains('gaji') ||
+        name.contains('salary') ||
+        name.contains('income') ||
+        name.contains('pendapatan') ||
+        name.contains('bonus')) {
       return Colors.green;
     }
     // Savings & Investment
-    else if (name.contains('tabungan') || name.contains('saving') || name.contains('investasi') ||
-             name.contains('investment') || name.contains('deposito')) {
+    else if (name.contains('tabungan') ||
+        name.contains('saving') ||
+        name.contains('investasi') ||
+        name.contains('investment') ||
+        name.contains('deposito')) {
       return Colors.cyan;
     }
     // Default
@@ -278,36 +358,37 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
   Color _getFallbackColorByCategory(String categoryName) {
     final name = categoryName.toLowerCase();
-    
+
     // Similar logic but for category names
-    if (name.contains('food') || name.contains('dining') || name.contains('makanan')) {
+    if (name.contains('food') ||
+        name.contains('dining') ||
+        name.contains('makanan')) {
       return Colors.orange;
-    }
-    else if (name.contains('transport') || name.contains('travel')) {
+    } else if (name.contains('transport') || name.contains('travel')) {
       return Colors.blue;
-    }
-    else if (name.contains('shopping') || name.contains('retail') || name.contains('belanja')) {
+    } else if (name.contains('shopping') ||
+        name.contains('retail') ||
+        name.contains('belanja')) {
       return Colors.purple;
-    }
-    else if (name.contains('bills') || name.contains('utilities') || name.contains('tagihan')) {
+    } else if (name.contains('bills') ||
+        name.contains('utilities') ||
+        name.contains('tagihan')) {
       return Colors.red;
-    }
-    else if (name.contains('entertainment') || name.contains('hiburan')) {
+    } else if (name.contains('entertainment') || name.contains('hiburan')) {
       return Colors.pink;
-    }
-    else if (name.contains('health') || name.contains('medical') || name.contains('kesehatan')) {
+    } else if (name.contains('health') ||
+        name.contains('medical') ||
+        name.contains('kesehatan')) {
       return Colors.teal;
-    }
-    else if (name.contains('education') || name.contains('pendidikan')) {
+    } else if (name.contains('education') || name.contains('pendidikan')) {
       return Colors.indigo;
-    }
-    else if (name.contains('income') || name.contains('pendapatan')) {
+    } else if (name.contains('income') || name.contains('pendapatan')) {
       return Colors.green;
-    }
-    else if (name.contains('saving') || name.contains('tabungan') || name.contains('investment')) {
+    } else if (name.contains('saving') ||
+        name.contains('tabungan') ||
+        name.contains('investment')) {
       return Colors.cyan;
-    }
-    else {
+    } else {
       return Colors.green; // Default for budgets
     }
   }
@@ -319,19 +400,19 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         if (query.isEmpty) {
           _filteredBudgets = widget.budgets;
         } else {
-          _filteredBudgets = widget.budgets
-              .where((budget) {
-                if (budget.toLowerCase().contains(query.toLowerCase())) {
-                  return true;
-                }
-                // Also search in budget descriptions
-                final budgetEntity = _getBudgetEntity(budget);
-                if (budgetEntity != null) {
-                  return budgetEntity.description.toLowerCase().contains(query.toLowerCase());
-                }
-                return false;
-              })
-              .toList();
+          _filteredBudgets = widget.budgets.where((budget) {
+            if (budget.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            // Also search in budget descriptions
+            final budgetEntity = _getBudgetEntity(budget);
+            if (budgetEntity != null) {
+              return budgetEntity.description.toLowerCase().contains(
+                query.toLowerCase(),
+              );
+            }
+            return false;
+          }).toList();
         }
       });
     });
@@ -350,9 +431,9 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         children: [
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Select Budget',
+                  AppLocalizations.of(context)!.selectBudget,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -365,12 +446,12 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Search Input
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
-              hintText: 'Search budgets...',
+              hintText: AppLocalizations.of(context)!.searchBudgets,
               prefixIcon: const Icon(Icons.search),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
@@ -395,18 +476,21 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
               ),
               filled: true,
               fillColor: Colors.grey[50],
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
             ),
             onChanged: _onSearchChanged,
           ),
           const SizedBox(height: 16),
-          
+
           // Budget Count Info
           if (_searchController.text.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                '${_filteredBudgets.length} of ${widget.budgets.length} budgets',
+                AppLocalizations.of(context)!.budgetCount(_filteredBudgets.length, widget.budgets.length),
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey[600],
@@ -414,7 +498,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
                 ),
               ),
             ),
-          
+
           // Budget List
           Flexible(
             child: _filteredBudgets.isEmpty
@@ -425,12 +509,14 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
                     itemBuilder: (context, index) {
                       final budget = _filteredBudgets[index];
                       final isSelected = widget.selectedBudget == budget;
-                      final isAllOption = budget == AppLocalizations.of(context)!.all;
+                      final isAllOption =
+                          budget == AppLocalizations.of(context)!.all;
                       final budgetEntity = _getBudgetEntity(budget);
 
                       return _BudgetTile(
                         key: Key('budget_tile_$budget'),
-                        parentContext: widget.parentContext, // Pass parent context
+                        parentContext:
+                            widget.parentContext, // Pass parent context
                         budget: budget,
                         budgetEntity: budgetEntity,
                         isSelected: isSelected,
@@ -457,14 +543,10 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 48,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.search_off, size: 48, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'No budgets found',
+              AppLocalizations.of(context)!.noBudgetsFound,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -473,11 +555,8 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Try adjusting your search term',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[500],
-              ),
+              AppLocalizations.of(context)!.tryAdjustingSearchTerm,
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -486,7 +565,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
                 _searchController.clear();
                 _onSearchChanged('');
               },
-              child: const Text('Clear search'),
+              child: Text(AppLocalizations.of(context)!.clearSearch),
             ),
           ],
         ),
@@ -523,48 +602,69 @@ class _BudgetTile extends StatelessWidget {
       debugPrint('🚨 [BUDGET SELECTOR DEBUG] budgetEntity is null!');
       return 0.0;
     }
-    
+
     try {
-      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Starting calculation for: ${budgetEntity!.name}');
-      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Budget amount: ${budgetEntity!.amount}');
-      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Category ID: ${budgetEntity!.categoryId}');
-      
+      debugPrint(
+        '🔍 [BUDGET SELECTOR DEBUG] Starting calculation for: ${budgetEntity!.name}',
+      );
+      debugPrint(
+        '🔍 [BUDGET SELECTOR DEBUG] Budget amount: ${budgetEntity!.amount}',
+      );
+      debugPrint(
+        '🔍 [BUDGET SELECTOR DEBUG] Category ID: ${budgetEntity!.categoryId}',
+      );
+
       final transactionCubit = parentContext.read<TransactionCubit>();
-      debugPrint('🔍 [BUDGET SELECTOR DEBUG] TransactionCubit found: ${transactionCubit.runtimeType}');
-      
+      debugPrint(
+        '🔍 [BUDGET SELECTOR DEBUG] TransactionCubit found: ${transactionCubit.runtimeType}',
+      );
+
       // Calculate current period for this recurring budget
       final budgetModel = BudgetModel.fromEntity(budgetEntity!);
       final currentPeriodStart = budgetModel.getCurrentPeriodStart();
       final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
-      
-      debugPrint('🔍 [BUDGET SELECTOR DEBUG] Period: ${currentPeriodStart.day}/${currentPeriodStart.month}/${currentPeriodStart.year} - ${currentPeriodEnd.day}/${currentPeriodEnd.month}/${currentPeriodEnd.year}');
-      
-      // Get total spent using Result pattern for current period
-      final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
-        budgetEntity!.categoryId,
-        currentPeriodStart,
-        currentPeriodEnd,
+
+      debugPrint(
+        '🔍 [BUDGET SELECTOR DEBUG] Period: ${currentPeriodStart.day}/${currentPeriodStart.month}/${currentPeriodStart.year} - ${currentPeriodEnd.day}/${currentPeriodEnd.month}/${currentPeriodEnd.year}',
       );
-      
+
+      // Get total spent using Result pattern for current period
+      final result = await transactionCubit.transactionUsecases
+          .getTotalByCategoryAndDateRange(
+            budgetEntity!.categoryId,
+            currentPeriodStart,
+            currentPeriodEnd,
+          );
+
       return result.when(
         success: (totalSpent) {
           debugPrint('🔍 [BUDGET SELECTOR DEBUG] Query successful!');
           debugPrint('🔍 [BUDGET SELECTOR DEBUG] Raw totalSpent: $totalSpent');
-          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Absolute totalSpent: ${totalSpent.abs()}');
-          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Calculated remaining: ${budgetEntity!.amount - totalSpent.abs()}');
+          debugPrint(
+            '🔍 [BUDGET SELECTOR DEBUG] Absolute totalSpent: ${totalSpent.abs()}',
+          );
+          debugPrint(
+            '🔍 [BUDGET SELECTOR DEBUG] Calculated remaining: ${budgetEntity!.amount - totalSpent.abs()}',
+          );
           debugPrint('🔍 [BUDGET SELECTOR DEBUG] ---');
-          
+
           // Return absolute value since expenses are stored as negative
           return totalSpent.abs();
         },
         failure: (failure) {
-          debugPrint('🚨 [BUDGET SELECTOR ERROR] calculating spent amount for ${budgetEntity!.name}: ${failure.message}');
-          debugPrint('🚨 [BUDGET SELECTOR ERROR] Failure type: ${failure.runtimeType}');
+          debugPrint(
+            '🚨 [BUDGET SELECTOR ERROR] calculating spent amount for ${budgetEntity!.name}: ${failure.message}',
+          );
+          debugPrint(
+            '🚨 [BUDGET SELECTOR ERROR] Failure type: ${failure.runtimeType}',
+          );
           return 0.0;
         },
       );
     } catch (e, stackTrace) {
-      debugPrint('🚨 [BUDGET SELECTOR UNEXPECTED ERROR] calculating spent amount for ${budgetEntity!.name}: $e');
+      debugPrint(
+        '🚨 [BUDGET SELECTOR UNEXPECTED ERROR] calculating spent amount for ${budgetEntity!.name}: $e',
+      );
       debugPrint('🚨 [BUDGET SELECTOR STACK TRACE] $stackTrace');
       return 0.0;
     }
@@ -573,7 +673,7 @@ class _BudgetTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currencyService = GetIt.instance<CurrencyService>();
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Material(
@@ -585,9 +685,7 @@ class _BudgetTile extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               border: Border.all(
-                color: isSelected
-                    ? const Color(0xFF667eea)
-                    : Colors.grey[200]!,
+                color: isSelected ? const Color(0xFF667eea) : Colors.grey[200]!,
                 width: isSelected ? 2 : 1,
               ),
               borderRadius: BorderRadius.circular(16),
@@ -604,11 +702,7 @@ class _BudgetTile extends StatelessWidget {
                     color: budgetColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    budgetIcon,
-                    color: budgetColor,
-                    size: 20,
-                  ),
+                  child: Icon(budgetIcon, color: budgetColor, size: 20),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -623,20 +717,32 @@ class _BudgetTile extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: isSelected ? const Color(0xFF667eea) : Colors.black87,
+                                color: isSelected
+                                    ? const Color(0xFF667eea)
+                                    : Colors.black87,
                               ),
                             ),
                           ),
                           if (budgetEntity != null) ...[
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: _getPeriodColor().withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: _getPeriodColor().withValues(alpha: 0.3)),
+                                border: Border.all(
+                                  color: _getPeriodColor().withValues(
+                                    alpha: 0.3,
+                                  ),
+                                ),
                               ),
                               child: Text(
-                                budgetEntity!.period.displayName,
+                                _getLocalizedPeriodName(
+                                  context,
+                                  budgetEntity!.period,
+                                ),
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500,
@@ -667,59 +773,63 @@ class _BudgetTile extends StatelessWidget {
     );
   }
 
+  String _getLocalizedPeriodName(BuildContext context, BudgetPeriod period) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (period) {
+      case BudgetPeriod.weekly:
+        return l10n.budgetPeriodWeekly;
+      case BudgetPeriod.monthly:
+        return l10n.budgetPeriodMonthly;
+      case BudgetPeriod.quarterly:
+        return l10n.budgetPeriodQuarterly;
+      case BudgetPeriod.yearly:
+        return l10n.budgetPeriodYearly;
+    }
+  }
+
   Widget _buildSubtitle(BuildContext context, CurrencyService currencyService) {
     if (isAllOption) {
       return Text(
-        'Show all transactions',
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.grey[600],
-        ),
+        AppLocalizations.of(context)!.showAllTransactions,
+        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
       );
     }
-    
+
     if (budgetEntity == null) {
       return Text(
-        'Budget details loading...',
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.grey[600],
-        ),
+        AppLocalizations.of(context)!.budgetDetailsLoading,
+        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
       );
     }
-    
+
     return FutureBuilder<double>(
       future: _calculateSpentAmount(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text(
-            'Calculating remaining...',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
+            AppLocalizations.of(context)!.calculatingRemaining,
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
           );
         }
-        
+
         final totalSpent = snapshot.data ?? 0.0;
         final remaining = budgetEntity!.amount - totalSpent;
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (budgetEntity!.description.isNotEmpty) ...[
               Text(
                 budgetEntity!.description,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
             Text(
-              'Sisa: ${currencyService.formatAmount(remaining)} dari ${currencyService.formatAmount(budgetEntity!.amount)}',
+              remaining > 0
+                  ? '${AppLocalizations.of(context)!.remaining}: ${currencyService.formatAmount(remaining)} dari ${currencyService.formatAmount(budgetEntity!.amount)}'
+                  : '${AppLocalizations.of(context)!.overBudget}: ${currencyService.formatAmount(remaining.abs())} dari ${currencyService.formatAmount(budgetEntity!.amount)}',
               style: TextStyle(
                 fontSize: 12,
                 color: remaining > 0 ? Colors.green[600] : Colors.red[600],
@@ -734,7 +844,7 @@ class _BudgetTile extends StatelessWidget {
 
   Color _getPeriodColor() {
     if (budgetEntity == null) return Colors.grey;
-    
+
     switch (budgetEntity!.period) {
       case BudgetPeriod.weekly:
         return Colors.orange;
