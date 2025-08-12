@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:cashflow/core/error/result.dart';
 import 'package:cashflow/core/error/failures.dart';
 import 'package:cashflow/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:cashflow/features/transaction/domain/entities/transaction_with_category.dart';
+import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
 import 'package:cashflow/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
@@ -17,7 +17,7 @@ class TransactionUsecases {
     required this.budgetRepository,
   });
 
-  Future<Result<List<TransactionWithCategory>>> getAllTransactions() async {
+  Future<Result<List<TransactionWithBudget>>> getAllTransactions() async {
     try {
       final transactions = await transactionRepository.getAllTransactions();
       return success(transactions);
@@ -30,7 +30,7 @@ class TransactionUsecases {
     }
   }
 
-  Future<Result<List<TransactionWithCategory>>> getTransactionsByDateRange(DateTime startDate, DateTime endDate) async {
+  Future<Result<List<TransactionWithBudget>>> getTransactionsByDateRange(DateTime startDate, DateTime endDate) async {
     try {
       if (startDate.isAfter(endDate)) {
         return failure(ValidationFailure(
@@ -53,27 +53,27 @@ class TransactionUsecases {
     }
   }
 
-  Future<Result<List<TransactionWithCategory>>> getTransactionsByCategory(String categoryId) async {
+  Future<Result<List<TransactionWithBudget>>> getTransactionsByBudget(String budgetId) async {
     try {
-      if (categoryId.trim().isEmpty) {
+      if (budgetId.trim().isEmpty) {
         return failure(ValidationFailure(
-          message: 'Category ID cannot be empty',
-          fieldErrors: {'categoryId': ['Category ID is required']},
+          message: 'Budget ID cannot be empty',
+          fieldErrors: {'budgetId': ['Budget ID is required']},
         ));
       }
       
-      final transactions = await transactionRepository.getTransactionsByCategory(categoryId);
+      final transactions = await transactionRepository.getTransactionsByBudget(budgetId);
       return success(transactions);
     } catch (e, stackTrace) {
       return failure(TransactionFailure(
-        message: 'Failed to get transactions by category: ${e.toString()}',
+        message: 'Failed to get transactions by budget: ${e.toString()}',
         originalError: e,
         stackTrace: stackTrace,
       ));
     }
   }
 
-  Future<Result<List<TransactionWithCategory>>> getTransactionsByType(TransactionType type) async {
+  Future<Result<List<TransactionWithBudget>>> getTransactionsByType(TransactionType type) async {
     try {
       final transactions = await transactionRepository.getTransactionsByType(type);
       return success(transactions);
@@ -86,7 +86,7 @@ class TransactionUsecases {
     }
   }
 
-  Future<Result<TransactionWithCategory>> getTransactionById(String id) async {
+  Future<Result<TransactionWithBudget>> getTransactionById(String id) async {
     try {
       if (id.trim().isEmpty) {
         return failure(ValidationFailure(
@@ -168,20 +168,20 @@ class TransactionUsecases {
     }
   }
 
-  Future<Result<double>> getTotalByCategory(String categoryId) async {
+  Future<Result<double>> getTotalByBudget(String budgetId) async {
     try {
-      if (categoryId.trim().isEmpty) {
+      if (budgetId.trim().isEmpty) {
         return failure(ValidationFailure(
-          message: 'Category ID cannot be empty',
-          fieldErrors: {'categoryId': ['Category ID is required']},
+          message: 'Budget ID cannot be empty',
+          fieldErrors: {'budgetId': ['Budget ID is required']},
         ));
       }
       
-      final total = await transactionRepository.getTotalByCategory(categoryId);
+      final total = await transactionRepository.getTotalByBudget(budgetId);
       return success(total);
     } catch (e, stackTrace) {
       return failure(TransactionFailure(
-        message: 'Failed to get total by category: ${e.toString()}',
+        message: 'Failed to get total by budget: ${e.toString()}',
         originalError: e,
         stackTrace: stackTrace,
       ));
@@ -201,12 +201,12 @@ class TransactionUsecases {
     }
   }
 
-  Future<Result<double>> getTotalByCategoryAndDateRange(String categoryId, DateTime startDate, DateTime endDate) async {
+  Future<Result<double>> getTotalByBudgetAndDateRange(String budgetId, DateTime startDate, DateTime endDate) async {
     try {
-      if (categoryId.trim().isEmpty) {
+      if (budgetId.trim().isEmpty) {
         return failure(ValidationFailure(
-          message: 'Category ID cannot be empty',
-          fieldErrors: {'categoryId': ['Category ID is required']},
+          message: 'Budget ID cannot be empty',
+          fieldErrors: {'budgetId': ['Budget ID is required']},
         ));
       }
       
@@ -220,11 +220,11 @@ class TransactionUsecases {
         ));
       }
       
-      final total = await transactionRepository.getTotalByCategoryAndDateRange(categoryId, startDate, endDate);
+      final total = await transactionRepository.getTotalByBudgetAndDateRange(budgetId, startDate, endDate);
       return success(total);
     } catch (e, stackTrace) {
       return failure(TransactionFailure(
-        message: 'Failed to get total by category and date range: ${e.toString()}',
+        message: 'Failed to get total by budget and date range: ${e.toString()}',
         originalError: e,
         stackTrace: stackTrace,
       ));
@@ -236,7 +236,7 @@ class TransactionUsecases {
     debugPrint('🔍 [VALIDATION DEBUG] Validating transaction:');
     debugPrint('   📝 Title: ${transaction.title}');
     debugPrint('   💰 Amount: ${transaction.amount} (${transaction.type})');
-    debugPrint('   🏷️  Category: ${transaction.categoryId}');
+    debugPrint('   🏷️  Budget: ${transaction.budgetId}');
     debugPrint('   📝 Description: ${transaction.description ?? 'null'}');
     
     final Map<String, List<String>> fieldErrors = {};
@@ -255,8 +255,8 @@ class TransactionUsecases {
       fieldErrors['amount'] = ['Expense amount must be negative'];
     }
     
-    if (transaction.categoryId.trim().isEmpty) {
-      fieldErrors['categoryId'] = ['Category selection is required'];
+    if (transaction.budgetId.trim().isEmpty) {
+      fieldErrors['budgetId'] = ['Budget selection is required'];
     }
     
     if (fieldErrors.isNotEmpty) {
@@ -279,7 +279,7 @@ class TransactionUsecases {
   }
 
   Future<Result<BudgetRemainingInfo>> calculateRemainingBudgetAfterExpense(
-    String categoryId,
+    String budgetId,
     double expenseAmount,
   ) async {
     try {
@@ -287,20 +287,19 @@ class TransactionUsecases {
       final startOfMonth = DateTime(currentDate.year, currentDate.month, 1);
       final endOfMonth = DateTime(currentDate.year, currentDate.month + 1, 0);
 
-      final budgets = await budgetRepository.getBudgetsByCategory(categoryId);
+      final currentBudget = await budgetRepository.getBudgetById(budgetId);
       
-      if (budgets.isEmpty) {
-        return failure(BudgetNotFoundFailure(categoryId));
+      if (currentBudget == null) {
+        return failure(BudgetNotFoundFailure(budgetId));
       }
 
-      final currentBudget = budgets.first;
-      final category = await budgetRepository.getCategoryById(categoryId);
+      final category = await budgetRepository.getCategoryById(currentBudget.categoryId);
       
       if (category == null) {
-        return failure(CategoryNotFoundFailure(categoryId));
+        return failure(CategoryNotFoundFailure(currentBudget.categoryId));
       }
       
-      final totalResult = await getTotalByCategoryAndDateRange(categoryId, startOfMonth, endOfMonth);
+      final totalResult = await getTotalByBudgetAndDateRange(budgetId, startOfMonth, endOfMonth);
       
       if (totalResult.isFailure) {
         return failure(totalResult.failure!);
