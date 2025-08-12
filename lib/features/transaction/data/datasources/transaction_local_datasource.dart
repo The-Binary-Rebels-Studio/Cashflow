@@ -7,15 +7,15 @@ import 'package:cashflow/features/transaction/domain/entities/transaction_entity
 abstract class TransactionLocalDatasource {
   Future<List<TransactionModel>> getAllTransactions();
   Future<List<TransactionModel>> getTransactionsByDateRange(DateTime startDate, DateTime endDate);
-  Future<List<TransactionModel>> getTransactionsByCategory(String categoryId);
+  Future<List<TransactionModel>> getTransactionsByBudget(String budgetId);
   Future<List<TransactionModel>> getTransactionsByType(TransactionType type);
   Future<TransactionModel?> getTransactionById(String id);
   Future<void> insertTransaction(TransactionModel transaction);
   Future<void> updateTransaction(TransactionModel transaction);
   Future<void> deleteTransaction(String id);
-  Future<double> getTotalByCategory(String categoryId);
+  Future<double> getTotalByBudget(String budgetId);
   Future<double> getTotalByType(TransactionType type);
-  Future<double> getTotalByCategoryAndDateRange(String categoryId, DateTime startDate, DateTime endDate);
+  Future<double> getTotalByBudgetAndDateRange(String budgetId, DateTime startDate, DateTime endDate);
 }
 
 @Injectable(as: TransactionLocalDatasource)
@@ -45,11 +45,11 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
   }
 
   @override
-  Future<List<TransactionModel>> getTransactionsByCategory(String categoryId) async {
+  Future<List<TransactionModel>> getTransactionsByBudget(String budgetId) async {
     final List<Map<String, dynamic>> maps = await _database.query(
       'transactions',
-      where: 'category_id = ?',
-      whereArgs: [categoryId],
+      where: 'budget_id = ?',
+      whereArgs: [budgetId],
       orderBy: 'date DESC',
     );
     return maps.map((map) => TransactionModel.fromMap(map)).toList();
@@ -84,7 +84,7 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
     debugPrint('💾 [INSERT DEBUG] Inserting transaction:');
     debugPrint('   📝 Title: ${transaction.title}');
     debugPrint('   💰 Amount: ${transaction.amount}');
-    debugPrint('   🏷️  Category: ${transaction.categoryId}');
+    debugPrint('   🏷️  Budget: ${transaction.budgetId}');
     debugPrint('   📅 Date: ${transaction.date}');
     debugPrint('   🏛️  Type: ${transaction.type}');
     debugPrint('---');
@@ -119,10 +119,10 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
   }
 
   @override
-  Future<double> getTotalByCategory(String categoryId) async {
+  Future<double> getTotalByBudget(String budgetId) async {
     final List<Map<String, dynamic>> result = await _database.rawQuery(
-      'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE category_id = ?',
-      [categoryId],
+      'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE budget_id = ?',
+      [budgetId],
     );
     return (result.first['total'] as num).toDouble();
   }
@@ -137,28 +137,28 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
   }
 
   @override
-  Future<double> getTotalByCategoryAndDateRange(String categoryId, DateTime startDate, DateTime endDate) async {
+  Future<double> getTotalByBudgetAndDateRange(String budgetId, DateTime startDate, DateTime endDate) async {
     // Use date-only comparison to avoid time precision issues
     final startDateString = DateTime(startDate.year, startDate.month, startDate.day).toIso8601String();
     final endDateString = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59).toIso8601String();
     
-    debugPrint('🔍 [QUERY DEBUG] getTotalByCategoryAndDateRange:');
-    debugPrint('   🏷️  Category: $categoryId');
+    debugPrint('🔍 [QUERY DEBUG] getTotalByBudgetAndDateRange:');
+    debugPrint('   🏷️  Budget: $budgetId');
     debugPrint('   📅 Period: $startDateString to $endDateString');
     
     // Debug: Show all transactions for this category first
     final allTransactions = await _database.rawQuery(
-      'SELECT title, amount, date FROM transactions WHERE category_id = ? ORDER BY date DESC',
-      [categoryId],
+      'SELECT title, amount, date FROM transactions WHERE budget_id = ? ORDER BY date DESC',
+      [budgetId],
     );
-    debugPrint('   📊 All transactions for category $categoryId:');
+    debugPrint('   📊 All transactions for budget $budgetId:');
     for (final tx in allTransactions.take(5)) { // Show max 5 recent transactions
       debugPrint('     - ${tx['title']}: ${tx['amount']} on ${tx['date']}');
     }
     
     final List<Map<String, dynamic>> result = await _database.rawQuery(
-      'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE category_id = ? AND date >= ? AND date <= ?',
-      [categoryId, startDateString, endDateString],
+      'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE budget_id = ? AND date >= ? AND date <= ?',
+      [budgetId, startDateString, endDateString],
     );
     
     final total = (result.first['total'] as num).toDouble();

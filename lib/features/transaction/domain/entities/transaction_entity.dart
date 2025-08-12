@@ -6,7 +6,7 @@ class TransactionEntity extends Equatable {
   final String title;
   final String? description;
   final double amount;
-  final String categoryId;
+  final String budgetId;
   final TransactionType type;
   final DateTime date;
   final DateTime createdAt;
@@ -17,7 +17,7 @@ class TransactionEntity extends Equatable {
     required this.title,
     this.description,
     required this.amount,
-    required this.categoryId,
+    required this.budgetId,
     required this.type,
     required this.date,
     required this.createdAt,
@@ -29,7 +29,7 @@ class TransactionEntity extends Equatable {
     String? title,
     String? description,
     double? amount,
-    String? categoryId,
+    String? budgetId,
     TransactionType? type,
     DateTime? date,
     DateTime? createdAt,
@@ -40,7 +40,7 @@ class TransactionEntity extends Equatable {
       title: title ?? this.title,
       description: description ?? this.description,
       amount: amount ?? this.amount,
-      categoryId: categoryId ?? this.categoryId,
+      budgetId: budgetId ?? this.budgetId,
       type: type ?? this.type,
       date: date ?? this.date,
       createdAt: createdAt ?? this.createdAt,
@@ -58,7 +58,7 @@ class TransactionEntity extends Equatable {
         title,
         description,
         amount,
-        categoryId,
+        budgetId,
         type,
         date,
         createdAt,

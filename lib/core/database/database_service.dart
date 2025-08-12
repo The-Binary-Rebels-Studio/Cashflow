@@ -89,20 +89,20 @@ class DatabaseService {
         title TEXT NOT NULL,
         description TEXT,
         amount REAL NOT NULL,
-        category_id TEXT NOT NULL,
+        budget_id TEXT NOT NULL,
         type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
         date TEXT NOT NULL,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
-        FOREIGN KEY (category_id) REFERENCES categories (id)
+        FOREIGN KEY (budget_id) REFERENCES budgets (id)
       )
     ''');
     
     // Create indexes for transactions
-    await db.execute('CREATE INDEX idx_transactions_category ON transactions(category_id)');
+    await db.execute('CREATE INDEX idx_transactions_budget ON transactions(budget_id)');
     await db.execute('CREATE INDEX idx_transactions_type ON transactions(type)');
     await db.execute('CREATE INDEX idx_transactions_date ON transactions(date)');
-    await db.execute('CREATE INDEX idx_transactions_date_category ON transactions(date, category_id)');
+    await db.execute('CREATE INDEX idx_transactions_date_budget ON transactions(date, budget_id)');
   }
 
   static Future<void> _migrateToVersion(Database db, int version) async {
