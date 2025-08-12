@@ -751,6 +751,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get filterThisYear => 'Tahun Ini';
 
   @override
+  String get filterSpecificDate => 'Tanggal Tertentu';
+
+  @override
   String get dateToday => 'Hari Ini';
 
   @override

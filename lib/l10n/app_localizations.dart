@@ -1528,6 +1528,12 @@ abstract class AppLocalizations {
   /// **'This Year'**
   String get filterThisYear;
 
+  /// No description provided for @filterSpecificDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Specific Date'**
+  String get filterSpecificDate;
+
   /// No description provided for @dateToday.
   ///
   /// In en, this message translates to:

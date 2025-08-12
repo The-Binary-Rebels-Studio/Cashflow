@@ -748,6 +748,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterThisYear => 'This Year';
 
   @override
+  String get filterSpecificDate => 'Specific Date';
+
+  @override
   String get dateToday => 'Today';
 
   @override

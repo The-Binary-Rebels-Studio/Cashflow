@@ -271,5 +271,13 @@
   "saveTransaction": "Simpan Transaksi",
   "cancel": "Batal",
   "transactionSaved": "Transaksi berjaya disimpan!",
-  "transactionSaveFailed": "Gagal menyimpan transaksi"
+  "transactionSaveFailed": "Gagal menyimpan transaksi",
+  
+  "filterToday": "Hari Ini",
+  "filterThisWeek": "Minggu Ini",
+  "filterThisMonth": "Bulan Ini",
+  "filterThisYear": "Tahun Ini",
+  "filterSpecificDate": "Tarikh Tertentu",
+  "dateToday": "Hari Ini",
+  "dateYesterday": "Semalam"
 }

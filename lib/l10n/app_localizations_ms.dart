@@ -741,22 +741,25 @@ class AppLocalizationsMs extends AppLocalizations {
   String get transactionSaveFailed => 'Gagal menyimpan transaksi';
 
   @override
-  String get filterToday => 'Today';
+  String get filterToday => 'Hari Ini';
 
   @override
-  String get filterThisWeek => 'This Week';
+  String get filterThisWeek => 'Minggu Ini';
 
   @override
-  String get filterThisMonth => 'This Month';
+  String get filterThisMonth => 'Bulan Ini';
 
   @override
-  String get filterThisYear => 'This Year';
+  String get filterThisYear => 'Tahun Ini';
 
   @override
-  String get dateToday => 'Today';
+  String get filterSpecificDate => 'Tarikh Tertentu';
 
   @override
-  String get dateYesterday => 'Yesterday';
+  String get dateToday => 'Hari Ini';
+
+  @override
+  String get dateYesterday => 'Semalam';
 
   @override
   String get transactionDetails => 'Transaction Details';

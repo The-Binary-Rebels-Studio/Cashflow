@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'result.dart';
 import 'failures.dart';
 
-/// Extension methods for working with Result in Bloc/Cubit context
+/// Extension methods for working with Result in Bloc context
 extension ResultBlocExtensions<T> on Result<T> {
   /// Handle the result and emit appropriate states
   void handleResult<State>({
