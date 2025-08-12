@@ -11,9 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:cashflow/core/database/database_service.dart' as _i70;
 import 'package:cashflow/core/di/injection_module.dart' as _i104;
-import 'package:cashflow/core/localization/locale_manager.dart' as _i694;
+import 'package:cashflow/core/localization/locale_bloc.dart' as _i581;
 import 'package:cashflow/core/localization/locale_service.dart' as _i751;
-import 'package:cashflow/core/services/currency_service.dart' as _i853;
+import 'package:cashflow/core/services/currency_bloc.dart' as _i410;
 import 'package:cashflow/features/budget_management/data/datasources/budget_local_datasource.dart'
     as _i297;
 import 'package:cashflow/features/budget_management/data/datasources/category_local_datasource.dart'
@@ -26,8 +26,8 @@ import 'package:cashflow/features/budget_management/domain/repositories/budget_m
     as _i165;
 import 'package:cashflow/features/budget_management/domain/usecases/budget_management/budget_management_usecases.dart'
     as _i458;
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart'
-    as _i164;
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart'
+    as _i921;
 import 'package:cashflow/features/localization/data/datasources/localization_local_datasource.dart'
     as _i176;
 import 'package:cashflow/features/localization/data/repositories/localization_repository_impl.dart'
@@ -50,8 +50,8 @@ import 'package:cashflow/features/onboarding/domain/usecases/reset_onboarding.da
     as _i212;
 import 'package:cashflow/features/onboarding/domain/usecases/save_onboarding_settings.dart'
     as _i133;
-import 'package:cashflow/features/onboarding/presentation/cubit/onboarding_cubit.dart'
-    as _i1062;
+import 'package:cashflow/features/onboarding/presentation/bloc/onboarding_bloc.dart'
+    as _i669;
 import 'package:cashflow/features/transaction/data/datasources/transaction_local_datasource.dart'
     as _i417;
 import 'package:cashflow/features/transaction/data/repositories/transaction_repository_impl.dart'
@@ -60,8 +60,8 @@ import 'package:cashflow/features/transaction/domain/repositories/transaction_re
     as _i935;
 import 'package:cashflow/features/transaction/domain/usecases/transaction_usecases.dart'
     as _i528;
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart'
-    as _i550;
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart'
+    as _i23;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:sqflite/sqflite.dart' as _i779;
@@ -106,11 +106,11 @@ extension GetItInjectableX on _i174.GetIt {
         categoryDataSource: gh<_i985.CategoryLocalDataSource>(),
       ),
     );
-    gh.singleton<_i694.LocaleManager>(
-      () => _i694.LocaleManager(gh<_i751.LocaleService>()),
+    gh.singleton<_i581.LocaleBloc>(
+      () => _i581.LocaleBloc(gh<_i751.LocaleService>()),
     );
-    gh.singleton<_i853.CurrencyService>(
-      () => _i853.CurrencyService(gh<_i70.DatabaseService>()),
+    gh.singleton<_i410.CurrencyBloc>(
+      () => _i410.CurrencyBloc(gh<_i70.DatabaseService>()),
     );
     gh.factory<_i458.GetBudgetCategories>(
       () => _i458.GetBudgetCategories(gh<_i165.BudgetManagementRepository>()),
@@ -170,26 +170,20 @@ extension GetItInjectableX on _i174.GetIt {
         localDataSource: gh<_i176.LocalizationLocalDataSource>(),
       ),
     );
-    gh.factory<_i563.ChangeLocale>(
-      () => _i563.ChangeLocale(
-        gh<_i738.LocalizationRepository>(),
-        gh<_i694.LocaleManager>(),
-      ),
-    );
-    gh.factory<_i133.SaveOnboardingSettings>(
-      () => _i133.SaveOnboardingSettings(
-        gh<_i1001.OnboardingRepository>(),
-        gh<_i563.ChangeLocale>(),
-      ),
-    );
     gh.factory<_i935.TransactionRepository>(
       () => _i106.TransactionRepositoryImpl(
         localDatasource: gh<_i417.TransactionLocalDatasource>(),
         budgetManagementRepository: gh<_i165.BudgetManagementRepository>(),
       ),
     );
-    gh.factory<_i164.BudgetManagementCubit>(
-      () => _i164.BudgetManagementCubit(
+    gh.factory<_i563.ChangeLocale>(
+      () => _i563.ChangeLocale(
+        gh<_i738.LocalizationRepository>(),
+        gh<_i581.LocaleBloc>(),
+      ),
+    );
+    gh.factory<_i921.BudgetManagementBloc>(
+      () => _i921.BudgetManagementBloc(
         gh<_i458.GetBudgetCategories>(),
         gh<_i458.GetExpenseBudgetCategories>(),
         gh<_i458.GetIncomeBudgetCategories>(),
@@ -203,8 +197,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i458.InitializeBudgetCategories>(),
       ),
     );
-    gh.factory<_i1062.OnboardingCubit>(
-      () => _i1062.OnboardingCubit(
+    gh.factory<_i669.OnboardingBloc>(
+      () => _i669.OnboardingBloc(
         gh<_i596.GetOnboardingStatus>(),
         gh<_i878.CompleteOnboarding>(),
         gh<_i212.ResetOnboarding>(),
@@ -217,8 +211,14 @@ extension GetItInjectableX on _i174.GetIt {
         budgetRepository: gh<_i165.BudgetManagementRepository>(),
       ),
     );
-    gh.factory<_i550.TransactionCubit>(
-      () => _i550.TransactionCubit(
+    gh.factory<_i133.SaveOnboardingSettings>(
+      () => _i133.SaveOnboardingSettings(
+        gh<_i1001.OnboardingRepository>(),
+        gh<_i563.ChangeLocale>(),
+      ),
+    );
+    gh.factory<_i23.TransactionBloc>(
+      () => _i23.TransactionBloc(
         gh<_i528.TransactionUsecases>(),
         gh<_i165.BudgetManagementRepository>(),
       ),

@@ -166,13 +166,6 @@ class _MenuSection extends StatelessWidget {
           ),
           const Divider(height: 1),
           _MenuItem(
-            icon: Icons.category,
-            title: l10n.categories,
-            color: Colors.purple,
-            onTap: () => context.push(AppConstants.budgetManagementRoute),
-          ),
-          const Divider(height: 1),
-          _MenuItem(
             icon: Icons.bug_report,
             title: l10n.reportBug,
             color: Colors.orange,
