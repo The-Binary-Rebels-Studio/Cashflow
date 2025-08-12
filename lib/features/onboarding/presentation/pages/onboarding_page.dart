@@ -5,10 +5,11 @@ import 'package:cashflow/core/constants/app_constants.dart';
 import 'package:cashflow/core/di/injection.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/core/models/locale_model.dart';
-import 'package:cashflow/core/localization/locale_manager.dart';
+import 'package:cashflow/core/localization/locale_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import 'package:cashflow/features/onboarding/presentation/cubit/onboarding_cubit.dart';
-import 'package:cashflow/features/onboarding/presentation/cubit/onboarding_state.dart';
+import 'package:cashflow/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:cashflow/features/onboarding/presentation/bloc/onboarding_event.dart';
+import 'package:cashflow/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:cashflow/features/onboarding/presentation/widgets/currency_selection_modal.dart';
 import 'package:cashflow/features/onboarding/presentation/widgets/locale_selection_modal.dart';
 import 'package:cashflow/features/onboarding/domain/entities/onboarding_settings.dart';
@@ -32,8 +33,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void initState() {
     super.initState();
     // Initialize selected locale based on current app locale
-    final localeManager = context.read<LocaleManager>();
-    final currentLocale = localeManager.currentLocale;
+    final localeBloc = context.read<LocaleBloc>();
+    final currentLocale = localeBloc.currentLocale;
     _selectedLocale = LocaleData.getLocaleByCode(currentLocale.languageCode) ?? LocaleData.supportedLocales.first;
   }
 
@@ -84,8 +85,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
       ),
       OnboardingData(
-        title: 'Choose Language',
-        subtitle: 'Select your preferred language for the app',
+        title: l10n.onboardingChooseLanguage,
+        subtitle: l10n.onboardingSelectPreferredLanguage,
         icon: Icons.language,
         color: Colors.blue,
         gradient: const LinearGradient(
@@ -130,9 +131,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final pages = _getPages(l10n);
     
     return BlocProvider(
-      create: (context) => getIt<OnboardingCubit>(),
+      create: (context) => getIt<OnboardingBloc>(),
       child: Builder(
-        builder: (context) => BlocListener<OnboardingCubit, OnboardingState>(
+        builder: (context) => BlocListener<OnboardingBloc, OnboardingState>(
           listener: (context, state) {
             if (state is OnboardingCompleted) {
               context.go(AppConstants.mainRoute);

@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/features/home/presentation/pages/home_page.dart';
 import 'package:cashflow/features/transaction/presentation/pages/transaction_page.dart';
 import 'package:cashflow/features/profile/presentation/pages/profile_page.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -43,9 +44,9 @@ class _MainNavigationState extends State<MainNavigation> {
   
   void _triggerTransactionRefresh() {
     // This will be called when transaction tab becomes active
-    // Refresh transactions via cubit
+    // Refresh transactions via bloc
     if (mounted) {
-      context.read<TransactionCubit>().loadTransactions();
+      context.read<TransactionBloc>().add(const TransactionDataRequested());
     }
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 
 class BalanceCard extends StatelessWidget {
@@ -65,7 +65,7 @@ class BalanceCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          BlocBuilder<CurrencyService, CurrencyModel>(
+          BlocBuilder<CurrencyBloc, CurrencyModel>(
             builder: (context, currency) {
               final formattedBalance = isBalanceVisible 
                 ? '${currency.symbol} 15,750,000' // TODO: Use real balance data

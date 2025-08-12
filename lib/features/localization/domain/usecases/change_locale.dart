@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:cashflow/features/localization/domain/repositories/localization_repository.dart';
-import 'package:cashflow/core/localization/locale_manager.dart';
+import 'package:cashflow/core/localization/locale_bloc.dart';
+import 'package:cashflow/core/localization/locale_event.dart';
 
 @injectable
 class ChangeLocale {
   final LocalizationRepository _repository;
-  final LocaleManager _localeManager;
+  final LocaleBloc _localeBloc;
 
-  ChangeLocale(this._repository, this._localeManager);
+  ChangeLocale(this._repository, this._localeBloc);
 
   Future<void> call(Locale locale) async {
     // Save to local storage via repository
     await _repository.setLocale(locale);
     
-    // Update app state immediately via LocaleManager
-    await _localeManager.changeLocale(locale);
+    // Update app state immediately via LocaleBloc
+    _localeBloc.add(LocaleChanged(locale: locale));
   }
 }

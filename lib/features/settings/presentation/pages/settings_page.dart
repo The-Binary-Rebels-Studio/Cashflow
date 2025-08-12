@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cashflow/core/localization/locale_manager.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/localization/locale_bloc.dart';
+import 'package:cashflow/core/localization/locale_event.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/services/currency_event.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
@@ -43,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
               _SettingsSection(
                 title: 'Preferences',
                 children: [
-                  BlocBuilder<LocaleManager, Locale>(
+                  BlocBuilder<LocaleBloc, Locale>(
                     builder: (context, locale) {
                       return _SettingsItem(
                         icon: Icons.language,
@@ -55,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   const Divider(height: 1),
-                  BlocBuilder<CurrencyService, CurrencyModel>(
+                  BlocBuilder<CurrencyBloc, CurrencyModel>(
                     builder: (context, currency) {
                       return _SettingsItem(
                         icon: Icons.attach_money,
@@ -101,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLanguageDialog() {
-    final localeManager = context.read<LocaleManager>();
+    final localeBloc = context.read<LocaleBloc>();
     
     showModalBottomSheet(
       context: context,
@@ -145,9 +147,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: 'English',
                   flag: '🇺🇸',
                   value: 'en',
-                  groupValue: localeManager.currentLocale.languageCode,
+                  groupValue: localeBloc.currentLocale.languageCode,
                   onChanged: (value) {
-                    localeManager.changeLocale(Locale(value!));
+                    localeBloc.add(LocaleChanged(locale: Locale(value!)));
                     Navigator.of(context).pop();
                   },
                 ),
@@ -157,9 +159,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: 'Bahasa Indonesia',
                   flag: '🇮🇩',
                   value: 'id',
-                  groupValue: localeManager.currentLocale.languageCode,
+                  groupValue: localeBloc.currentLocale.languageCode,
                   onChanged: (value) {
-                    localeManager.changeLocale(Locale(value!));
+                    localeBloc.add(LocaleChanged(locale: Locale(value!)));
                     Navigator.of(context).pop();
                   },
                 ),
@@ -169,9 +171,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: 'Bahasa Melayu',
                   flag: '🇲🇾',
                   value: 'ms',
-                  groupValue: localeManager.currentLocale.languageCode,
+                  groupValue: localeBloc.currentLocale.languageCode,
                   onChanged: (value) {
-                    localeManager.changeLocale(Locale(value!));
+                    localeBloc.add(LocaleChanged(locale: Locale(value!)));
                     Navigator.of(context).pop();
                   },
                 ),
@@ -185,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showCurrencyDialog() {
-    final currencyService = context.read<CurrencyService>();
+    final currencyBloc = context.read<CurrencyBloc>();
     
     showModalBottomSheet(
       context: context,
@@ -238,9 +240,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     final currency = CurrencyData.currencies[index];
                     return _CurrencyOption(
                       currency: currency,
-                      isSelected: currency.code == currencyService.selectedCurrency.code,
+                      isSelected: currency.code == currencyBloc.selectedCurrency.code,
                       onChanged: () {
-                        currencyService.setSelectedCurrency(currency);
+                        currencyBloc.add(CurrencySelected(currency: currency));
                         Navigator.of(context).pop();
                       },
                     );

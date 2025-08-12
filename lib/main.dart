@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/di/injection.dart';
-import 'core/localization/locale_manager.dart';
-import 'core/services/currency_service.dart';
-import 'features/budget_management/presentation/cubit/budget_management_cubit.dart';
-import 'features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'core/localization/locale_bloc.dart';
+import 'core/localization/locale_event.dart';
+import 'core/services/currency_bloc.dart';
+import 'core/services/currency_event.dart';
+import 'features/budget_management/presentation/bloc/budget_management_bloc.dart';
+import 'features/budget_management/presentation/bloc/budget_management_event.dart';
+import 'features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
@@ -15,49 +18,49 @@ void main() async {
   
   await configureDependencies();
   
-  final localeManager = getIt<LocaleManager>();
-  await localeManager.loadSavedLocale();
+  final localeBloc = getIt<LocaleBloc>();
+  localeBloc.add(const LocaleLoaded());
   
-  final currencyService = getIt<CurrencyService>();
-  await currencyService.initializeService();
+  final currencyBloc = getIt<CurrencyBloc>();
+  currencyBloc.add(const CurrencyInitialized());
   
-  final budgetManagementCubit = getIt<BudgetManagementCubit>();
-  await budgetManagementCubit.initializeBudgetManagement();
+  final budgetManagementBloc = getIt<BudgetManagementBloc>();
+  budgetManagementBloc.add(const BudgetManagementInitialized());
   
-  final transactionCubit = getIt<TransactionCubit>();
+  final transactionBloc = getIt<TransactionBloc>();
   
   runApp(CashFlowApp(
-    localeManager: localeManager,
-    currencyService: currencyService,
-    budgetManagementCubit: budgetManagementCubit,
-    transactionCubit: transactionCubit,
+    localeBloc: localeBloc,
+    currencyBloc: currencyBloc,
+    budgetManagementBloc: budgetManagementBloc,
+    transactionBloc: transactionBloc,
   ));
 }
 
 class CashFlowApp extends StatelessWidget {
-  final LocaleManager localeManager;
-  final CurrencyService currencyService;
-  final BudgetManagementCubit budgetManagementCubit;
-  final TransactionCubit transactionCubit;
+  final LocaleBloc localeBloc;
+  final CurrencyBloc currencyBloc;
+  final BudgetManagementBloc budgetManagementBloc;
+  final TransactionBloc transactionBloc;
   
   const CashFlowApp({
     super.key,
-    required this.localeManager,
-    required this.currencyService,
-    required this.budgetManagementCubit,
-    required this.transactionCubit,
+    required this.localeBloc,
+    required this.currencyBloc,
+    required this.budgetManagementBloc,
+    required this.transactionBloc,
   });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: localeManager),
-        BlocProvider.value(value: currencyService),
-        BlocProvider.value(value: budgetManagementCubit),
-        BlocProvider.value(value: transactionCubit),
+        BlocProvider.value(value: localeBloc),
+        BlocProvider.value(value: currencyBloc),
+        BlocProvider.value(value: budgetManagementBloc),
+        BlocProvider.value(value: transactionBloc),
       ],
-      child: BlocBuilder<LocaleManager, Locale>(
+      child: BlocBuilder<LocaleBloc, Locale>(
         builder: (context, locale) {
           return MaterialApp.router(
             title: 'CashFlow',
@@ -72,7 +75,7 @@ class CashFlowApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: LocaleManager.supportedLocales,
+            supportedLocales: LocaleBloc.supportedLocales,
           );
         },
       ),
