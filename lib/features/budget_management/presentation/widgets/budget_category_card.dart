@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
 
 class BudgetCategoryCard extends StatelessWidget {
   final CategoryEntity category;
@@ -18,6 +20,43 @@ class BudgetCategoryCard extends StatelessWidget {
     required this.onTap,
   });
 
+  Future<double> _calculateTotalSpent(BuildContext context) async {
+    try {
+      final transactionBloc = context.read<TransactionBloc>();
+      double totalSpent = 0;
+
+      // Calculate spent amount for each budget in this category
+      for (final budget in budgets) {
+        final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
+        final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
+        
+        final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
+          budget.id,
+          periodStart,
+          periodEnd,
+        );
+        
+        result.fold(
+          onSuccess: (spentInBudget) {
+            debugPrint('💰 [DEBUG] Budget: ${budget.name}, Period: ${periodStart} to ${periodEnd}');
+            debugPrint('💰 [DEBUG] Raw spent amount: $spentInBudget');
+            final absSpent = spentInBudget.abs();
+            totalSpent += absSpent;
+            debugPrint('💰 [DEBUG] Abs spent: $absSpent, Total so far: $totalSpent');
+          },
+          onFailure: (failure) {
+            debugPrint('❌ Error calculating spent for budget ${budget.name}: ${failure.message}');
+          },
+        );
+      }
+
+      return totalSpent;
+    } catch (e) {
+      debugPrint('Error calculating total spent for category: $e');
+      return 0.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final totalBudget = budgets.fold<double>(
@@ -25,10 +64,19 @@ class BudgetCategoryCard extends StatelessWidget {
       (sum, budget) => sum + budget.amount,
     );
 
-    final totalSpent = 0.0; // TODO: Calculate from actual transactions
-    final remaining = totalBudget - totalSpent;
-    final spentPercentage = totalBudget > 0 ? (totalSpent / totalBudget) : 0.0;
-    
+    return FutureBuilder<double>(
+      future: _calculateTotalSpent(context),
+      builder: (context, snapshot) {
+        final totalSpent = snapshot.data ?? 0.0;
+        final remaining = totalBudget - totalSpent;
+        final spentPercentage = totalBudget > 0 ? (totalSpent / totalBudget) : 0.0;
+
+        return _buildCard(context, totalBudget, totalSpent, remaining, spentPercentage);
+      },
+    );
+  }
+
+  Widget _buildCard(BuildContext context, double totalBudget, double totalSpent, double remaining, double spentPercentage) {
     // Safe parsing of category color
     Color categoryColor;
     try {
@@ -145,7 +193,7 @@ class BudgetCategoryCard extends StatelessWidget {
                   ),
                   
                   // Total Amount
-                  BlocBuilder<CurrencyService, CurrencyModel>(
+                  BlocBuilder<CurrencyBloc, CurrencyModel>(
                     builder: (context, currency) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -225,7 +273,7 @@ class BudgetCategoryCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 
                 // Spent vs Remaining
-                BlocBuilder<CurrencyService, CurrencyModel>(
+                BlocBuilder<CurrencyBloc, CurrencyModel>(
                   builder: (context, currency) {
                     return Row(
                       children: [
@@ -275,7 +323,7 @@ class BudgetCategoryCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      BlocBuilder<CurrencyService, CurrencyModel>(
+                      BlocBuilder<CurrencyBloc, CurrencyModel>(
                         builder: (context, currency) {
                           return Text(
                             '${currency.symbol}${budget.amount.toStringAsFixed(0)}',

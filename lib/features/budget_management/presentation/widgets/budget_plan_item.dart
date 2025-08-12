@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetPlanItem extends StatelessWidget {
@@ -26,18 +27,17 @@ class BudgetPlanItem extends StatelessWidget {
   // Calculate actual spent amount for this budget using Result pattern
   Future<double> _calculateSpentAmount(BuildContext context) async {
     try {
-      final transactionCubit = context.read<TransactionCubit>();
+      final transactionBloc = context.read<TransactionBloc>();
       
-      // Calculate current period for this recurring budget
-      final budgetModel = BudgetModel.fromEntity(budget);
-      final currentPeriodStart = budgetModel.getCurrentPeriodStart();
-      final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
+      final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
       
-      // Get total spent using Result pattern for current period
-      final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
-        budget.categoryId,
-        currentPeriodStart,
-        currentPeriodEnd,
+      // Get total spent using Result pattern for budget-specific period
+      final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
+        budget.id,
+        periodStart,
+        periodEnd,
       );
       
       return result.when(
@@ -47,7 +47,7 @@ class BudgetPlanItem extends StatelessWidget {
           debugPrint('   📊 Budget: ${budget.name} (${budget.amount})');
           debugPrint('   🏷️  Category: ${budget.categoryId}');
           debugPrint('   🔄 Period Type: ${budget.period}');
-          debugPrint('   📅 Current Period: ${currentPeriodStart.day}/${currentPeriodStart.month} - ${currentPeriodEnd.day}/${currentPeriodEnd.month}');
+          debugPrint('   📅 Budget Period: ${periodStart.day}/${periodStart.month} - ${periodEnd.day}/${periodEnd.month}');
           debugPrint('   💰 Total Spent (Current Period): $totalSpent');
           debugPrint('   📈 Spent (absolute): ${totalSpent.abs()}');
           debugPrint('   ✅ Remaining: ${budget.amount - totalSpent.abs()}');
@@ -228,7 +228,7 @@ class BudgetPlanItem extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    BlocBuilder<CurrencyService, CurrencyModel>(
+                    BlocBuilder<CurrencyBloc, CurrencyModel>(
                       builder: (context, currency) {
                         return Text(
                           '${currency.symbol}${budget.amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
@@ -354,7 +354,7 @@ class BudgetPlanItem extends StatelessWidget {
             const SizedBox(height: 16),
             
             // Stats Row
-            BlocBuilder<CurrencyService, CurrencyModel>(
+            BlocBuilder<CurrencyBloc, CurrencyModel>(
               builder: (context, currency) {
                 return Row(
                   children: [

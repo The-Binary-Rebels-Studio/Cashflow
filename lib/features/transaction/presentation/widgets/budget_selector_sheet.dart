@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 
 class BudgetSelectorSheet extends StatefulWidget {
   final BuildContext parentContext; // Context that has access to BlocProvider
@@ -614,26 +615,25 @@ class _BudgetTile extends StatelessWidget {
         '🔍 [BUDGET SELECTOR DEBUG] Category ID: ${budgetEntity!.categoryId}',
       );
 
-      final transactionCubit = parentContext.read<TransactionCubit>();
+      final transactionBloc = parentContext.read<TransactionBloc>();
       debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] TransactionCubit found: ${transactionCubit.runtimeType}',
+        '🔍 [BUDGET SELECTOR DEBUG] TransactionBloc found: ${transactionBloc.runtimeType}',
       );
 
-      // Calculate current period for this recurring budget
-      final budgetModel = BudgetModel.fromEntity(budgetEntity!);
-      final currentPeriodStart = budgetModel.getCurrentPeriodStart();
-      final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budgetEntity!);
+      final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budgetEntity!);
 
       debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] Period: ${currentPeriodStart.day}/${currentPeriodStart.month}/${currentPeriodStart.year} - ${currentPeriodEnd.day}/${currentPeriodEnd.month}/${currentPeriodEnd.year}',
+        '🔍 [BUDGET SELECTOR DEBUG] Period: ${periodStart.day}/${periodStart.month}/${periodStart.year} - ${periodEnd.day}/${periodEnd.month}/${periodEnd.year}',
       );
 
       // Get total spent using Result pattern for current period
-      final result = await transactionCubit.transactionUsecases
-          .getTotalByCategoryAndDateRange(
-            budgetEntity!.categoryId,
-            currentPeriodStart,
-            currentPeriodEnd,
+      final result = await transactionBloc.transactionUsecases
+          .getTotalByBudgetAndDateRange(
+            budgetEntity!.id,
+            periodStart,
+            periodEnd,
           );
 
       return result.when(
@@ -672,7 +672,7 @@ class _BudgetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyService = GetIt.instance<CurrencyService>();
+    final currencyBloc = GetIt.instance<CurrencyBloc>();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -754,7 +754,7 @@ class _BudgetTile extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      _buildSubtitle(context, currencyService),
+                      _buildSubtitle(context, currencyBloc),
                     ],
                   ),
                 ),
@@ -787,7 +787,7 @@ class _BudgetTile extends StatelessWidget {
     }
   }
 
-  Widget _buildSubtitle(BuildContext context, CurrencyService currencyService) {
+  Widget _buildSubtitle(BuildContext context, CurrencyBloc currencyBloc) {
     if (isAllOption) {
       return Text(
         AppLocalizations.of(context)!.showAllTransactions,
@@ -828,8 +828,8 @@ class _BudgetTile extends StatelessWidget {
             ],
             Text(
               remaining > 0
-                  ? '${AppLocalizations.of(context)!.remaining}: ${currencyService.formatAmount(remaining)} dari ${currencyService.formatAmount(budgetEntity!.amount)}'
-                  : '${AppLocalizations.of(context)!.overBudget}: ${currencyService.formatAmount(remaining.abs())} dari ${currencyService.formatAmount(budgetEntity!.amount)}',
+                  ? '${AppLocalizations.of(context)!.remaining}: ${currencyBloc.formatAmount(remaining)} dari ${currencyBloc.formatAmount(budgetEntity!.amount)}'
+                  : '${AppLocalizations.of(context)!.overBudget}: ${currencyBloc.formatAmount(remaining.abs())} dari ${currencyBloc.formatAmount(budgetEntity!.amount)}',
               style: TextStyle(
                 fontSize: 12,
                 color: remaining > 0 ? Colors.green[600] : Colors.red[600],

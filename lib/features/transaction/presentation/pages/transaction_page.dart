@@ -5,7 +5,8 @@ import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/transaction_header.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/transaction_list.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/transaction_fab.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class _TransactionPageState extends State<TransactionPage>
   late String _sortBy;
   String _searchQuery = '';
   bool _isSearching = false;
+  DateTime? _selectedSpecificDate;
   
   late List<String> _periods;
   late List<String> _budgets;
@@ -36,7 +38,7 @@ class _TransactionPageState extends State<TransactionPage>
     _loadBudgets();
     // Load transactions when page is first created
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TransactionCubit>().loadTransactions();
+      context.read<TransactionBloc>().add(const TransactionDataRequested());
     });
   }
 
@@ -49,6 +51,7 @@ class _TransactionPageState extends State<TransactionPage>
       l10n.filterThisWeek,
       l10n.filterThisMonth,
       l10n.filterThisYear,
+      l10n.filterSpecificDate, // Add specific date option
     ];
     _sortOptions = [
       l10n.sortByDate,
@@ -76,10 +79,26 @@ class _TransactionPageState extends State<TransactionPage>
 
   // Public method to refresh transactions from external call (like tab change)
   void refreshTransactions() {
-    // Refresh transaction data via cubit
-    context.read<TransactionCubit>().loadTransactions();
+    // Refresh transaction data via bloc
+    context.read<TransactionBloc>().add(const TransactionDataRequested());
     // Also refresh budget data in case it changed
     _loadBudgets();
+  }
+
+  String _formatSpecificDate(DateTime date) {
+    final l10n = AppLocalizations.of(context)!;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final selectedDate = DateTime(date.year, date.month, date.day);
+
+    if (selectedDate == today) {
+      return l10n.filterToday;
+    } else if (selectedDate == yesterday) {
+      return l10n.dateYesterday;
+    } else {
+      return '${date.day}/${date.month}/${date.year}';
+    }
   }
 
   @override
@@ -98,6 +117,7 @@ class _TransactionPageState extends State<TransactionPage>
                 periods: _periods,
                 budgets: _budgets,
                 sortOptions: _sortOptions,
+                specificDate: _selectedSpecificDate,
                 onSearchToggle: () {
                   setState(() {
                     _isSearching = !_isSearching;
@@ -109,10 +129,27 @@ class _TransactionPageState extends State<TransactionPage>
                     _searchQuery = query;
                   });
                 },
-                onPeriodChanged: (period) {
-                  setState(() {
-                    _selectedPeriod = period;
-                  });
+                onPeriodChanged: (period) async {
+                  final l10n = AppLocalizations.of(context)!;
+                  if (period == l10n.filterSpecificDate) {
+                    final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedSpecificDate ?? DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime.now(),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        _selectedSpecificDate = selectedDate;
+                        _selectedPeriod = _formatSpecificDate(selectedDate);
+                      });
+                    }
+                  } else {
+                    setState(() {
+                      _selectedPeriod = period;
+                      _selectedSpecificDate = null;
+                    });
+                  }
                 },
                 onBudgetChanged: (budget) {
                   setState(() {
@@ -135,6 +172,7 @@ class _TransactionPageState extends State<TransactionPage>
                   selectedPeriod: _selectedPeriod,
                   selectedBudget: _selectedBudget,
                   sortBy: _sortBy,
+                  specificDate: _selectedSpecificDate,
                 ),
               ),
             ],

@@ -4,12 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import 'package:cashflow/core/services/currency_service.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
-import 'package:cashflow/features/transaction/domain/entities/transaction_with_category.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
+import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
+import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
-import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
+import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
 
 class TransactionDetailPage extends StatefulWidget {
   final String transactionId;
@@ -21,8 +24,9 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-  TransactionWithCategory? _transaction;
+  TransactionWithBudget? _transaction;
   BudgetEntity? _budget;
+  CategoryEntity? _category;
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -39,20 +43,19 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     });
 
     try {
-      final transactionCubit = context.read<TransactionCubit>();
-      final result = await transactionCubit.transactionUsecases
+      final transactionBloc = context.read<TransactionBloc>();
+      final result = await transactionBloc.transactionUsecases
           .getTransactionById(widget.transactionId);
 
       result.when(
         success: (transaction) async {
           setState(() {
             _transaction = transaction;
+            _budget = transaction.budget;
           });
 
-          // Load related budget information if this is an expense
-          if (transaction.transaction.isExpense) {
-            await _loadBudgetInfo(transaction.transaction.categoryId);
-          }
+          // Load related category information through budget
+          await _loadCategoryInfo(transaction.budget.categoryId);
 
           setState(() {
             _isLoading = false;
@@ -74,17 +77,39 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     }
   }
 
-  Future<void> _loadBudgetInfo(String categoryId) async {
+  Future<void> _loadCategoryInfo(String categoryId) async {
     try {
-      final budgetRepository = GetIt.instance<BudgetManagementRepository>();
-      final budgets = await budgetRepository.getBudgetsByCategory(categoryId);
-      if (budgets.isNotEmpty) {
+      // Handle virtual income category
+      if (categoryId == 'virtual_income_category') {
+        debugPrint('💰 [DEBUG] Creating virtual income category');
+        final now = DateTime.now();
+        final virtualCategory = CategoryEntity(
+          id: 'virtual_income_category',
+          name: 'Income',
+          description: 'Virtual category for income transactions',
+          iconCodePoint: '0xe4b8', // attach_money icon
+          colorValue: '0xFF4CAF50', // Green color
+          type: CategoryType.income,
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
+        );
+        
         setState(() {
-          _budget = budgets.first;
+          _category = virtualCategory;
+        });
+        return;
+      }
+      
+      final budgetRepository = GetIt.instance<BudgetManagementRepository>();
+      final category = await budgetRepository.getCategoryById(categoryId);
+      if (category != null) {
+        setState(() {
+          _category = category;
         });
       }
     } catch (e) {
-      debugPrint('Failed to load budget info: $e');
+      debugPrint('Failed to load category info: $e');
     }
   }
 
@@ -95,14 +120,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     if (!confirmed) return;
 
     try {
-      final transactionCubit = context.read<TransactionCubit>();
-      final result = await transactionCubit.transactionUsecases
+      final transactionBloc = context.read<TransactionBloc>();
+      final result = await transactionBloc.transactionUsecases
           .deleteTransaction(_transaction!.transaction.id);
 
       result.when(
         success: (_) {
           // Refresh transaction list
-          transactionCubit.loadTransactions();
+          transactionBloc.add(const TransactionDataRequested());
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -266,7 +291,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              GetIt.instance<CurrencyService>().formatAmount(
+                              GetIt.instance<CurrencyBloc>().formatAmount(
                                 _transaction?.transaction.amount ?? 0,
                               ),
                               style: TextStyle(
@@ -378,11 +403,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
     try {
       return IconData(
-        int.parse(_transaction!.category.iconCodePoint),
+        int.parse(_category!.iconCodePoint),
         fontFamily: 'MaterialIcons',
       );
     } catch (e) {
-      final categoryName = _transaction!.category.name.toLowerCase();
+      final categoryName = _category!.name.toLowerCase();
       if (categoryName.contains('food') || categoryName.contains('dining')) {
         return Icons.restaurant;
       }
@@ -415,9 +440,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     if (_transaction == null) return Colors.grey;
 
     try {
-      return Color(int.parse(_transaction!.category.colorValue));
+      return Color(int.parse(_category!.colorValue));
     } catch (e) {
-      final categoryName = _transaction!.category.name.toLowerCase();
+      final categoryName = _category!.name.toLowerCase();
       if (categoryName.contains('food')) {
         return Colors.orange;
       }
@@ -696,7 +721,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            GetIt.instance<CurrencyService>().formatAmount(transaction.amount),
+            GetIt.instance<CurrencyBloc>().formatAmount(transaction.amount),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -720,7 +745,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
   Widget _buildDetailsSection() {
     final transaction = _transaction!.transaction;
-    final category = _transaction!.category;
+    final category = _category!;
     final categoryColor = _getCategoryColor();
     final categoryIcon = _getCategoryIcon();
 
@@ -753,7 +778,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           // Category
           _buildDetailRow(
             AppLocalizations.of(context)!.category,
-            category.name,
+            category.localizedName(context),
             leading: Container(
               width: 40,
               height: 40,
@@ -803,7 +828,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           // Amount breakdown
           _buildDetailRow(
             AppLocalizations.of(context)!.amount,
-            GetIt.instance<CurrencyService>().formatAmount(transaction.amount),
+            GetIt.instance<CurrencyBloc>().formatAmount(transaction.amount),
             leading: Icon(
               transaction.isIncome ? Icons.add_circle : Icons.remove_circle,
               color: transaction.isIncome ? Colors.green : Colors.red,
@@ -997,7 +1022,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${AppLocalizations.of(context)!.spent}: ${GetIt.instance<CurrencyService>().formatAmount(-totalSpent)}',
+                    '${AppLocalizations.of(context)!.spent}: ${GetIt.instance<CurrencyBloc>().formatAmount(-totalSpent)}',
                     style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                   Text(
@@ -1031,7 +1056,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           ),
                         ),
                         Text(
-                          GetIt.instance<CurrencyService>().formatAmount(
+                          GetIt.instance<CurrencyBloc>().formatAmount(
                             _budget!.amount,
                           ),
                           style: const TextStyle(
@@ -1054,7 +1079,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           ),
                         ),
                         Text(
-                          GetIt.instance<CurrencyService>().formatAmount(
+                          GetIt.instance<CurrencyBloc>().formatAmount(
                             remaining,
                           ),
                           style: TextStyle(
@@ -1088,7 +1113,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '${AppLocalizations.of(context)!.thisBudgetIsOverBy} ${GetIt.instance<CurrencyService>().formatAmount(remaining.abs())}',
+                          '${AppLocalizations.of(context)!.thisBudgetIsOverBy} ${GetIt.instance<CurrencyBloc>().formatAmount(remaining.abs())}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.red[700],
@@ -1111,16 +1136,16 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     if (_budget == null || _transaction == null) return 0.0;
 
     try {
-      final transactionCubit = context.read<TransactionCubit>();
-      final budgetModel = BudgetModel.fromEntity(_budget!);
-      final currentPeriodStart = budgetModel.getCurrentPeriodStart();
-      final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+      final transactionBloc = context.read<TransactionBloc>();
+      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(_budget!);
+      final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(_budget!);
 
-      final result = await transactionCubit.transactionUsecases
-          .getTotalByCategoryAndDateRange(
-            _budget!.categoryId,
-            currentPeriodStart,
-            currentPeriodEnd,
+      final result = await transactionBloc.transactionUsecases
+          .getTotalByBudgetAndDateRange(
+            _budget!.id,
+            periodStart,
+            periodEnd,
           );
 
       return result.when(

@@ -3,13 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/di/injection.dart';
-import 'package:cashflow/core/services/currency_service.dart';
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_event.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_state.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_overview_card.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_plan_item.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 
 class BudgetManagementPage extends StatelessWidget {
   const BudgetManagementPage({super.key});
@@ -18,9 +20,9 @@ class BudgetManagementPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: getIt<BudgetManagementCubit>()),
-        BlocProvider.value(value: getIt<CurrencyService>()),
-        BlocProvider.value(value: getIt<TransactionCubit>()),
+        BlocProvider.value(value: getIt<BudgetManagementBloc>()),
+        BlocProvider.value(value: getIt<CurrencyBloc>()),
+        BlocProvider.value(value: getIt<TransactionBloc>()),
       ],
       child: const _BudgetManagementView(),
     );
@@ -42,18 +44,18 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
   void initState() {
     super.initState();
     // Initialize budget management data when page loads
-    context.read<BudgetManagementCubit>().initializeBudgetManagement();
+    context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
 
     // Also initialize transaction data for budget calculations
-    context.read<TransactionCubit>().loadTransactions();
+    context.read<TransactionBloc>().add(const TransactionDataRequested());
   }
 
   Future<void> refreshData() async {
-    await context.read<BudgetManagementCubit>().loadBudgetManagementData();
+    context.read<BudgetManagementBloc>().add(const BudgetManagementDataRequested());
 
     // Also refresh transaction data for up-to-date budget calculations
     if (mounted) {
-      await context.read<TransactionCubit>().loadTransactions();
+      context.read<TransactionBloc>().add(const TransactionDataRequested());
     }
 
     if (mounted) {
@@ -151,11 +153,11 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    final cubit = context.read<BudgetManagementCubit>();
+                    final bloc = context.read<BudgetManagementBloc>();
                     await context.pushNamed('create_budget');
                     // Refresh data after returning from create budget page
                     if (mounted) {
-                      cubit.loadBudgetManagementData();
+                      bloc.add(const BudgetManagementDataRequested());
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -412,7 +414,7 @@ class _BudgetPlansSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BudgetManagementCubit, BudgetManagementState>(
+    return BlocConsumer<BudgetManagementBloc, BudgetManagementState>(
       listener: (context, state) {
         if (state is BudgetManagementOperationSuccess) {
           // Show success message for delete/update operations
@@ -519,8 +521,8 @@ class _BudgetPlansSliver extends StatelessWidget {
                   // Refresh data after returning from edit budget page
                   if (context.mounted) {
                     context
-                        .read<BudgetManagementCubit>()
-                        .loadBudgetManagementData();
+                        .read<BudgetManagementBloc>()
+                        .add(const BudgetManagementDataRequested());
                   }
                 },
                 onDelete: () {
@@ -782,12 +784,12 @@ class _BudgetPlansSliver extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        final cubit = context.read<BudgetManagementCubit>();
+                        final bloc = context.read<BudgetManagementBloc>();
                         Navigator.of(context).pop(); // Close dialog first
 
                         try {
                           // Delete budget and wait for completion
-                          await cubit.deleteBudget(budgetId);
+                          bloc.add(BudgetDeleteRequested(id: budgetId));
 
                           // Use callback to refresh data and UI
                           await onRefreshNeeded();

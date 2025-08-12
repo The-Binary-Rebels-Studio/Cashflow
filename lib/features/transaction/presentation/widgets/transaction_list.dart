@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import 'package:cashflow/core/services/currency_service.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_state.dart';
-import 'package:cashflow/features/transaction/domain/entities/transaction_with_category.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_state.dart';
+import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
 
@@ -15,6 +16,7 @@ class TransactionList extends StatefulWidget {
   final String selectedPeriod;
   final String selectedBudget;
   final String sortBy;
+  final DateTime? specificDate;
 
   const TransactionList({
     super.key,
@@ -22,6 +24,7 @@ class TransactionList extends StatefulWidget {
     required this.selectedPeriod,
     required this.selectedBudget,
     required this.sortBy,
+    this.specificDate,
   });
 
   @override
@@ -35,7 +38,7 @@ class _TransactionListState extends State<TransactionList> {
   void initState() {
     super.initState();
     _loadBudgets();
-    context.read<TransactionCubit>().loadTransactions();
+    context.read<TransactionBloc>().add(const TransactionDataRequested());
   }
 
   @override
@@ -44,8 +47,9 @@ class _TransactionListState extends State<TransactionList> {
     if (oldWidget.searchQuery != widget.searchQuery ||
         oldWidget.selectedPeriod != widget.selectedPeriod ||
         oldWidget.selectedBudget != widget.selectedBudget ||
-        oldWidget.sortBy != widget.sortBy) {
-      context.read<TransactionCubit>().loadTransactions();
+        oldWidget.sortBy != widget.sortBy ||
+        oldWidget.specificDate != widget.specificDate) {
+      context.read<TransactionBloc>().add(const TransactionDataRequested());
     }
   }
 
@@ -61,30 +65,34 @@ class _TransactionListState extends State<TransactionList> {
     }
   }
 
-  List<TransactionWithCategory> _filterTransactionsByBudget(
-    List<TransactionWithCategory> transactions,
+  List<TransactionWithBudget> _filterTransactionsByBudget(
+    List<TransactionWithBudget> transactions,
   ) {
     final l10n = AppLocalizations.of(context)!;
     if (widget.selectedBudget == l10n.all) return transactions;
     
-    final selectedBudget = _budgets.firstWhere(
-      (budget) => budget.name == widget.selectedBudget,
-      orElse: () => _budgets.first,
-    );
+    // Safely find the selected budget
+    final selectedBudget = _budgets.where((budget) => budget.name == widget.selectedBudget).firstOrNull;
+    
+    if (selectedBudget == null) {
+      // If no budget matches the selected name, return all transactions
+      // This can happen during loading or if budget data is not yet available
+      return transactions;
+    }
     
     return transactions.where((transaction) => 
-      transaction.transaction.categoryId == selectedBudget.categoryId).toList();
+      transaction.transaction.budgetId == selectedBudget.id).toList();
   }
 
-  List<TransactionWithCategory> _filterTransactions(
-    List<TransactionWithCategory> transactions,
+  List<TransactionWithBudget> _filterTransactions(
+    List<TransactionWithBudget> transactions,
   ) {
     var filtered = _filterTransactionsByBudget(transactions);
     
     return filtered.where((transaction) {
       bool matchesSearch = widget.searchQuery.isEmpty ||
           transaction.transaction.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-          transaction.category.name.toLowerCase().contains(widget.searchQuery.toLowerCase());
+          transaction.budget.name.toLowerCase().contains(widget.searchQuery.toLowerCase());
       
       bool matchesPeriod = _matchesPeriodFilter(transaction.transaction.date);
       
@@ -95,6 +103,13 @@ class _TransactionListState extends State<TransactionList> {
   bool _matchesPeriodFilter(DateTime transactionDate) {
     final now = DateTime.now();
     final l10n = AppLocalizations.of(context)!;
+    
+    // Check if it's a specific date filter
+    if (widget.specificDate != null) {
+      final specificDate = DateTime(widget.specificDate!.year, widget.specificDate!.month, widget.specificDate!.day);
+      final txDate = DateTime(transactionDate.year, transactionDate.month, transactionDate.day);
+      return txDate == specificDate;
+    }
     
     if (widget.selectedPeriod == l10n.filterToday) {
       return DateTime(transactionDate.year, transactionDate.month, transactionDate.day) ==
@@ -112,22 +127,22 @@ class _TransactionListState extends State<TransactionList> {
   }
 
   List<TransactionGroup> _groupTransactionsByDate(
-    List<TransactionWithCategory> transactions,
+    List<TransactionWithBudget> transactions,
   ) {
-    final sortedTransactions = List<TransactionWithCategory>.from(transactions);
+    final sortedTransactions = List<TransactionWithBudget>.from(transactions);
     
     final l10n = AppLocalizations.of(context)!;
     
     if (widget.sortBy == l10n.sortByAmount) {
       sortedTransactions.sort((a, b) => b.transaction.amount.abs().compareTo(a.transaction.amount.abs()));
     } else if (widget.sortBy == l10n.sortByCategory) {
-      sortedTransactions.sort((a, b) => a.category.name.compareTo(b.category.name));
+      sortedTransactions.sort((a, b) => a.budget.name.compareTo(b.budget.name));
     } else {
       // Default to date sorting
       sortedTransactions.sort((a, b) => b.transaction.date.compareTo(a.transaction.date));
     }
 
-    final Map<String, List<TransactionWithCategory>> grouped = {};
+    final Map<String, List<TransactionWithBudget>> grouped = {};
     
     for (final transaction in sortedTransactions) {
       final dateKey = _formatDateKey(transaction.transaction.date);
@@ -161,7 +176,7 @@ class _TransactionListState extends State<TransactionList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransactionCubit, TransactionState>(
+    return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         if (state is TransactionLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -190,7 +205,7 @@ class _TransactionListState extends State<TransactionList> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => context.read<TransactionCubit>().loadTransactions(),
+                  onPressed: () => context.read<TransactionBloc>().add(const TransactionDataRequested()),
                   child: const Text('Retry'),
                 ),
               ],
@@ -211,7 +226,7 @@ class _TransactionListState extends State<TransactionList> {
           
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<TransactionCubit>().loadTransactions();
+              context.read<TransactionBloc>().add(const TransactionDataRequested());
             },
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
@@ -279,54 +294,45 @@ class _TransactionGroup extends StatelessWidget {
     );
   }
 
-  String _calculateDayTotal(List<TransactionWithCategory> transactions) {
+  String _calculateDayTotal(List<TransactionWithBudget> transactions) {
     final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
-    return GetIt.instance<CurrencyService>().formatAmount(total);
+    return GetIt.instance<CurrencyBloc>().formatAmount(total);
   }
 
-  Color _getDayTotalColor(List<TransactionWithCategory> transactions) {
+  Color _getDayTotalColor(List<TransactionWithBudget> transactions) {
     final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
     return total >= 0 ? Colors.green : Colors.red;
   }
 }
 
 class _TransactionTile extends StatelessWidget {
-  final TransactionWithCategory transaction;
+  final TransactionWithBudget transaction;
 
   const _TransactionTile({required this.transaction});
 
-  IconData _getCategoryIcon(String categoryName) {
-    final name = categoryName.toLowerCase();
-    if (name.contains('food') || name.contains('dining')) return Icons.restaurant;
-    if (name.contains('transport') || name.contains('travel')) return Icons.directions_car;
-    if (name.contains('shopping') || name.contains('retail')) return Icons.shopping_cart;
-    if (name.contains('bill') || name.contains('utility')) return Icons.receipt;
-    if (name.contains('entertainment')) return Icons.movie;
-    if (name.contains('health') || name.contains('medical')) return Icons.local_hospital;
-    if (name.contains('education')) return Icons.school;
-    if (name.contains('income') || name.contains('salary')) return Icons.account_balance_wallet;
-    return Icons.attach_money;
+  IconData _getTransactionIcon() {
+    if (transaction.transaction.type.value == 'income') {
+      return Icons.attach_money; // Dollar icon for income
+    }
+    
+    // For expense transactions, use shopping cart as default
+    // Could be enhanced later to fetch actual category icons
+    return Icons.shopping_cart; // Default expense icon
   }
 
-  Color _getCategoryColor(String categoryName) {
-    final name = categoryName.toLowerCase();
-    if (name.contains('food')) return Colors.orange;
-    if (name.contains('transport')) return Colors.blue;
-    if (name.contains('shopping')) return Colors.purple;
-    if (name.contains('bill')) return Colors.red;
-    if (name.contains('entertainment')) return Colors.pink;
-    if (name.contains('health')) return Colors.teal;
-    if (name.contains('education')) return Colors.indigo;
-    if (name.contains('income')) return Colors.green;
-    return Colors.grey;
+  Color _getTransactionIconColor() {
+    // Always use the transaction type for background color
+    return transaction.transaction.type.value == 'income' 
+        ? Colors.green    // Green for income
+        : Colors.red;     // Red for expenses
   }
 
   @override
   Widget build(BuildContext context) {
     final isPositive = transaction.transaction.amount >= 0;
-    final displayAmount = GetIt.instance<CurrencyService>().formatAmount(transaction.transaction.amount);
-    final categoryIcon = _getCategoryIcon(transaction.category.name);
-    final categoryColor = _getCategoryColor(transaction.category.name);
+    final displayAmount = GetIt.instance<CurrencyBloc>().formatAmount(transaction.transaction.amount);
+    final transactionIcon = _getTransactionIcon();
+    final iconColor = _getTransactionIconColor();
     
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -335,12 +341,12 @@ class _TransactionTile extends StatelessWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: categoryColor.withValues(alpha: 0.1),
+          color: iconColor.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
-          categoryIcon,
-          color: categoryColor,
+          transactionIcon,
+          color: iconColor,
           size: 24,
         ),
       ),
@@ -350,33 +356,40 @@ class _TransactionTile extends StatelessWidget {
           fontWeight: FontWeight.w600,
           fontSize: 16,
         ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       ),
-      subtitle: Row(
+      subtitle: Text(
+        transaction.budget.name,
+        style: const TextStyle(
+          color: Colors.grey,
+          fontSize: 14,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            transaction.category.name,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
+            displayAmount,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: isPositive ? Colors.green : Colors.red,
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(height: 2),
           Text(
             '${transaction.transaction.date.hour.toString().padLeft(2, '0')}:${transaction.transaction.date.minute.toString().padLeft(2, '0')}',
             style: TextStyle(
-              color: Colors.grey[400],
+              color: Colors.grey[600],
               fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
-      ),
-      trailing: Text(
-        displayAmount,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          color: isPositive ? Colors.green : Colors.red,
-        ),
       ),
     );
   }
@@ -448,7 +461,7 @@ class _EmptyState extends StatelessWidget {
 
 class TransactionGroup {
   final String date;
-  final List<TransactionWithCategory> transactions;
+  final List<TransactionWithBudget> transactions;
 
   TransactionGroup({
     required this.date,

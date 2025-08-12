@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
-import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_state.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
+import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class BudgetOverviewCard extends StatelessWidget {
@@ -14,20 +15,21 @@ class BudgetOverviewCard extends StatelessWidget {
   // Calculate total spent across all budget plans using Result pattern
   Future<double> _calculateTotalSpent(BuildContext context, BudgetManagementLoaded state) async {
     try {
-      final transactionCubit = context.read<TransactionCubit>();
+      final transactionBloc = context.read<TransactionBloc>();
       double totalSpent = 0;
 
-      // Calculate spent amount for each budget plan using current period
+      // Calculate spent amount for each budget plan using budget-specific period
       for (final budget in state.budgetPlans) {
-        // Calculate current period for this recurring budget
-        final budgetModel = BudgetModel.fromEntity(budget);
-        final currentPeriodStart = budgetModel.getCurrentPeriodStart();
-        final currentPeriodEnd = budgetModel.getCurrentPeriodEnd();
+        // Use budget creation date as the period start to ensure only relevant transactions are counted
+        final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
+        final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
         
-        final result = await transactionCubit.transactionUsecases.getTotalByCategoryAndDateRange(
-          budget.categoryId,
-          currentPeriodStart,
-          currentPeriodEnd,
+        debugPrint('🎯 Budget "${budget.name}" period: $periodStart to $periodEnd');
+        
+        final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
+          budget.id,
+          periodStart,
+          periodEnd,
         );
         
         result.fold(
@@ -51,7 +53,7 @@ class BudgetOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BudgetManagementCubit, BudgetManagementState>(
+    return BlocBuilder<BudgetManagementBloc, BudgetManagementState>(
       builder: (context, state) {
         if (state is! BudgetManagementLoaded) {
           // Loading or error state - show placeholder
@@ -131,7 +133,7 @@ class BudgetOverviewCard extends StatelessWidget {
                 const SizedBox(height: 24),
                 
                 // Total Budget Amount
-                BlocBuilder<CurrencyService, CurrencyModel>(
+                BlocBuilder<CurrencyBloc, CurrencyModel>(
                   builder: (context, currency) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +221,7 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CurrencyService, CurrencyModel>(
+    return BlocBuilder<CurrencyBloc, CurrencyModel>(
       builder: (context, currency) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

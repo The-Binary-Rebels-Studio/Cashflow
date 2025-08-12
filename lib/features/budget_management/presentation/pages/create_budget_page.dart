@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/di/injection.dart';
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_cubit.dart';
-import 'package:cashflow/features/budget_management/presentation/cubit/budget_management_state.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_event.dart';
+import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_state.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
-import 'package:cashflow/core/services/currency_service.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/services/currency_event.dart';
 
 // Custom TextInputFormatter for thousands separator
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
@@ -100,8 +102,8 @@ class CreateBudgetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: getIt<BudgetManagementCubit>()),
-        BlocProvider.value(value: getIt<CurrencyService>()),
+        BlocProvider.value(value: getIt<BudgetManagementBloc>()),
+        BlocProvider.value(value: getIt<CurrencyBloc>()),
       ],
       child: _CreateBudgetView(budget: budget),
     );
@@ -131,9 +133,9 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
   void initState() {
     super.initState();
     // Initialize budget management data to load categories
-    context.read<BudgetManagementCubit>().initializeBudgetManagement();
+    context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
     // Initialize currency service to load saved currency
-    context.read<CurrencyService>().initializeService();
+    context.read<CurrencyBloc>().add(const CurrencyInitialized());
 
     if (widget.budget != null) {
       _nameController.text = widget.budget!.name;
@@ -185,7 +187,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
             ),
         ],
       ),
-      body: BlocConsumer<BudgetManagementCubit, BudgetManagementState>(
+      body: BlocConsumer<BudgetManagementBloc, BudgetManagementState>(
         listener: (context, state) {
           if (state is BudgetManagementOperationSuccess) {
             // Show success message
@@ -322,7 +324,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                   // Category Selection
                   _buildFormSection(
                     AppLocalizations.of(context)!.category,
-                    BlocBuilder<BudgetManagementCubit, BudgetManagementState>(
+                    BlocBuilder<BudgetManagementBloc, BudgetManagementState>(
                       builder: (context, state) {
                         final categories = state is BudgetManagementLoaded
                             ? state.expenseCategories
@@ -391,12 +393,12 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                         flex: 3,
                         child: _buildFormSection(
                           AppLocalizations.of(context)!.amount,
-                          BlocBuilder<CurrencyService, dynamic>(
+                          BlocBuilder<CurrencyBloc, dynamic>(
                             builder: (context, currencyState) {
-                              final currencyService = context
-                                  .read<CurrencyService>();
+                              final currencyBloc = context
+                                  .read<CurrencyBloc>();
                               final currencySymbol =
-                                  currencyService.selectedCurrency.symbol;
+                                  currencyBloc.selectedCurrency.symbol;
 
                               return TextFormField(
                                 controller: _amountController,
@@ -1025,9 +1027,9 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<BudgetManagementCubit>().deleteBudget(
-                widget.budget!.id,
-              );
+              context.read<BudgetManagementBloc>().add(BudgetDeleteRequested(
+                id: widget.budget!.id,
+              ));
               Navigator.of(context).pop(); // Close dialog
               // Don't manually close screen - let BlocConsumer handle success state
             },
@@ -1070,7 +1072,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
       final amount = double.parse(rawAmount);
       final description = _descriptionController.text.trim();
 
-      final cubit = context.read<BudgetManagementCubit>();
+      final bloc = context.read<BudgetManagementBloc>();
 
       if (widget.budget != null) {
         final updatedBudget = BudgetEntity(
@@ -1085,15 +1087,15 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
           createdAt: widget.budget!.createdAt,
           updatedAt: DateTime.now(),
         );
-        await cubit.updateBudget(updatedBudget);
+        bloc.add(BudgetUpdateRequested(budget: updatedBudget));
       } else {
-        await cubit.createBudget(
+        bloc.add(BudgetCreateRequested(
           name: name,
           description: description,
           categoryId: _selectedCategoryId!,
           amount: amount,
           period: _selectedPeriod,
-        );
+        ));
       }
 
       // Success will be handled by BlocConsumer listener

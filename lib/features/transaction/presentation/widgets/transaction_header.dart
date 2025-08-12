@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
-import 'package:cashflow/core/services/currency_service.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_cubit.dart';
-import 'package:cashflow/features/transaction/presentation/cubit/transaction_state.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:cashflow/features/transaction/presentation/bloc/transaction_state.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/budget_selector_sheet.dart';
 
 class TransactionHeader extends StatelessWidget {
@@ -22,6 +22,7 @@ class TransactionHeader extends StatelessWidget {
   final ValueChanged<String> onBudgetChanged;
   final ValueChanged<String> onSortChanged;
   final VoidCallback? onBudgetsRefreshed;
+  final DateTime? specificDate;
 
   const TransactionHeader({
     super.key,
@@ -39,12 +40,13 @@ class TransactionHeader extends StatelessWidget {
     required this.onBudgetChanged,
     required this.onSortChanged,
     this.onBudgetsRefreshed,
+    this.specificDate,
   });
 
   // Format amount for compact display in summary cards
   String _formatCompactAmount(double amount) {
-    final currencyService = GetIt.instance<CurrencyService>();
-    final currency = currencyService.selectedCurrency;
+    final currencyBloc = GetIt.instance<CurrencyBloc>();
+    final currency = currencyBloc.selectedCurrency;
     final symbol = currency.symbol;
     
     // For very large amounts, use compact format
@@ -134,7 +136,7 @@ class TransactionHeader extends StatelessWidget {
   }
 
   Widget _buildSummaryCards(BuildContext context, AppLocalizations l10n) {
-    return BlocBuilder<TransactionCubit, TransactionState>(
+    return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         if (state is TransactionLoaded) {
           return Padding(
@@ -250,11 +252,42 @@ class TransactionHeader extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => _buildSelectorSheet(
-        'Select Period',
-        periods,
-        selectedPeriod,
-        onPeriodChanged,
+      builder: (context) => _buildPeriodSelectorSheet(context),
+    );
+  }
+
+  Widget _buildPeriodSelectorSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.selectPeriod,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          ...periods.map((period) {
+            final isSelected = selectedPeriod == period || 
+                (period == l10n.filterSpecificDate && 
+                 !periods.contains(selectedPeriod) && 
+                 selectedPeriod != l10n.filterToday &&
+                 selectedPeriod != l10n.filterThisWeek &&
+                 selectedPeriod != l10n.filterThisMonth &&
+                 selectedPeriod != l10n.filterThisYear);
+            
+            return ListTile(
+              title: Text(period),
+              trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
+              onTap: () {
+                Navigator.pop(context);
+                onPeriodChanged(period);
+              },
+            );
+          }),
+        ],
       ),
     );
   }
