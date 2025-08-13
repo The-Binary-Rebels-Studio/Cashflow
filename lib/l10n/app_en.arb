@@ -359,5 +359,25 @@
 
   "currencyThousands": "K",
   "currencyMillions": "M",
-  "currencyBillions": "B"
+  "currencyBillions": "B",
+
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "dataUsage": "Data Usage",
+  "localDataStorage": "Local Data Storage",
+  "dataStorageDescription": "All your financial data is stored locally on your device. We do not collect, transmit, or store any personal information on external servers.",
+  "dataSecurityTitle": "Data Security",
+  "dataSecurityDescription": "Your data remains private and secure on your device. You have full control over your information.",
+  "dataControlTitle": "Your Data Control",
+  "dataControlDescription": "You can export, backup, or delete your data at any time through the app settings.",
+  "noThirdPartySharing": "No Third-Party Sharing",
+  "noThirdPartySharingDescription": "We never share your financial data with third parties, advertisers, or analytics services.",
+  "contactUs": "Contact Us",
+  "appPurpose": "App Purpose",
+  "appPurposeDescription": "CashFlow is designed to help you manage your personal finances privately and securely on your device.",
+  "openSource": "Open Source",
+  "version": "Version",
+  "buildDate": "Build Date",
+  "developer": "Developer",
+  "acknowledgments": "Acknowledgments"
 }

@@ -1845,6 +1845,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'B'**
   String get currencyBillions;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// No description provided for @dataUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Usage'**
+  String get dataUsage;
+
+  /// No description provided for @localDataStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Data Storage'**
+  String get localDataStorage;
+
+  /// No description provided for @dataStorageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'All your financial data is stored locally on your device. We do not collect, transmit, or store any personal information on external servers.'**
+  String get dataStorageDescription;
+
+  /// No description provided for @dataSecurityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Security'**
+  String get dataSecurityTitle;
+
+  /// No description provided for @dataSecurityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data remains private and secure on your device. You have full control over your information.'**
+  String get dataSecurityDescription;
+
+  /// No description provided for @dataControlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Data Control'**
+  String get dataControlTitle;
+
+  /// No description provided for @dataControlDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You can export, backup, or delete your data at any time through the app settings.'**
+  String get dataControlDescription;
+
+  /// No description provided for @noThirdPartySharing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Third-Party Sharing'**
+  String get noThirdPartySharing;
+
+  /// No description provided for @noThirdPartySharingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We never share your financial data with third parties, advertisers, or analytics services.'**
+  String get noThirdPartySharingDescription;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUs;
+
+  /// No description provided for @appPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'App Purpose'**
+  String get appPurpose;
+
+  /// No description provided for @appPurposeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'CashFlow is designed to help you manage your personal finances privately and securely on your device.'**
+  String get appPurposeDescription;
+
+  /// No description provided for @openSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Source'**
+  String get openSource;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @buildDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Date'**
+  String get buildDate;
+
+  /// No description provided for @developer.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get developer;
+
+  /// No description provided for @acknowledgments.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledgments'**
+  String get acknowledgments;
 }
 
 class _AppLocalizationsDelegate

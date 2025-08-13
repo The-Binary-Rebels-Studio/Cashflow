@@ -911,4 +911,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get currencyBillions => 'B';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get dataUsage => 'Data Usage';
+
+  @override
+  String get localDataStorage => 'Local Data Storage';
+
+  @override
+  String get dataStorageDescription =>
+      'All your financial data is stored locally on your device. We do not collect, transmit, or store any personal information on external servers.';
+
+  @override
+  String get dataSecurityTitle => 'Data Security';
+
+  @override
+  String get dataSecurityDescription =>
+      'Your data remains private and secure on your device. You have full control over your information.';
+
+  @override
+  String get dataControlTitle => 'Your Data Control';
+
+  @override
+  String get dataControlDescription =>
+      'You can export, backup, or delete your data at any time through the app settings.';
+
+  @override
+  String get noThirdPartySharing => 'No Third-Party Sharing';
+
+  @override
+  String get noThirdPartySharingDescription =>
+      'We never share your financial data with third parties, advertisers, or analytics services.';
+
+  @override
+  String get contactUs => 'Contact Us';
+
+  @override
+  String get appPurpose => 'App Purpose';
+
+  @override
+  String get appPurposeDescription =>
+      'CashFlow is designed to help you manage your personal finances privately and securely on your device.';
+
+  @override
+  String get openSource => 'Open Source';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get buildDate => 'Build Date';
+
+  @override
+  String get developer => 'Developer';
+
+  @override
+  String get acknowledgments => 'Acknowledgments';
 }

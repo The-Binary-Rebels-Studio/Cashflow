@@ -359,5 +359,25 @@
 
   "currencyThousands": "K",
   "currencyMillions": "J",
-  "currencyBillions": "B"
+  "currencyBillions": "B",
+
+  "privacyPolicy": "Dasar Privasi",
+  "termsOfService": "Syarat Perkhidmatan",
+  "dataUsage": "Penggunaan Data",
+  "localDataStorage": "Penyimpanan Data Tempatan",
+  "dataStorageDescription": "Semua data kewangan anda disimpan secara tempatan di peranti anda. Kami tidak mengumpul, menghantar, atau menyimpan sebarang maklumat peribadi di pelayan luar.",
+  "dataSecurityTitle": "Keselamatan Data",
+  "dataSecurityDescription": "Data anda kekal peribadi dan selamat di peranti anda. Anda mempunyai kawalan penuh ke atas maklumat anda.",
+  "dataControlTitle": "Kawalan Data Anda",
+  "dataControlDescription": "Anda boleh mengeksport, membuat sandaran, atau memadam data anda pada bila-bila masa melalui tetapan aplikasi.",
+  "noThirdPartySharing": "Tiada Perkongsian Pihak Ketiga",
+  "noThirdPartySharingDescription": "Kami tidak pernah berkongsi data kewangan anda dengan pihak ketiga, pengiklan, atau perkhidmatan analitik.",
+  "contactUs": "Hubungi Kami",
+  "appPurpose": "Tujuan Aplikasi",
+  "appPurposeDescription": "CashFlow direka untuk membantu anda mengurus kewangan peribadi secara peribadi dan selamat di peranti anda.",
+  "openSource": "Sumber Terbuka",
+  "version": "Versi",
+  "buildDate": "Tarikh Build",
+  "developer": "Pembangun",
+  "acknowledgments": "Penghargaan"
 }

@@ -359,5 +359,25 @@
 
   "currencyThousands": "Rb",
   "currencyMillions": "Jt",
-  "currencyBillions": "M"
+  "currencyBillions": "M",
+
+  "privacyPolicy": "Kebijakan Privasi",
+  "termsOfService": "Syarat Layanan",
+  "dataUsage": "Penggunaan Data",
+  "localDataStorage": "Penyimpanan Data Lokal",
+  "dataStorageDescription": "Semua data keuangan Anda disimpan secara lokal di perangkat Anda. Kami tidak mengumpulkan, mengirim, atau menyimpan informasi pribadi di server eksternal.",
+  "dataSecurityTitle": "Keamanan Data",
+  "dataSecurityDescription": "Data Anda tetap privat dan aman di perangkat Anda. Anda memiliki kontrol penuh atas informasi Anda.",
+  "dataControlTitle": "Kontrol Data Anda",
+  "dataControlDescription": "Anda dapat mengekspor, mencadangkan, atau menghapus data Anda kapan saja melalui pengaturan aplikasi.",
+  "noThirdPartySharing": "Tidak Ada Berbagi Pihak Ketiga",
+  "noThirdPartySharingDescription": "Kami tidak pernah membagikan data keuangan Anda dengan pihak ketiga, pengiklan, atau layanan analitik.",
+  "contactUs": "Hubungi Kami",
+  "appPurpose": "Tujuan Aplikasi",
+  "appPurposeDescription": "CashFlow dirancang untuk membantu Anda mengelola keuangan pribadi secara privat dan aman di perangkat Anda.",
+  "openSource": "Sumber Terbuka",
+  "version": "Versi",
+  "buildDate": "Tanggal Build",
+  "developer": "Pengembang",
+  "acknowledgments": "Ucapan Terima Kasih"
 }

@@ -919,4 +919,66 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get currencyBillions => 'B';
+
+  @override
+  String get privacyPolicy => 'Dasar Privasi';
+
+  @override
+  String get termsOfService => 'Syarat Perkhidmatan';
+
+  @override
+  String get dataUsage => 'Penggunaan Data';
+
+  @override
+  String get localDataStorage => 'Penyimpanan Data Tempatan';
+
+  @override
+  String get dataStorageDescription =>
+      'Semua data kewangan anda disimpan secara tempatan di peranti anda. Kami tidak mengumpul, menghantar, atau menyimpan sebarang maklumat peribadi di pelayan luar.';
+
+  @override
+  String get dataSecurityTitle => 'Keselamatan Data';
+
+  @override
+  String get dataSecurityDescription =>
+      'Data anda kekal peribadi dan selamat di peranti anda. Anda mempunyai kawalan penuh ke atas maklumat anda.';
+
+  @override
+  String get dataControlTitle => 'Kawalan Data Anda';
+
+  @override
+  String get dataControlDescription =>
+      'Anda boleh mengeksport, membuat sandaran, atau memadam data anda pada bila-bila masa melalui tetapan aplikasi.';
+
+  @override
+  String get noThirdPartySharing => 'Tiada Perkongsian Pihak Ketiga';
+
+  @override
+  String get noThirdPartySharingDescription =>
+      'Kami tidak pernah berkongsi data kewangan anda dengan pihak ketiga, pengiklan, atau perkhidmatan analitik.';
+
+  @override
+  String get contactUs => 'Hubungi Kami';
+
+  @override
+  String get appPurpose => 'Tujuan Aplikasi';
+
+  @override
+  String get appPurposeDescription =>
+      'CashFlow direka untuk membantu anda mengurus kewangan peribadi secara peribadi dan selamat di peranti anda.';
+
+  @override
+  String get openSource => 'Sumber Terbuka';
+
+  @override
+  String get version => 'Versi';
+
+  @override
+  String get buildDate => 'Tarikh Build';
+
+  @override
+  String get developer => 'Pembangun';
+
+  @override
+  String get acknowledgments => 'Penghargaan';
 }

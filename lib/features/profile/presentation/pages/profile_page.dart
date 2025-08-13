@@ -173,6 +173,15 @@ class _MenuSection extends StatelessWidget {
           ),
           const Divider(height: 1),
           _MenuItem(
+            icon: Icons.privacy_tip,
+            title: l10n.privacyPolicy,
+            color: Colors.purple,
+            onTap: () {
+              // TODO: Navigate to privacy policy
+            },
+          ),
+          const Divider(height: 1),
+          _MenuItem(
             icon: Icons.info,
             title: l10n.about,
             color: Colors.green,
