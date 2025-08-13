@@ -230,6 +230,13 @@
   "loadingBudgetPlans": "Memuat rencana anggaran...",
   
   "deleteBudgetConfirmation": "Apakah Anda yakin ingin menghapus \"{budgetName}\"? Tindakan ini tidak dapat dibatalkan.",
+  "@deleteBudgetConfirmation": {
+    "placeholders": {
+      "budgetName": {
+        "type": "String"
+      }
+    }
+  },
   "pleaseSelectCategory": "Silakan pilih kategori",
   "activePlans": "Rencana Aktif",
   "budgetNameHint": "misal: Belanja Bulanan",
@@ -336,6 +343,16 @@
   "budgetDetailsLoading": "Memuat detail anggaran...",
   "calculatingRemaining": "Menghitung sisa...",
   "budgetCount": "{count} dari {total} rencana anggaran",
+  "@budgetCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "createBudgetPlanDescription": "Untuk melacak pengeluaran dengan baik, Anda perlu membuat rencana anggaran terlebih dahulu.",
   "whatWouldYouLikeToDo": "Apa yang ingin Anda lakukan?",
   "createBudgetPlanToTrack": "Buat rencana anggaran terlebih dahulu untuk tracking pengeluaran yang lebih baik.",

@@ -230,6 +230,13 @@
   "loadingBudgetPlans": "Memuatkan pelan belanjawan...",
   
   "deleteBudgetConfirmation": "Adakah anda pasti ingin memadam \"{budgetName}\"? Tindakan ini tidak boleh dibatalkan.",
+  "@deleteBudgetConfirmation": {
+    "placeholders": {
+      "budgetName": {
+        "type": "String"
+      }
+    }
+  },
   "pleaseSelectCategory": "Sila pilih kategori",
   "activePlans": "Pelan Aktif",
   "budgetNameHint": "cth: Belanja Bulanan",
@@ -280,6 +287,75 @@
   "filterSpecificDate": "Tarikh Tertentu",
   "dateToday": "Hari Ini",
   "dateYesterday": "Semalam",
+
+  "transactionDetails": "Butiran Transaksi",
+  "deleteTransaction": "Padam Transaksi",
+  "deleteTransactionConfirmation": "Adakah anda pasti mahu memadam transaksi ini?",
+  "transactionDeleted": "Transaksi berjaya dipadam",
+  "editTransaction": "Edit Transaksi",
+  "budgetImpact": "Kesan Belanjawan",
+  "currentBudgetUsage": "Penggunaan Belanjawan Semasa",
+  "afterThisTransaction": "Selepas transaksi ini",
+  "budgetStatus": "Status Belanjawan",
+  "withinBudget": "Dalam Belanjawan",
+  "overBudget": "Melebihi Belanjawan",
+  "budgetPlan": "Pelan Belanjawan",
+  "noBudgetPlan": "Tiada pelan belanjawan",
+
+  "deleteConfirmationTitle": "Padam Transaksi",
+  "deleteConfirmationMessage": "Adakah anda pasti mahu memadam transaksi ini?",
+  "deleteConfirmationWarning": "Tindakan ini tidak boleh dibatalkan.",
+  "delete": "Padam",
+
+  "all": "Semua",
+  "balance": "Baki",
+
+  "error": "Ralat",
+  "retry": "Cuba Lagi",
+  "transactionNotFound": "Transaksi tidak ditemui",
+  "details": "Butiran",
+  "type": "Jenis",
+  "description": "Penerangan",
+  "time": "Masa",
+  "budget": "Belanjawan",
+  "remaining": "Baki",
+  "timeline": "Garis Masa",
+  "created": "Dicipta",
+  "lastUpdated": "Kemaskini Terakhir",
+  "editFunctionalityComingSoon": "Fungsi edit akan datang tidak lama lagi",
+
+  "noTransactionsFound": "Tiada transaksi ditemui",
+  "tryAdjustingFilters": "Cuba laraskan carian atau penapis anda",
+  "startAddingTransactions": "Mula tambah pendapatan dan perbelanjaan anda",
+  "withinBudget": "Dalam Belanjawan",
+  "overBudget": "Melebihi Belanjawan",
+  "thisBudgetIsOverBy": "Belanjawan ini melebihi sebanyak",
+  "spent": "Digunakan",
+  "selectBudget": "Pilih Belanjawan",
+  "showAllTransactions": "Tunjukkan semua transaksi",
+  "noBudgetPlans": "Tiada Pelan Belanjawan",
+  "createBudgetPlan": "Cipta Pelan Belanjawan",
+  "selectBudgetPlan": "Pilih Pelan Belanjawan",
+  "searchBudgets": "Cari belanjawan...",
+  "noBudgetsFound": "Tiada belanjawan ditemui",
+  "tryAdjustingSearchTerm": "Cuba laraskan istilah carian anda",
+  "clearSearch": "Kosongkan carian",
+  "budgetDetailsLoading": "Memuat butiran belanjawan...",
+  "calculatingRemaining": "Mengira baki...",
+  "budgetCount": "{count} daripada {total} belanjawan",
+  "@budgetCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "createBudgetPlanDescription": "Untuk menjejak perbelanjaan dengan betul, anda perlu mencipta pelan belanjawan dahulu.",
+  "whatWouldYouLikeToDo": "Apa yang anda ingin lakukan?",
+  "createBudgetPlanToTrack": "Cipta pelan belanjawan dahulu untuk penjejakan perbelanjaan yang lebih baik.",
 
   "currencyThousands": "K",
   "currencyMillions": "J",

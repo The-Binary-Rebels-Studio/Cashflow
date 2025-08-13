@@ -389,7 +389,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get totalBudget => 'Jumlah Belanjawan';
 
   @override
-  String get spent => 'Dibelanjakan';
+  String get spent => 'Digunakan';
 
   @override
   String get remaining => 'Baki';
@@ -762,151 +762,154 @@ class AppLocalizationsMs extends AppLocalizations {
   String get dateYesterday => 'Semalam';
 
   @override
-  String get transactionDetails => 'Transaction Details';
+  String get transactionDetails => 'Butiran Transaksi';
 
   @override
-  String get deleteTransaction => 'Delete Transaction';
+  String get deleteTransaction => 'Padam Transaksi';
 
   @override
   String get deleteTransactionConfirmation =>
-      'Are you sure you want to delete this transaction?';
+      'Adakah anda pasti mahu memadam transaksi ini?';
 
   @override
-  String get transactionDeleted => 'Transaction deleted successfully';
+  String get transactionDeleted => 'Transaksi berjaya dipadam';
 
   @override
-  String get editTransaction => 'Edit Transaction';
+  String get editTransaction => 'Edit Transaksi';
 
   @override
-  String get budgetImpact => 'Budget Impact';
+  String get budgetImpact => 'Kesan Belanjawan';
 
   @override
-  String get currentBudgetUsage => 'Current Budget Usage';
+  String get currentBudgetUsage => 'Penggunaan Belanjawan Semasa';
 
   @override
-  String get afterThisTransaction => 'After this transaction';
+  String get afterThisTransaction => 'Selepas transaksi ini';
 
   @override
-  String get budgetStatus => 'Budget Status';
+  String get budgetStatus => 'Status Belanjawan';
 
   @override
-  String get withinBudget => 'Within Budget';
+  String get withinBudget => 'Dalam Belanjawan';
 
   @override
-  String get overBudget => 'Over Budget';
+  String get overBudget => 'Melebihi Belanjawan';
 
   @override
-  String get budgetPlan => 'Budget Plan';
+  String get budgetPlan => 'Pelan Belanjawan';
 
   @override
-  String get noBudgetPlan => 'No budget plan';
+  String get noBudgetPlan => 'Tiada pelan belanjawan';
 
   @override
-  String get deleteConfirmationTitle => 'Delete Transaction';
+  String get deleteConfirmationTitle => 'Padam Transaksi';
 
   @override
   String get deleteConfirmationMessage =>
-      'Are you sure you want to delete this transaction?';
+      'Adakah anda pasti mahu memadam transaksi ini?';
 
   @override
-  String get deleteConfirmationWarning => 'This action cannot be undone.';
+  String get deleteConfirmationWarning =>
+      'Tindakan ini tidak boleh dibatalkan.';
 
   @override
-  String get all => 'All';
+  String get all => 'Semua';
 
   @override
-  String get balance => 'Balance';
+  String get balance => 'Baki';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Cuba Lagi';
 
   @override
-  String get transactionNotFound => 'Transaction not found';
+  String get transactionNotFound => 'Transaksi tidak ditemui';
 
   @override
-  String get details => 'Details';
+  String get details => 'Butiran';
 
   @override
-  String get type => 'Type';
+  String get type => 'Jenis';
 
   @override
-  String get description => 'Description';
+  String get description => 'Penerangan';
 
   @override
-  String get time => 'Time';
+  String get time => 'Masa';
 
   @override
-  String get budget => 'Budget';
+  String get budget => 'Belanjawan';
 
   @override
-  String get timeline => 'Timeline';
+  String get timeline => 'Garis Masa';
 
   @override
-  String get created => 'Created';
+  String get created => 'Dicipta';
 
   @override
-  String get lastUpdated => 'Last Updated';
+  String get lastUpdated => 'Kemaskini Terakhir';
 
   @override
-  String get editFunctionalityComingSoon => 'Edit functionality coming soon';
+  String get editFunctionalityComingSoon =>
+      'Fungsi edit akan datang tidak lama lagi';
 
   @override
-  String get noTransactionsFound => 'No transactions found';
+  String get noTransactionsFound => 'Tiada transaksi ditemui';
 
   @override
-  String get tryAdjustingFilters => 'Try adjusting your search or filters';
+  String get tryAdjustingFilters => 'Cuba laraskan carian atau penapis anda';
 
   @override
-  String get startAddingTransactions => 'Start adding your income and expenses';
+  String get startAddingTransactions =>
+      'Mula tambah pendapatan dan perbelanjaan anda';
 
   @override
-  String get thisBudgetIsOverBy => 'This budget is over by';
+  String get thisBudgetIsOverBy => 'Belanjawan ini melebihi sebanyak';
 
   @override
-  String get selectBudget => 'Select Budget';
+  String get selectBudget => 'Pilih Belanjawan';
 
   @override
-  String get showAllTransactions => 'Show all transactions';
+  String get showAllTransactions => 'Tunjukkan semua transaksi';
 
   @override
-  String get noBudgetPlans => 'No Budget Plans';
+  String get noBudgetPlans => 'Tiada Pelan Belanjawan';
 
   @override
-  String get selectBudgetPlan => 'Select Budget Plan';
+  String get selectBudgetPlan => 'Pilih Pelan Belanjawan';
 
   @override
-  String get searchBudgets => 'Search budgets...';
+  String get searchBudgets => 'Cari belanjawan...';
 
   @override
-  String get noBudgetsFound => 'No budgets found';
+  String get noBudgetsFound => 'Tiada belanjawan ditemui';
 
   @override
-  String get tryAdjustingSearchTerm => 'Try adjusting your search term';
+  String get tryAdjustingSearchTerm => 'Cuba laraskan istilah carian anda';
 
   @override
-  String get clearSearch => 'Clear search';
+  String get clearSearch => 'Kosongkan carian';
 
   @override
-  String get budgetDetailsLoading => 'Budget details loading...';
+  String get budgetDetailsLoading => 'Memuat butiran belanjawan...';
 
   @override
-  String get calculatingRemaining => 'Calculating remaining...';
+  String get calculatingRemaining => 'Mengira baki...';
 
   @override
   String budgetCount(int count, int total) {
-    return '$count of $total budgets';
+    return '$count daripada $total belanjawan';
   }
 
   @override
   String get createBudgetPlanDescription =>
-      'To track expenses properly, you need to create budget plans first.';
+      'Untuk menjejak perbelanjaan dengan betul, anda perlu mencipta pelan belanjawan dahulu.';
 
   @override
-  String get whatWouldYouLikeToDo => 'What would you like to do?';
+  String get whatWouldYouLikeToDo => 'Apa yang anda ingin lakukan?';
 
   @override
   String get createBudgetPlanToTrack =>
-      'Create budget plans first for better expense tracking.';
+      'Cipta pelan belanjawan dahulu untuk penjejakan perbelanjaan yang lebih baik.';
 
   @override
   String get currencyThousands => 'K';
