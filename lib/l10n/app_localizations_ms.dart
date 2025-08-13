@@ -981,4 +981,61 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get acknowledgments => 'Penghargaan';
+
+  @override
+  String get requestFeature => 'Cadang Ciri';
+
+  @override
+  String get featureRequestTitle => 'Cadangkan Ciri';
+
+  @override
+  String get featureRequestSubtitle =>
+      'Bantu kami meningkatkan aplikasi dengan berkongsi idea dan cadangan anda';
+
+  @override
+  String get featureTitleRequired => 'Tajuk Ciri *';
+
+  @override
+  String get featureTitleHint => 'cth: Sokongan mod gelap untuk aplikasi';
+
+  @override
+  String get featureTitleError => 'Sila berikan tajuk ciri';
+
+  @override
+  String get featureDescription => 'Penerangan Ciri *';
+
+  @override
+  String get featureDescriptionHint =>
+      'Terangkan apa yang anda ingin lihat dalam aplikasi ini. Berikan butiran sebanyak mungkin tentang fungsi yang anda bayangkan.';
+
+  @override
+  String get featureDescriptionError => 'Sila berikan penerangan ciri';
+
+  @override
+  String get featureUseCase => 'Mengapa anda memerlukan ciri ini? *';
+
+  @override
+  String get featureUseCaseHint =>
+      'Terangkan bagaimana ciri ini akan membantu anda dan pengguna lain. Masalah apa yang akan diselesaikan?';
+
+  @override
+  String get featureUseCaseError =>
+      'Sila terangkan mengapa ciri ini diperlukan';
+
+  @override
+  String get systemInformation => 'Maklumat Sistem';
+
+  @override
+  String get systemInfoAutoIncluded =>
+      'Maklumat sistem akan disertakan secara automatik';
+
+  @override
+  String get generateFeatureRequest => 'Jana Cadangan Ciri';
+
+  @override
+  String get submittingRequest => 'Menghantar...';
+
+  @override
+  String get featureRequestCopied =>
+      'Cadangan ciri disalin ke papan keratan! Anda kini boleh menampalkannya dalam saluran komunikasi pilihan anda.';
 }

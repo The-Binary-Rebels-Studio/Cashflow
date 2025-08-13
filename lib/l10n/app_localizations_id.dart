@@ -978,4 +978,61 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get acknowledgments => 'Ucapan Terima Kasih';
+
+  @override
+  String get requestFeature => 'Saran Fitur';
+
+  @override
+  String get featureRequestTitle => 'Sarankan Fitur';
+
+  @override
+  String get featureRequestSubtitle =>
+      'Bantu kami meningkatkan aplikasi dengan berbagi ide dan saran Anda';
+
+  @override
+  String get featureTitleRequired => 'Judul Fitur *';
+
+  @override
+  String get featureTitleHint => 'contoh: Dukungan mode gelap untuk aplikasi';
+
+  @override
+  String get featureTitleError => 'Mohon berikan judul fitur';
+
+  @override
+  String get featureDescription => 'Deskripsi Fitur *';
+
+  @override
+  String get featureDescriptionHint =>
+      'Jelaskan apa yang ingin Anda lihat di aplikasi ini. Berikan detail sebanyak mungkin tentang fungsionalitas yang Anda bayangkan.';
+
+  @override
+  String get featureDescriptionError => 'Mohon berikan deskripsi fitur';
+
+  @override
+  String get featureUseCase => 'Mengapa Anda membutuhkan fitur ini? *';
+
+  @override
+  String get featureUseCaseHint =>
+      'Jelaskan bagaimana fitur ini akan membantu Anda dan pengguna lain. Masalah apa yang akan diselesaikan?';
+
+  @override
+  String get featureUseCaseError =>
+      'Mohon jelaskan mengapa fitur ini diperlukan';
+
+  @override
+  String get systemInformation => 'Informasi Sistem';
+
+  @override
+  String get systemInfoAutoIncluded =>
+      'Info sistem akan disertakan secara otomatis';
+
+  @override
+  String get generateFeatureRequest => 'Buat Saran Fitur';
+
+  @override
+  String get submittingRequest => 'Mengirim...';
+
+  @override
+  String get featureRequestCopied =>
+      'Saran fitur disalin ke clipboard! Anda sekarang dapat menempelkannya di saluran komunikasi yang Anda sukai.';
 }

@@ -973,4 +973,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acknowledgments => 'Acknowledgments';
+
+  @override
+  String get requestFeature => 'Request Feature';
+
+  @override
+  String get featureRequestTitle => 'Suggest a Feature';
+
+  @override
+  String get featureRequestSubtitle =>
+      'Help us improve the app by sharing your ideas and suggestions';
+
+  @override
+  String get featureTitleRequired => 'Feature Title *';
+
+  @override
+  String get featureTitleHint => 'e.g., Dark mode support for the app';
+
+  @override
+  String get featureTitleError => 'Please provide a feature title';
+
+  @override
+  String get featureDescription => 'Feature Description *';
+
+  @override
+  String get featureDescriptionHint =>
+      'Describe what you would like to see in the app. Be as detailed as possible about the functionality you envision.';
+
+  @override
+  String get featureDescriptionError => 'Please provide a feature description';
+
+  @override
+  String get featureUseCase => 'Why do you need this feature? *';
+
+  @override
+  String get featureUseCaseHint =>
+      'Explain how this feature would help you and other users. What problem would it solve?';
+
+  @override
+  String get featureUseCaseError => 'Please explain why this feature is needed';
+
+  @override
+  String get systemInformation => 'System Information';
+
+  @override
+  String get systemInfoAutoIncluded =>
+      'System info will be included automatically';
+
+  @override
+  String get generateFeatureRequest => 'Generate Feature Request';
+
+  @override
+  String get submittingRequest => 'Submitting...';
+
+  @override
+  String get featureRequestCopied =>
+      'Feature request copied to clipboard! You can now paste it in your preferred communication channel.';
 }
