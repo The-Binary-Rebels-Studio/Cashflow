@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
+import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 
 class RecentTransactions extends StatelessWidget {
-  final List<TransactionItem> transactions;
+  final List<TransactionWithBudget> transactions;
   final VoidCallback? onSeeAll;
 
   const RecentTransactions({
@@ -58,7 +62,9 @@ class RecentTransactions extends StatelessWidget {
         color: Colors.green,
       ),
     ];
-    final displayTransactions = transactions.isEmpty ? defaultTransactions.take(6).toList() : transactions.take(6).toList();
+    final displayTransactions = transactions.isEmpty 
+        ? defaultTransactions.take(6).toList() 
+        : transactions.take(6).map((txn) => _mapToTransactionItem(txn, context)).toList();
     
     return Card(
       elevation: 0,
@@ -174,4 +180,65 @@ class TransactionItem {
     required this.icon,
     required this.color,
   });
+}
+
+extension on RecentTransactions {
+  TransactionItem _mapToTransactionItem(TransactionWithBudget txn, BuildContext context) {
+    final currency = context.read<CurrencyBloc>().state;
+    final isIncome = txn.transaction.amount >= 0;
+    final formattedAmount = CurrencyFormatter.formatWithSymbol(
+      txn.transaction.amount, 
+      currency.symbol,
+      context,
+      showSign: true,
+      useHomeFormat: false, // Compact format untuk recent transactions
+    );
+    
+    return TransactionItem(
+      title: txn.transaction.title,
+      category: txn.budget.name,
+      amount: formattedAmount,
+      icon: _getCategoryIcon(txn.budget.name),
+      color: _getCategoryColor(txn.budget.name, isIncome),
+    );
+  }
+  
+  IconData _getCategoryIcon(String category) {
+    final lowercaseCategory = category.toLowerCase();
+    if (lowercaseCategory.contains('food') || lowercaseCategory.contains('dining')) {
+      return Icons.local_cafe;
+    } else if (lowercaseCategory.contains('transport')) {
+      return Icons.directions_car;
+    } else if (lowercaseCategory.contains('salary') || lowercaseCategory.contains('income')) {
+      return Icons.account_balance_wallet;
+    } else if (lowercaseCategory.contains('subscription') || lowercaseCategory.contains('bills')) {
+      return Icons.subscriptions;
+    } else if (lowercaseCategory.contains('shopping')) {
+      return Icons.shopping_cart;
+    } else if (lowercaseCategory.contains('work') || lowercaseCategory.contains('freelance')) {
+      return Icons.work;
+    } else {
+      return Icons.category;
+    }
+  }
+  
+  Color _getCategoryColor(String category, bool isIncome) {
+    if (isIncome) {
+      return Colors.green;
+    }
+    
+    final lowercaseCategory = category.toLowerCase();
+    if (lowercaseCategory.contains('food')) {
+      return Colors.orange;
+    } else if (lowercaseCategory.contains('transport')) {
+      return Colors.blue;
+    } else if (lowercaseCategory.contains('subscription') || lowercaseCategory.contains('bills')) {
+      return Colors.red;
+    } else if (lowercaseCategory.contains('shopping')) {
+      return Colors.purple;
+    } else {
+      return Colors.grey;
+    }
+  }
+  
 }

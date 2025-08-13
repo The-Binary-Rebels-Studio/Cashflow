@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
@@ -231,7 +232,7 @@ class BudgetPlanItem extends StatelessWidget {
                     BlocBuilder<CurrencyBloc, CurrencyModel>(
                       builder: (context, currency) {
                         return Text(
-                          '${currency.symbol}${budget.amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                          CurrencyFormatter.formatWithSymbol(budget.amount, currency.symbol, context),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -361,7 +362,7 @@ class BudgetPlanItem extends StatelessWidget {
                     Expanded(
                       child: _StatItem(
                         label: AppLocalizations.of(context)!.spent,
-                        amount: '${currency.symbol}${totalSpent.toStringAsFixed(0)}',
+                        amount: CurrencyFormatter.formatWithSymbol(totalSpent, currency.symbol, context),
                         color: Colors.red,
                       ),
                     ),
@@ -369,7 +370,7 @@ class BudgetPlanItem extends StatelessWidget {
                     Expanded(
                       child: _StatItem(
                         label: AppLocalizations.of(context)!.remaining,
-                        amount: '${currency.symbol}${remaining.toStringAsFixed(0)}',
+                        amount: CurrencyFormatter.formatWithSymbol(remaining, currency.symbol, context),
                         color: Colors.green,
                       ),
                     ),

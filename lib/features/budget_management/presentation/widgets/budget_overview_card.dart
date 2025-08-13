@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart';
 import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_state.dart';
-import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
@@ -147,7 +147,7 @@ class BudgetOverviewCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '${currency.symbol}${totalBudget.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                          CurrencyFormatter.formatWithSymbol(totalBudget, currency.symbol, context),
                           style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -247,7 +247,7 @@ class _StatItem extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '${currency.symbol}${value.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                    CurrencyFormatter.formatWithSymbol(value, currency.symbol, context),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

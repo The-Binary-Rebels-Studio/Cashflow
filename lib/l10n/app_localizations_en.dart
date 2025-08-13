@@ -902,4 +902,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get createBudgetPlanToTrack =>
       'Create budget plans first for better expense tracking.';
+
+  @override
+  String get currencyThousands => 'K';
+
+  @override
+  String get currencyMillions => 'M';
+
+  @override
+  String get currencyBillions => 'B';
 }

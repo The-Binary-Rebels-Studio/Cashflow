@@ -3,17 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 
 class BalanceCard extends StatelessWidget {
-  final String balance;
-  final String trend;
+  final double balance;
+  final String? trend;
   final bool isBalanceVisible;
   final VoidCallback onVisibilityToggle;
 
   const BalanceCard({
     super.key,
-    this.balance = 'Rp 15,750,000',
-    this.trend = '+12.5% from last month',
+    required this.balance,
+    this.trend,
     this.isBalanceVisible = true,
     required this.onVisibilityToggle,
   });
@@ -68,7 +69,7 @@ class BalanceCard extends StatelessWidget {
           BlocBuilder<CurrencyBloc, CurrencyModel>(
             builder: (context, currency) {
               final formattedBalance = isBalanceVisible 
-                ? '${currency.symbol} 15,750,000' // TODO: Use real balance data
+                ? CurrencyFormatter.formatWithSymbol(balance, currency.symbol, context, useHomeFormat: true)
                 : '****';
               return Text(
                 formattedBalance,
@@ -81,15 +82,19 @@ class BalanceCard extends StatelessWidget {
             },
           ),
           const SizedBox(height: 8),
-          if (isBalanceVisible)
+          if (isBalanceVisible && trend != null)
             Row(
               children: [
-                const Icon(Icons.trending_up, color: Colors.greenAccent, size: 16),
+                Icon(
+                  balance >= 0 ? Icons.trending_up : Icons.trending_down, 
+                  color: balance >= 0 ? Colors.greenAccent : Colors.redAccent, 
+                  size: 16
+                ),
                 const SizedBox(width: 4),
                 Text(
-                  l10n.dashboardTrendFromLastMonth,
-                  style: const TextStyle(
-                    color: Colors.greenAccent,
+                  trend!,
+                  style: TextStyle(
+                    color: balance >= 0 ? Colors.greenAccent : Colors.redAccent,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -100,4 +105,5 @@ class BalanceCard extends StatelessWidget {
       ),
     );
   }
+  
 }

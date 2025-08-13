@@ -355,5 +355,9 @@
   },
   "createBudgetPlanDescription": "To track expenses properly, you need to create budget plans first.",
   "whatWouldYouLikeToDo": "What would you like to do?",
-  "createBudgetPlanToTrack": "Create budget plans first for better expense tracking."
+  "createBudgetPlanToTrack": "Create budget plans first for better expense tracking.",
+
+  "currencyThousands": "K",
+  "currencyMillions": "M",
+  "currencyBillions": "B"
 }

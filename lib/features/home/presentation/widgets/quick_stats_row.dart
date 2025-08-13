@@ -1,42 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
+import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/models/currency_model.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 
 class QuickStatsRow extends StatelessWidget {
-  final String income;
-  final String expenses;
+  final double income;
+  final double expenses;
 
   const QuickStatsRow({
     super.key,
-    this.income = 'Rp 8,500,000',
-    this.expenses = 'Rp 3,250,000',
+    required this.income,
+    required this.expenses,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     
-    return Row(
-      children: [
-        Expanded(
-          child: _StatCard(
-            title: l10n.dashboardIncome,
-            amount: income,
-            icon: Icons.trending_up,
-            color: Colors.green,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _StatCard(
-            title: l10n.dashboardExpenses,
-            amount: expenses,
-            icon: Icons.trending_down,
-            color: Colors.red,
-          ),
-        ),
-      ],
+    return BlocBuilder<CurrencyBloc, CurrencyModel>(
+      builder: (context, currency) {
+        return Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                title: l10n.dashboardIncome,
+                amount: CurrencyFormatter.formatWithSymbol(income, currency.symbol, context, useHomeFormat: true),
+                icon: Icons.trending_up,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _StatCard(
+                title: l10n.dashboardExpenses,
+                amount: CurrencyFormatter.formatWithSymbol(expenses, currency.symbol, context, useHomeFormat: true),
+                icon: Icons.trending_down,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
+  
 }
 
 class _StatCard extends StatelessWidget {

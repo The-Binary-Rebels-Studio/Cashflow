@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
@@ -291,8 +292,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              GetIt.instance<CurrencyBloc>().formatAmount(
+                              CurrencyFormatter.formatWithSymbol(
                                 _transaction?.transaction.amount ?? 0,
+                                GetIt.instance<CurrencyBloc>().state.symbol,
+                                context,
+                                showSign: true,
+                                useHomeFormat: true, // Detail format untuk transaction detail
                               ),
                               style: TextStyle(
                                 fontSize: 20,
@@ -721,7 +726,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            GetIt.instance<CurrencyBloc>().formatAmount(transaction.amount),
+            CurrencyFormatter.formatWithSymbol(
+              transaction.amount,
+              GetIt.instance<CurrencyBloc>().state.symbol,
+              context,
+              showSign: true,
+              useHomeFormat: true,
+            ),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -828,7 +839,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           // Amount breakdown
           _buildDetailRow(
             AppLocalizations.of(context)!.amount,
-            GetIt.instance<CurrencyBloc>().formatAmount(transaction.amount),
+            CurrencyFormatter.formatWithSymbol(
+              transaction.amount,
+              GetIt.instance<CurrencyBloc>().state.symbol,
+              context,
+              showSign: true,
+              useHomeFormat: true,
+            ),
             leading: Icon(
               transaction.isIncome ? Icons.add_circle : Icons.remove_circle,
               color: transaction.isIncome ? Colors.green : Colors.red,
@@ -1022,7 +1039,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${AppLocalizations.of(context)!.spent}: ${GetIt.instance<CurrencyBloc>().formatAmount(-totalSpent)}',
+                    '${AppLocalizations.of(context)!.spent}: ${CurrencyFormatter.formatWithSymbol(-totalSpent, GetIt.instance<CurrencyBloc>().state.symbol, context, showSign: false)}',
                     style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                   Text(
@@ -1056,8 +1073,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           ),
                         ),
                         Text(
-                          GetIt.instance<CurrencyBloc>().formatAmount(
+                          CurrencyFormatter.formatWithSymbol(
                             _budget!.amount,
+                            GetIt.instance<CurrencyBloc>().state.symbol,
+                            context,
+                            showSign: false,
                           ),
                           style: const TextStyle(
                             fontSize: 16,
@@ -1079,8 +1099,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           ),
                         ),
                         Text(
-                          GetIt.instance<CurrencyBloc>().formatAmount(
+                          CurrencyFormatter.formatWithSymbol(
                             remaining,
+                            GetIt.instance<CurrencyBloc>().state.symbol,
+                            context,
+                            showSign: false,
                           ),
                           style: TextStyle(
                             fontSize: 16,
@@ -1113,7 +1136,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '${AppLocalizations.of(context)!.thisBudgetIsOverBy} ${GetIt.instance<CurrencyBloc>().formatAmount(remaining.abs())}',
+                          '${AppLocalizations.of(context)!.thisBudgetIsOverBy} ${CurrencyFormatter.formatWithSymbol(remaining.abs(), GetIt.instance<CurrencyBloc>().state.symbol, context, showSign: false)}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.red[700],

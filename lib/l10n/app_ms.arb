@@ -279,5 +279,9 @@
   "filterThisYear": "Tahun Ini",
   "filterSpecificDate": "Tarikh Tertentu",
   "dateToday": "Hari Ini",
-  "dateYesterday": "Semalam"
+  "dateYesterday": "Semalam",
+
+  "currencyThousands": "K",
+  "currencyMillions": "J",
+  "currencyBillions": "B"
 }

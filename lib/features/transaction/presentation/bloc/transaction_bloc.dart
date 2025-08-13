@@ -65,6 +65,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       final expenseTransactions = results[2].value as List<TransactionWithBudget>;
       final totalIncome = results[3].value as double;
       final totalExpense = results[4].value as double;
+      
       final balance = totalIncome + totalExpense; // expense amounts are negative
       
       final expenseCategories = await budgetManagementRepository.getCategoriesByType(CategoryType.expense);
@@ -77,8 +78,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         expenseCategories: expenseCategories,
         incomeCategories: incomeCategories,
         totalIncome: totalIncome,
-        totalExpense: totalExpense.abs(),
-        balance: balance,
+        totalExpense: totalExpense.abs(), // Display as positive in UI
+        balance: balance, // This is the correct calculation: income + (negative)expense
       ));
     } catch (e) {
       emit(TransactionError('Failed to process transaction data: ${e.toString()}'));

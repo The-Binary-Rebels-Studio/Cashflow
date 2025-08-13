@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_state.dart';
@@ -268,7 +269,7 @@ class _TransactionGroup extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                _calculateDayTotal(group.transactions),
+                _calculateDayTotal(group.transactions, context),
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: _getDayTotalColor(group.transactions),
@@ -294,9 +295,16 @@ class _TransactionGroup extends StatelessWidget {
     );
   }
 
-  String _calculateDayTotal(List<TransactionWithBudget> transactions) {
+  String _calculateDayTotal(List<TransactionWithBudget> transactions, BuildContext context) {
     final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
-    return GetIt.instance<CurrencyBloc>().formatAmount(total);
+    final currency = GetIt.instance<CurrencyBloc>().state;
+    return CurrencyFormatter.formatWithSymbol(
+      total,
+      currency.symbol,
+      context,
+      showSign: true,
+      useHomeFormat: false, // Compact format untuk day total
+    );
   }
 
   Color _getDayTotalColor(List<TransactionWithBudget> transactions) {
@@ -330,7 +338,14 @@ class _TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPositive = transaction.transaction.amount >= 0;
-    final displayAmount = GetIt.instance<CurrencyBloc>().formatAmount(transaction.transaction.amount);
+    final currency = GetIt.instance<CurrencyBloc>().state;
+    final displayAmount = CurrencyFormatter.formatWithSymbol(
+      transaction.transaction.amount,
+      currency.symbol,
+      context,
+      showSign: true,
+      useHomeFormat: false, // Compact format untuk transaction tile
+    );
     final transactionIcon = _getTransactionIcon();
     final iconColor = _getTransactionIconColor();
     

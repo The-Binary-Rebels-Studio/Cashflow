@@ -907,4 +907,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get createBudgetPlanToTrack =>
       'Buat rencana anggaran terlebih dahulu untuk tracking pengeluaran yang lebih baik.';
+
+  @override
+  String get currencyThousands => 'Rb';
+
+  @override
+  String get currencyMillions => 'Jt';
+
+  @override
+  String get currencyBillions => 'M';
 }

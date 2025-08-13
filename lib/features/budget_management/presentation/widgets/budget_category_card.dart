@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/models/currency_model.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
@@ -38,7 +39,7 @@ class BudgetCategoryCard extends StatelessWidget {
         
         result.fold(
           onSuccess: (spentInBudget) {
-            debugPrint('💰 [DEBUG] Budget: ${budget.name}, Period: ${periodStart} to ${periodEnd}');
+            debugPrint('💰 [DEBUG] Budget: ${budget.name}, Period: $periodStart to $periodEnd');
             debugPrint('💰 [DEBUG] Raw spent amount: $spentInBudget');
             final absSpent = spentInBudget.abs();
             totalSpent += absSpent;
@@ -199,7 +200,7 @@ class BudgetCategoryCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '${currency.symbol}${totalBudget.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                            CurrencyFormatter.formatWithSymbol(totalBudget, currency.symbol, context),
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -280,7 +281,7 @@ class BudgetCategoryCard extends StatelessWidget {
                         Expanded(
                           child: _StatChip(
                             label: 'Spent',
-                            amount: '${currency.symbol}${totalSpent.toStringAsFixed(0)}',
+                            amount: CurrencyFormatter.formatWithSymbol(totalSpent, currency.symbol, context),
                             color: Colors.red,
                           ),
                         ),
@@ -288,7 +289,7 @@ class BudgetCategoryCard extends StatelessWidget {
                         Expanded(
                           child: _StatChip(
                             label: 'Remaining',
-                            amount: '${currency.symbol}${remaining.toStringAsFixed(0)}',
+                            amount: CurrencyFormatter.formatWithSymbol(remaining, currency.symbol, context),
                             color: Colors.green,
                           ),
                         ),
@@ -326,7 +327,7 @@ class BudgetCategoryCard extends StatelessWidget {
                       BlocBuilder<CurrencyBloc, CurrencyModel>(
                         builder: (context, currency) {
                           return Text(
-                            '${currency.symbol}${budget.amount.toStringAsFixed(0)}',
+                            CurrencyFormatter.formatWithSymbol(budget.amount, currency.symbol, context),
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,

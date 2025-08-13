@@ -1827,6 +1827,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create budget plans first for better expense tracking.'**
   String get createBudgetPlanToTrack;
+
+  /// No description provided for @currencyThousands.
+  ///
+  /// In en, this message translates to:
+  /// **'K'**
+  String get currencyThousands;
+
+  /// No description provided for @currencyMillions.
+  ///
+  /// In en, this message translates to:
+  /// **'M'**
+  String get currencyMillions;
+
+  /// No description provided for @currencyBillions.
+  ///
+  /// In en, this message translates to:
+  /// **'B'**
+  String get currencyBillions;
 }
 
 class _AppLocalizationsDelegate

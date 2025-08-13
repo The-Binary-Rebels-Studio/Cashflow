@@ -338,5 +338,9 @@
   "budgetCount": "{count} dari {total} rencana anggaran",
   "createBudgetPlanDescription": "Untuk melacak pengeluaran dengan baik, Anda perlu membuat rencana anggaran terlebih dahulu.",
   "whatWouldYouLikeToDo": "Apa yang ingin Anda lakukan?",
-  "createBudgetPlanToTrack": "Buat rencana anggaran terlebih dahulu untuk tracking pengeluaran yang lebih baik."
+  "createBudgetPlanToTrack": "Buat rencana anggaran terlebih dahulu untuk tracking pengeluaran yang lebih baik.",
+
+  "currencyThousands": "Rb",
+  "currencyMillions": "Jt",
+  "currencyBillions": "M"
 }

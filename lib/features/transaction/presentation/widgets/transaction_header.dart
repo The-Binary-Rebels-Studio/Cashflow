@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/utils/currency_formatter.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_state.dart';
 import 'package:cashflow/features/transaction/presentation/widgets/budget_selector_sheet.dart';
@@ -43,33 +44,18 @@ class TransactionHeader extends StatelessWidget {
     this.specificDate,
   });
 
-  // Format amount for compact display in summary cards
-  String _formatCompactAmount(double amount) {
+  // Format amount for compact display in summary cards using localized abbreviations
+  String _formatCompactAmount(double amount, BuildContext context) {
     final currencyBloc = GetIt.instance<CurrencyBloc>();
     final currency = currencyBloc.selectedCurrency;
-    final symbol = currency.symbol;
     
-    // For very large amounts, use compact format
-    if (amount.abs() >= 1000000000) {
-      // Billions
-      final billions = amount / 1000000000;
-      return '${amount >= 0 ? '+' : '-'}$symbol${billions.toStringAsFixed(1)}B';
-    } else if (amount.abs() >= 1000000) {
-      // Millions
-      final millions = amount / 1000000;
-      return '${amount >= 0 ? '+' : '-'}$symbol${millions.toStringAsFixed(1)}M';
-    } else if (amount.abs() >= 100000) {
-      // Hundreds of thousands - show as K
-      final thousands = amount / 1000;
-      return '${amount >= 0 ? '+' : '-'}$symbol${thousands.toStringAsFixed(0)}K';
-    } else {
-      // Regular format but more compact (no space between symbol and amount)
-      final formattedAmount = amount.abs().toStringAsFixed(0).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match m) => '${m[1]},',
-      );
-      return '${amount >= 0 ? '+' : '-'}$symbol$formattedAmount';
-    }
+    return CurrencyFormatter.formatWithSymbol(
+      amount,
+      currency.symbol,
+      context,
+      showSign: true,
+      useHomeFormat: false, // Use compact format for header
+    );
   }
 
   @override
@@ -146,7 +132,7 @@ class TransactionHeader extends StatelessWidget {
                 Expanded(
                   child: _SummaryCard(
                     title: l10n.dashboardIncome,
-                    amount: _formatCompactAmount(state.totalIncome),
+                    amount: _formatCompactAmount(state.totalIncome, context),
                     color: Colors.green,
                     icon: Icons.trending_up,
                   ),
@@ -155,7 +141,7 @@ class TransactionHeader extends StatelessWidget {
                 Expanded(
                   child: _SummaryCard(
                     title: AppLocalizations.of(context)!.expense,
-                    amount: _formatCompactAmount(-state.totalExpense),
+                    amount: _formatCompactAmount(-state.totalExpense, context),
                     color: Colors.red,
                     icon: Icons.trending_down,
                   ),
@@ -164,7 +150,7 @@ class TransactionHeader extends StatelessWidget {
                 Expanded(
                   child: _SummaryCard(
                     title: AppLocalizations.of(context)!.balance,
-                    amount: _formatCompactAmount(state.balance),
+                    amount: _formatCompactAmount(state.balance, context),
                     color: Colors.blue,
                     icon: Icons.account_balance_wallet,
                   ),
@@ -181,7 +167,7 @@ class TransactionHeader extends StatelessWidget {
               Expanded(
                 child: _SummaryCard(
                   title: l10n.dashboardIncome,
-                  amount: _formatCompactAmount(0),
+                  amount: _formatCompactAmount(0, context),
                   color: Colors.green,
                   icon: Icons.trending_up,
                 ),
@@ -190,7 +176,7 @@ class TransactionHeader extends StatelessWidget {
               Expanded(
                 child: _SummaryCard(
                   title: AppLocalizations.of(context)!.expense,
-                  amount: _formatCompactAmount(0),
+                  amount: _formatCompactAmount(0, context),
                   color: Colors.red,
                   icon: Icons.trending_down,
                 ),
@@ -199,7 +185,7 @@ class TransactionHeader extends StatelessWidget {
               Expanded(
                 child: _SummaryCard(
                   title: AppLocalizations.of(context)!.balance,
-                  amount: _formatCompactAmount(0),
+                  amount: _formatCompactAmount(0, context),
                   color: Colors.blue,
                   icon: Icons.account_balance_wallet,
                 ),
