@@ -56,7 +56,7 @@ class _MainNavigationState extends State<MainNavigation> {
     final List<Widget> screens = [
       const HomePage(),
       const TransactionPage(),
-      const ProfilePage(),
+      const ProfilePage(), // Still using ProfilePage as container for settings
     ];
 
     return Scaffold(
@@ -78,8 +78,8 @@ class _MainNavigationState extends State<MainNavigation> {
             label: AppLocalizations.of(context)!.transactions,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
-            label: AppLocalizations.of(context)!.profile,
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.of(context)!.settings,
           ),
         ],
       ),
