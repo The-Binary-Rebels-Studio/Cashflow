@@ -379,5 +379,23 @@
   "version": "Versi",
   "buildDate": "Tanggal Build",
   "developer": "Pengembang",
-  "acknowledgments": "Ucapan Terima Kasih"
+  "acknowledgments": "Ucapan Terima Kasih",
+
+  "requestFeature": "Saran Fitur",
+  "featureRequestTitle": "Sarankan Fitur",
+  "featureRequestSubtitle": "Bantu kami meningkatkan aplikasi dengan berbagi ide dan saran Anda",
+  "featureTitleRequired": "Judul Fitur *",
+  "featureTitleHint": "contoh: Dukungan mode gelap untuk aplikasi",
+  "featureTitleError": "Mohon berikan judul fitur",
+  "featureDescription": "Deskripsi Fitur *",
+  "featureDescriptionHint": "Jelaskan apa yang ingin Anda lihat di aplikasi ini. Berikan detail sebanyak mungkin tentang fungsionalitas yang Anda bayangkan.",
+  "featureDescriptionError": "Mohon berikan deskripsi fitur",
+  "featureUseCase": "Mengapa Anda membutuhkan fitur ini? *",
+  "featureUseCaseHint": "Jelaskan bagaimana fitur ini akan membantu Anda dan pengguna lain. Masalah apa yang akan diselesaikan?",
+  "featureUseCaseError": "Mohon jelaskan mengapa fitur ini diperlukan",
+  "systemInformation": "Informasi Sistem",
+  "systemInfoAutoIncluded": "Info sistem akan disertakan secara otomatis",
+  "generateFeatureRequest": "Buat Saran Fitur",
+  "submittingRequest": "Mengirim...",
+  "featureRequestCopied": "Saran fitur disalin ke clipboard! Anda sekarang dapat menempelkannya di saluran komunikasi yang Anda sukai."
 }

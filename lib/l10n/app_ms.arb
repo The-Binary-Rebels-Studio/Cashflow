@@ -379,5 +379,23 @@
   "version": "Versi",
   "buildDate": "Tarikh Build",
   "developer": "Pembangun",
-  "acknowledgments": "Penghargaan"
+  "acknowledgments": "Penghargaan",
+
+  "requestFeature": "Cadang Ciri",
+  "featureRequestTitle": "Cadangkan Ciri",
+  "featureRequestSubtitle": "Bantu kami meningkatkan aplikasi dengan berkongsi idea dan cadangan anda",
+  "featureTitleRequired": "Tajuk Ciri *",
+  "featureTitleHint": "cth: Sokongan mod gelap untuk aplikasi",
+  "featureTitleError": "Sila berikan tajuk ciri",
+  "featureDescription": "Penerangan Ciri *",
+  "featureDescriptionHint": "Terangkan apa yang anda ingin lihat dalam aplikasi ini. Berikan butiran sebanyak mungkin tentang fungsi yang anda bayangkan.",
+  "featureDescriptionError": "Sila berikan penerangan ciri",
+  "featureUseCase": "Mengapa anda memerlukan ciri ini? *",
+  "featureUseCaseHint": "Terangkan bagaimana ciri ini akan membantu anda dan pengguna lain. Masalah apa yang akan diselesaikan?",
+  "featureUseCaseError": "Sila terangkan mengapa ciri ini diperlukan",
+  "systemInformation": "Maklumat Sistem",
+  "systemInfoAutoIncluded": "Maklumat sistem akan disertakan secara automatik",
+  "generateFeatureRequest": "Jana Cadangan Ciri",
+  "submittingRequest": "Menghantar...",
+  "featureRequestCopied": "Cadangan ciri disalin ke papan keratan! Anda kini boleh menampalkannya dalam saluran komunikasi pilihan anda."
 }
