@@ -1,6 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:cashflow/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:cashflow/features/profile/presentation/pages/bug_report_page.dart';
+import 'package:cashflow/features/profile/presentation/pages/feature_request_page.dart';
+import 'package:cashflow/features/profile/presentation/pages/privacy_policy_page.dart';
+import 'package:cashflow/features/profile/presentation/pages/about_page.dart';
 import 'package:cashflow/features/settings/presentation/pages/settings_page.dart';
 import 'package:cashflow/features/budget_management/presentation/pages/budget_management_page.dart';
 import 'package:cashflow/features/budget_management/presentation/pages/create_budget_page.dart';
@@ -65,9 +68,24 @@ class AppRouter {
         builder: (context, state) => const BugReportPage(),
       ),
       GoRoute(
+        path: '/feature-request',
+        name: 'feature_request',
+        builder: (context, state) => const FeatureRequestPage(),
+      ),
+      GoRoute(
         path: '/settings',
         name: 'settings',
         builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: '/privacy-policy',
+        name: 'privacy_policy',
+        builder: (context, state) => const PrivacyPolicyPage(),
+      ),
+      GoRoute(
+        path: '/about',
+        name: 'about',
+        builder: (context, state) => const AboutPage(),
       ),
       GoRoute(
         path: '/budget-management',
