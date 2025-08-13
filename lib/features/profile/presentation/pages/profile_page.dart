@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n.profile,
+                l10n.settings,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -114,14 +114,14 @@ class _ProfileHeaderCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.person,
+              Icons.settings,
               size: 40,
               color: Colors.white,
             ),
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.cashflowManager,
+            "Pengaturan",
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -130,7 +130,7 @@ class _ProfileHeaderCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            l10n.manageYourFinances,
+            "Kelola aplikasi dan preferensi Anda",
             style: const TextStyle(
               fontSize: 16,
               color: Colors.white70,
@@ -173,21 +173,24 @@ class _MenuSection extends StatelessWidget {
           ),
           const Divider(height: 1),
           _MenuItem(
+            icon: Icons.lightbulb_outline,
+            title: l10n.requestFeature,
+            color: Colors.green,
+            onTap: () => context.push('/feature-request'),
+          ),
+          const Divider(height: 1),
+          _MenuItem(
             icon: Icons.privacy_tip,
             title: l10n.privacyPolicy,
             color: Colors.purple,
-            onTap: () {
-              // TODO: Navigate to privacy policy
-            },
+            onTap: () => context.push(AppConstants.privacyPolicyRoute),
           ),
           const Divider(height: 1),
           _MenuItem(
             icon: Icons.info,
             title: l10n.about,
             color: Colors.green,
-            onTap: () {
-              // TODO: Navigate to about
-            },
+            onTap: () => context.push(AppConstants.aboutRoute),
           ),
         ],
       ),
