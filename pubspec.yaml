@@ -60,6 +60,13 @@ dependencies:
   
   # Advertising
   yandex_mobileads: ^7.7.0
+  
+  # HTTP Client
+  dio: ^5.7.0
+  
+  # Device Info
+  device_info_plus: ^10.1.2
+  package_info_plus: ^8.1.1
 
 dev_dependencies:
   flutter_test:
