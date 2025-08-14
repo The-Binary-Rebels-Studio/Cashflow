@@ -12,6 +12,7 @@ import 'package:cashflow/features/budget_management/presentation/widgets/budget_
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
+import 'package:cashflow/shared/widgets/banner_ad_widget.dart';
 
 class BudgetManagementPage extends StatelessWidget {
   const BudgetManagementPage({super.key});
@@ -177,6 +178,18 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                ),
+              ),
+            ),
+
+            // Banner ad above budget plans list
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: const BannerAdWidget(
+                  maxHeight: 100, // Lebih compact
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
               ),
             ),

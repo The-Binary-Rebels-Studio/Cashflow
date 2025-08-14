@@ -45,5 +45,22 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Yandex Mobile Ads configuration -->
+	<key>YandexMobileAdsAppID</key>
+	<string>ca-app-pub-6875205837709825~1192450057</string>
+	
+	<!-- App Transport Security Settings for ads -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	
+	<!-- Permission descriptions for ad targeting (optional) -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses location for better ad targeting</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses tracking for personalized ads</string>
 </dict>
 </plist>

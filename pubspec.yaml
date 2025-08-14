@@ -57,6 +57,9 @@ dependencies:
   
   # Charts
   fl_chart: ^1.0.0
+  
+  # Advertising
+  yandex_mobileads: ^7.7.0
 
 dev_dependencies:
   flutter_test:

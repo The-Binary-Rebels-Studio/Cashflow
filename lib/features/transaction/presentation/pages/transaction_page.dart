@@ -16,7 +16,7 @@ class TransactionPage extends StatefulWidget {
   State<TransactionPage> createState() => _TransactionPageState();
 }
 
-class _TransactionPageState extends State<TransactionPage> 
+class _TransactionPageState extends State<TransactionPage>
     with AutomaticKeepAliveClientMixin {
   late String _selectedPeriod;
   late String _selectedBudget;
@@ -24,7 +24,7 @@ class _TransactionPageState extends State<TransactionPage>
   String _searchQuery = '';
   bool _isSearching = false;
   DateTime? _selectedSpecificDate;
-  
+
   late List<String> _periods;
   late List<String> _budgets;
   late List<String> _sortOptions;
@@ -53,11 +53,7 @@ class _TransactionPageState extends State<TransactionPage>
       l10n.filterThisYear,
       l10n.filterSpecificDate, // Add specific date option
     ];
-    _sortOptions = [
-      l10n.sortByDate,
-      l10n.sortByAmount,
-      l10n.sortByCategory,
-    ];
+    _sortOptions = [l10n.sortByDate, l10n.sortByAmount, l10n.sortByCategory];
     _budgets = [l10n.all];
     _selectedPeriod = l10n.filterThisMonth;
     _sortBy = l10n.sortByDate;
@@ -73,7 +69,7 @@ class _TransactionPageState extends State<TransactionPage>
         _budgets = [l10n.all, ...budgets.map((budget) => budget.name)];
       });
     } catch (e) {
-      debugPrint('Failed to load budgets: $e');
+      // Budget loading failed, handle gracefully
     }
   }
 
@@ -105,80 +101,81 @@ class _TransactionPageState extends State<TransactionPage>
   Widget build(BuildContext context) {
     super.build(context); // Required by AutomaticKeepAliveClientMixin
     return Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              TransactionHeader(
-                isSearching: _isSearching,
+      body: SafeArea(
+        child: Column(
+          children: [
+            TransactionHeader(
+              isSearching: _isSearching,
+              searchQuery: _searchQuery,
+              selectedPeriod: _selectedPeriod,
+              selectedBudget: _selectedBudget,
+              sortBy: _sortBy,
+              periods: _periods,
+              budgets: _budgets,
+              sortOptions: _sortOptions,
+              specificDate: _selectedSpecificDate,
+              onSearchToggle: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                  if (!_isSearching) _searchQuery = '';
+                });
+              },
+              onSearchChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+              onPeriodChanged: (period) async {
+                final l10n = AppLocalizations.of(context)!;
+                if (period == l10n.filterSpecificDate) {
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: _selectedSpecificDate ?? DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (selectedDate != null) {
+                    setState(() {
+                      _selectedSpecificDate = selectedDate;
+                      _selectedPeriod = _formatSpecificDate(selectedDate);
+                    });
+                  }
+                } else {
+                  setState(() {
+                    _selectedPeriod = period;
+                    _selectedSpecificDate = null;
+                  });
+                }
+              },
+              onBudgetChanged: (budget) {
+                setState(() {
+                  _selectedBudget = budget;
+                });
+              },
+              onSortChanged: (sort) {
+                setState(() {
+                  _sortBy = sort;
+                });
+              },
+              onBudgetsRefreshed: () {
+                // Refresh budget list when BudgetSelectorSheet detects changes
+                _loadBudgets();
+              },
+            ),
+
+            Expanded(
+              child: TransactionList(
                 searchQuery: _searchQuery,
                 selectedPeriod: _selectedPeriod,
                 selectedBudget: _selectedBudget,
                 sortBy: _sortBy,
-                periods: _periods,
-                budgets: _budgets,
-                sortOptions: _sortOptions,
                 specificDate: _selectedSpecificDate,
-                onSearchToggle: () {
-                  setState(() {
-                    _isSearching = !_isSearching;
-                    if (!_isSearching) _searchQuery = '';
-                  });
-                },
-                onSearchChanged: (query) {
-                  setState(() {
-                    _searchQuery = query;
-                  });
-                },
-                onPeriodChanged: (period) async {
-                  final l10n = AppLocalizations.of(context)!;
-                  if (period == l10n.filterSpecificDate) {
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: _selectedSpecificDate ?? DateTime.now(),
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime.now(),
-                    );
-                    if (selectedDate != null) {
-                      setState(() {
-                        _selectedSpecificDate = selectedDate;
-                        _selectedPeriod = _formatSpecificDate(selectedDate);
-                      });
-                    }
-                  } else {
-                    setState(() {
-                      _selectedPeriod = period;
-                      _selectedSpecificDate = null;
-                    });
-                  }
-                },
-                onBudgetChanged: (budget) {
-                  setState(() {
-                    _selectedBudget = budget;
-                  });
-                },
-                onSortChanged: (sort) {
-                  setState(() {
-                    _sortBy = sort;
-                  });
-                },
-                onBudgetsRefreshed: () {
-                  // Refresh budget list when BudgetSelectorSheet detects changes
-                  _loadBudgets();
-                },
               ),
-              Expanded(
-                child: TransactionList(
-                  searchQuery: _searchQuery,
-                  selectedPeriod: _selectedPeriod,
-                  selectedBudget: _selectedBudget,
-                  sortBy: _sortBy,
-                  specificDate: _selectedSpecificDate,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-        floatingActionButton: const TransactionFAB(),
-      );
+      ),
+      floatingActionButton: const TransactionFAB(),
+    );
   }
 }

@@ -11,6 +11,7 @@ import 'package:cashflow/features/transaction/presentation/bloc/transaction_stat
 import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
+import 'package:cashflow/shared/widgets/banner_ad_widget.dart';
 
 class TransactionList extends StatefulWidget {
   final String searchQuery;
@@ -62,7 +63,6 @@ class _TransactionListState extends State<TransactionList> {
         _budgets = budgets;
       });
     } catch (e) {
-      debugPrint('Failed to load budgets: $e');
     }
   }
 
@@ -175,6 +175,58 @@ class _TransactionListState extends State<TransactionList> {
     }
   }
 
+  int _calculateItemCount(int groupCount) {
+    // Always add 1 for banner ad at index 0, then add more banner ads every 10 items
+    if (groupCount == 0) return 0; // No items at all
+    final additionalAdCount = groupCount >= 10 ? (groupCount / 10).floor() : 0;
+    return 1 + groupCount + additionalAdCount; // 1 (header banner) + groups + additional ads
+  }
+
+  Widget _buildListItem(List<TransactionGroup> groups, int index) {
+    // Index 0 = Header banner ad
+    if (index == 0) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: BannerAdWidget(
+          maxHeight: 100,
+          margin: EdgeInsets.zero,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+      );
+    }
+
+    // Calculate additional banner ad positions (every 11 items after header)
+    final adjustedIndex = index - 1; // Remove header offset
+    final adPositions = <int>{};
+    
+    if (groups.length >= 10) {
+      for (int i = 10; i < groups.length + ((groups.length / 10).floor()); i += 11) {
+        adPositions.add(i);
+      }
+    }
+
+    if (adPositions.contains(adjustedIndex)) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: BannerAdWidget(
+          maxHeight: 80,
+          margin: EdgeInsets.zero,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+      );
+    }
+
+    // Calculate actual group index
+    final adsBeforeThisIndex = adPositions.where((pos) => pos < adjustedIndex).length;
+    final groupIndex = adjustedIndex - adsBeforeThisIndex;
+    
+    if (groupIndex >= groups.length) {
+      return const SizedBox.shrink();
+    }
+
+    return _TransactionGroup(group: groups[groupIndex]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionBloc, TransactionState>(
@@ -230,11 +282,10 @@ class _TransactionListState extends State<TransactionList> {
               context.read<TransactionBloc>().add(const TransactionDataRequested());
             },
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: groupedTransactions.length,
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              itemCount: _calculateItemCount(groupedTransactions.length),
               itemBuilder: (context, index) {
-                final group = groupedTransactions[index];
-                return _TransactionGroup(group: group);
+                return _buildListItem(groupedTransactions, index);
               },
             ),
           );

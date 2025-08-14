@@ -6,6 +6,7 @@ import 'core/localization/locale_bloc.dart';
 import 'core/localization/locale_event.dart';
 import 'core/services/currency_bloc.dart';
 import 'core/services/currency_event.dart';
+import 'core/services/ads_service.dart';
 import 'features/budget_management/presentation/bloc/budget_management_bloc.dart';
 import 'features/budget_management/presentation/bloc/budget_management_event.dart';
 import 'features/transaction/presentation/bloc/transaction_bloc.dart';
@@ -17,6 +18,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await configureDependencies();
+  
+  // Initialize Ads Service
+  final adsService = getIt<AdsService>();
+  await adsService.initialize();
   
   final localeBloc = getIt<LocaleBloc>();
   localeBloc.add(const LocaleLoaded());

@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Permissions required for Yandex Mobile Ads -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <application
         android:label="cashflow"
         android:name="${applicationName}"
@@ -30,6 +35,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
+        <!-- Yandex Mobile Ads metadata -->
+        <meta-data
+            android:name="com.yandex.mobile.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6875205837709825~1192450057" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

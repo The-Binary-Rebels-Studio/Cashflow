@@ -17,6 +17,7 @@ import 'package:cashflow/features/budget_management/presentation/utils/budget_ca
 import 'package:cashflow/core/constants/app_constants.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
+import 'package:cashflow/shared/widgets/banner_ad_widget.dart';
 
 // Generic item for transaction selection (Budget Plans for expense, Categories for income)
 class TransactionItem {
@@ -308,32 +309,19 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       return result.when(
         success: (totalSpent) {
           // Debug: Print calculation details
-          debugPrint('DEBUG Recurring Budget Calculation:');
-          debugPrint('  Budget Name: ${budget.name}');
-          debugPrint('  Budget Amount: ${budget.amount}');
-          debugPrint('  Category ID: ${budget.categoryId}');
-          debugPrint('  Period Type: ${budget.period}');
-          debugPrint('  Budget Period: $periodStart - $periodEnd');
-          debugPrint('  Total Spent (Current Period): $totalSpent');
-          debugPrint('  Total Spent (abs): ${totalSpent.abs()}');
           
           // Remaining = budget amount - absolute value of expenses (expenses are negative)
           final remaining = budget.amount - totalSpent.abs();
           
-          debugPrint('  Remaining: $remaining');
-          debugPrint('---');
           
           return remaining;
         },
         failure: (failure) {
-          debugPrint('DEBUG Error calculating remaining budget: ${failure.message}');
-          debugPrint('Failure type: ${failure.runtimeType}');
           // If error, return budget amount as fallback
           return budget.amount;
         },
       );
     } catch (e) {
-      debugPrint('DEBUG Unexpected error calculating remaining budget: $e');
       // If unexpected error, return budget amount as fallback
       return budget.amount;
     }
@@ -886,6 +874,15 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                 _buildBudgetPreviewSection(),
                 const SizedBox(height: 24),
               ],
+
+              // Banner ad before action buttons - strategic placement
+              const BannerAdWidget(
+                maxHeight: 80, // Compact height
+                margin: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+
+              const SizedBox(height: 16),
 
               // Action Buttons
               Row(
@@ -1486,7 +1483,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           if (selectedItem != null && selectedItem.isBudgetPlan) {
             // For budget plans, use the budget ID
             budgetId = selectedItem.budget!.id;
-            debugPrint('🔥 [BUDGET DEBUG] Using budget ID: $budgetId from budget: ${selectedItem.budget!.name}');
           }
         }
         
@@ -1497,7 +1493,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         // For income transactions, create a general income budget ID based on the title
         // This ensures data consistency while simplifying the user experience
         budgetId = 'income_${title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_')}_${DateTime.now().millisecondsSinceEpoch}';
-        debugPrint('🔥 [INCOME DEBUG] Generated income budget ID: $budgetId for income: $title');
       }
 
       // Create transaction entity
@@ -1514,15 +1509,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       );
 
       // Debug: Print transaction details
-      debugPrint('🔥 [TRANSACTION DEBUG] Transaction Saving:');
-      debugPrint('  Title: $title');
-      debugPrint('  Amount: ${transaction.amount}');
-      debugPrint('  Type: $_selectedType');
-      debugPrint('  Selected Item ID: $_selectedItemId');
-      debugPrint('  Final budgetId in transaction: ${transaction.budgetId}');
-      debugPrint('  Transaction ID: ${transaction.id}');
-      debugPrint('  Date: $_selectedDate');
-      debugPrint('---');
 
       // Save transaction using bloc
       if (!mounted) return;

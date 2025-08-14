@@ -74,7 +74,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         _isLoading = false;
         _errorMessage = 'Failed to load transaction details: $e';
       });
-      debugPrint(_errorMessage);
     }
   }
 
@@ -82,7 +81,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     try {
       // Handle virtual income category
       if (categoryId == 'virtual_income_category') {
-        debugPrint('💰 [DEBUG] Creating virtual income category');
         final now = DateTime.now();
         final virtualCategory = CategoryEntity(
           id: 'virtual_income_category',
@@ -110,7 +108,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         });
       }
     } catch (e) {
-      debugPrint('Failed to load category info: $e');
     }
   }
 
@@ -1176,7 +1173,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         failure: (failure) => 0.0,
       );
     } catch (e) {
-      debugPrint('Failed to calculate budget spent: $e');
       return 0.0;
     }
   }

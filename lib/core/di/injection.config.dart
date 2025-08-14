@@ -13,6 +13,7 @@ import 'package:cashflow/core/database/database_service.dart' as _i70;
 import 'package:cashflow/core/di/injection_module.dart' as _i104;
 import 'package:cashflow/core/localization/locale_bloc.dart' as _i581;
 import 'package:cashflow/core/localization/locale_service.dart' as _i751;
+import 'package:cashflow/core/services/ads_service.dart' as _i285;
 import 'package:cashflow/core/services/currency_bloc.dart' as _i410;
 import 'package:cashflow/features/budget_management/data/datasources/budget_local_datasource.dart'
     as _i297;
@@ -82,6 +83,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i570.LocalizedCategoryService(),
     );
     gh.singleton<_i70.DatabaseService>(() => injectionModule.databaseService);
+    gh.singleton<_i285.AdsService>(() => _i285.AdsService());
     gh.factory<_i943.OnboardingLocalDataSource>(
       () => _i943.OnboardingLocalDataSourceImpl(),
     );

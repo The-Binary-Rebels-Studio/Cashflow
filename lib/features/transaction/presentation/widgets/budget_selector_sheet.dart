@@ -7,7 +7,6 @@ import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/features/budget_management/domain/repositories/budget_management_repository.dart';
-import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
 import 'package:cashflow/features/budget_management/presentation/utils/budget_calculation_utils.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 
@@ -67,7 +66,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
       // Notify parent that budgets might have changed
       widget.onBudgetsRefreshed?.call();
     } catch (e) {
-      debugPrint('Failed to load budget details: $e');
+      // Budget loading failed, handle gracefully
     }
   }
 
@@ -600,33 +599,16 @@ class _BudgetTile extends StatelessWidget {
   // Calculate actual spent amount for this budget using the same logic as Budget Management
   Future<double> _calculateSpentAmount(BuildContext context) async {
     if (budgetEntity == null) {
-      debugPrint('🚨 [BUDGET SELECTOR DEBUG] budgetEntity is null!');
       return 0.0;
     }
 
     try {
-      debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] Starting calculation for: ${budgetEntity!.name}',
-      );
-      debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] Budget amount: ${budgetEntity!.amount}',
-      );
-      debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] Category ID: ${budgetEntity!.categoryId}',
-      );
-
       final transactionBloc = parentContext.read<TransactionBloc>();
-      debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] TransactionBloc found: ${transactionBloc.runtimeType}',
-      );
 
       // Calculate budget-specific period (from budget creation date, not rolling periods)
       final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budgetEntity!);
       final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budgetEntity!);
 
-      debugPrint(
-        '🔍 [BUDGET SELECTOR DEBUG] Period: ${periodStart.day}/${periodStart.month}/${periodStart.year} - ${periodEnd.day}/${periodEnd.month}/${periodEnd.year}',
-      );
 
       // Get total spent using Result pattern for current period
       final result = await transactionBloc.transactionUsecases
@@ -638,34 +620,14 @@ class _BudgetTile extends StatelessWidget {
 
       return result.when(
         success: (totalSpent) {
-          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Query successful!');
-          debugPrint('🔍 [BUDGET SELECTOR DEBUG] Raw totalSpent: $totalSpent');
-          debugPrint(
-            '🔍 [BUDGET SELECTOR DEBUG] Absolute totalSpent: ${totalSpent.abs()}',
-          );
-          debugPrint(
-            '🔍 [BUDGET SELECTOR DEBUG] Calculated remaining: ${budgetEntity!.amount - totalSpent.abs()}',
-          );
-          debugPrint('🔍 [BUDGET SELECTOR DEBUG] ---');
-
           // Return absolute value since expenses are stored as negative
           return totalSpent.abs();
         },
         failure: (failure) {
-          debugPrint(
-            '🚨 [BUDGET SELECTOR ERROR] calculating spent amount for ${budgetEntity!.name}: ${failure.message}',
-          );
-          debugPrint(
-            '🚨 [BUDGET SELECTOR ERROR] Failure type: ${failure.runtimeType}',
-          );
           return 0.0;
         },
       );
-    } catch (e, stackTrace) {
-      debugPrint(
-        '🚨 [BUDGET SELECTOR UNEXPECTED ERROR] calculating spent amount for ${budgetEntity!.name}: $e',
-      );
-      debugPrint('🚨 [BUDGET SELECTOR STACK TRACE] $stackTrace');
+    } catch (e) {
       return 0.0;
     }
   }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:injectable/injectable.dart';
 import 'package:cashflow/features/budget_management/data/models/budget_model.dart';
@@ -50,11 +49,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     );
 
     // Debug: Print active budgets found
-    debugPrint('🎯 [DEBUG] Active recurring budgets found: ${maps.length}');
-    for (final budget in maps) {
-      debugPrint('   ✅ ${budget['name']} (${budget['period']}): created=${budget['created_at']}');
-    }
-    debugPrint('---');
+ 
 
     return List.generate(maps.length, (i) => BudgetModel.fromMap(maps[i]));
   }

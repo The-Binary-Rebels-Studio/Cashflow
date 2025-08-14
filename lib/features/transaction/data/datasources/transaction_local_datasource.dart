@@ -81,13 +81,6 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
 
   @override
   Future<void> insertTransaction(TransactionModel transaction) async {
-    debugPrint('💾 [INSERT DEBUG] Inserting transaction:');
-    debugPrint('   📝 Title: ${transaction.title}');
-    debugPrint('   💰 Amount: ${transaction.amount}');
-    debugPrint('   🏷️  Budget: ${transaction.budgetId}');
-    debugPrint('   📅 Date: ${transaction.date}');
-    debugPrint('   🏛️  Type: ${transaction.type}');
-    debugPrint('---');
     
     await _database.insert(
       'transactions',
@@ -95,8 +88,6 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     
-    debugPrint('✅ Transaction inserted successfully');
-    debugPrint('---');
   }
 
   @override
@@ -142,18 +133,13 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
     final startDateString = DateTime(startDate.year, startDate.month, startDate.day).toIso8601String();
     final endDateString = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59).toIso8601String();
     
-    debugPrint('🔍 [QUERY DEBUG] getTotalByBudgetAndDateRange:');
-    debugPrint('   🏷️  Budget: $budgetId');
-    debugPrint('   📅 Period: $startDateString to $endDateString');
     
     // Debug: Show all transactions for this category first
     final allTransactions = await _database.rawQuery(
       'SELECT title, amount, date FROM transactions WHERE budget_id = ? ORDER BY date DESC',
       [budgetId],
     );
-    debugPrint('   📊 All transactions for budget $budgetId:');
     for (final tx in allTransactions.take(5)) { // Show max 5 recent transactions
-      debugPrint('     - ${tx['title']}: ${tx['amount']} on ${tx['date']}');
     }
     
     final List<Map<String, dynamic>> result = await _database.rawQuery(
@@ -162,8 +148,6 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
     );
     
     final total = (result.first['total'] as num).toDouble();
-    debugPrint('   💰 Total found: $total');
-    debugPrint('---');
     
     return total;
   }

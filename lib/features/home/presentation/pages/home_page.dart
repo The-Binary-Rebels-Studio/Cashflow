@@ -15,6 +15,7 @@ import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_state.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:cashflow/features/transaction/domain/entities/transaction_with_budget.dart';
+import 'package:cashflow/shared/widgets/banner_ad_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -68,6 +69,13 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               const SizedBox(height: 24),
+              // Adaptive banner ad after income/expense stats
+              const BannerAdWidget(
+                maxHeight: 120, // Lebih compact
+                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              const SizedBox(height: 16),
               QuickActionsSection(
                 onAddIncome: () {
                   Navigator.of(context).push(
@@ -94,6 +102,13 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 24),
               const SpendingChart(),
               const SizedBox(height: 24),
+              // Banner ad between chart and transactions
+              const BannerAdWidget(
+                maxHeight: 90, // Lebih compact
+                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              const SizedBox(height: 16),
               BlocBuilder<TransactionBloc, TransactionState>(
                 builder: (context, state) {
                   final transactions = state is TransactionLoaded 

@@ -24,7 +24,6 @@ class BudgetOverviewCard extends StatelessWidget {
         final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
         final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
         
-        debugPrint('🎯 Budget "${budget.name}" period: $periodStart to $periodEnd');
         
         final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
           budget.id,
@@ -37,16 +36,13 @@ class BudgetOverviewCard extends StatelessWidget {
             totalSpent += spentInBudget.abs(); // Add absolute value (expenses are negative)
           },
           onFailure: (failure) {
-            debugPrint('🚨 Error calculating spent for budget ${budget.name}: ${failure.message}');
             // Continue with 0 for this budget instead of failing completely
           },
         );
       }
 
-      debugPrint('🎯 TOTAL SPENT CALCULATION: $totalSpent across ${state.budgetPlans.length} budgets');
       return totalSpent;
     } catch (e) {
-      debugPrint('🚨 Unexpected error calculating total spent: $e');
       return 0.0;
     }
   }

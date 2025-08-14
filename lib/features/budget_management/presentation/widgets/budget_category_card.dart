@@ -39,21 +39,16 @@ class BudgetCategoryCard extends StatelessWidget {
         
         result.fold(
           onSuccess: (spentInBudget) {
-            debugPrint('💰 [DEBUG] Budget: ${budget.name}, Period: $periodStart to $periodEnd');
-            debugPrint('💰 [DEBUG] Raw spent amount: $spentInBudget');
             final absSpent = spentInBudget.abs();
             totalSpent += absSpent;
-            debugPrint('💰 [DEBUG] Abs spent: $absSpent, Total so far: $totalSpent');
           },
           onFailure: (failure) {
-            debugPrint('❌ Error calculating spent for budget ${budget.name}: ${failure.message}');
           },
         );
       }
 
       return totalSpent;
     } catch (e) {
-      debugPrint('Error calculating total spent for category: $e');
       return 0.0;
     }
   }

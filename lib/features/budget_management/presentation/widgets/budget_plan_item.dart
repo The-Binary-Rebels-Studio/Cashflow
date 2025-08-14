@@ -44,30 +44,17 @@ class BudgetPlanItem extends StatelessWidget {
       return result.when(
         success: (totalSpent) {
           // Debug: Print calculation details
-          debugPrint('🔍 [${DateTime.now().toIso8601String()}] RECURRING BUDGET CALCULATION:');
-          debugPrint('   📊 Budget: ${budget.name} (${budget.amount})');
-          debugPrint('   🏷️  Category: ${budget.categoryId}');
-          debugPrint('   🔄 Period Type: ${budget.period}');
-          debugPrint('   📅 Budget Period: ${periodStart.day}/${periodStart.month} - ${periodEnd.day}/${periodEnd.month}');
-          debugPrint('   💰 Total Spent (Current Period): $totalSpent');
-          debugPrint('   📈 Spent (absolute): ${totalSpent.abs()}');
-          debugPrint('   ✅ Remaining: ${budget.amount - totalSpent.abs()}');
-          debugPrint('---');
           
           // Return absolute value since expenses are stored as negative
           return totalSpent.abs();
         },
         failure: (failure) {
-          debugPrint('🚨 ERROR calculating spent amount for ${budget.name}: ${failure.message}');
-          debugPrint('🚨 Failure type: ${failure.runtimeType}');
           
           // Return 0 as fallback for any error
           return 0.0;
         },
       );
     } catch (e) {
-      debugPrint('🚨 UNEXPECTED ERROR calculating spent amount for ${budget.name}: $e');
-      debugPrint('🚨 Stack trace: ${StackTrace.current}');
       // If unexpected error, return 0 as fallback
       return 0.0;
     }

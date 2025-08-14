@@ -233,11 +233,6 @@ class TransactionUsecases {
 
   /// Validates transaction entity
   Result<void> _validateTransaction(TransactionEntity transaction) {
-    debugPrint('🔍 [VALIDATION DEBUG] Validating transaction:');
-    debugPrint('   📝 Title: ${transaction.title}');
-    debugPrint('   💰 Amount: ${transaction.amount} (${transaction.type})');
-    debugPrint('   🏷️  Budget: ${transaction.budgetId}');
-    debugPrint('   📝 Description: ${transaction.description ?? 'null'}');
     
     final Map<String, List<String>> fieldErrors = {};
     
@@ -260,11 +255,8 @@ class TransactionUsecases {
     }
     
     if (fieldErrors.isNotEmpty) {
-      debugPrint('❌ [VALIDATION FAILED] Errors found:');
       fieldErrors.forEach((field, errors) {
-        debugPrint('   $field: ${errors.join(', ')}');
       });
-      debugPrint('---');
       
       return failure(ValidationFailure(
         message: 'Transaction validation failed',
@@ -272,8 +264,6 @@ class TransactionUsecases {
       ));
     }
     
-    debugPrint('✅ [VALIDATION SUCCESS] Transaction is valid');
-    debugPrint('---');
     
     return success(null);
   }

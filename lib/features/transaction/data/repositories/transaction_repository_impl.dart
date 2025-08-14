@@ -47,21 +47,17 @@ class TransactionRepositoryImpl implements TransactionRepository {
     final transaction = await localDatasource.getTransactionById(id);
     if (transaction == null) return null;
     
-    debugPrint('🔍 [DEBUG] getTransactionById: Processing transaction: ${transaction.title}, budgetId: ${transaction.budgetId}');
     
     final budget = await budgetManagementRepository.getBudgetById(transaction.budgetId);
     if (budget != null) {
-      debugPrint('✅ [DEBUG] Budget found: ${budget.name}');
       return TransactionWithBudget(
         transaction: transaction,
         budget: budget,
       );
     } else {
-      debugPrint('❌ [DEBUG] Budget NOT FOUND for budgetId: ${transaction.budgetId}');
       
       // Check if this is an income transaction with generated ID
       if (transaction.budgetId.startsWith('income_') && transaction.type == TransactionType.income) {
-        debugPrint('💰 [DEBUG] Creating virtual budget for income transaction');
         
         // Create a virtual budget for income transaction
         final now = DateTime.now();
@@ -87,8 +83,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
         // For debugging: Check if this is a legacy transaction with categoryId
         final category = await budgetManagementRepository.getCategoryById(transaction.budgetId);
         if (category != null) {
-          debugPrint('🔧 [DEBUG] Found category instead of budget: ${category.name}');
-          debugPrint('🔧 [DEBUG] This looks like a legacy transaction with categoryId in budgetId field');
           
           // Create a temporary budget for this legacy transaction
           final now = DateTime.now();
@@ -114,7 +108,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
       }
     }
     
-    debugPrint('❌ [DEBUG] Unable to find or create budget for transaction');
     return null;
   }
 
@@ -153,24 +146,19 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<List<TransactionWithBudget>> _combineWithBudgets(List<TransactionModel> transactions) async {
     final List<TransactionWithBudget> result = [];
     
-    debugPrint('🔍 [DEBUG] _combineWithBudgets: Processing ${transactions.length} transactions');
     
     for (final transaction in transactions) {
-      debugPrint('🔍 [DEBUG] Processing transaction: ${transaction.title}, budgetId: ${transaction.budgetId}');
       
       final budget = await budgetManagementRepository.getBudgetById(transaction.budgetId);
       if (budget != null) {
-        debugPrint('✅ [DEBUG] Budget found: ${budget.name}');
         result.add(TransactionWithBudget(
           transaction: transaction,
           budget: budget,
         ));
       } else {
-        debugPrint('❌ [DEBUG] Budget NOT FOUND for budgetId: ${transaction.budgetId}');
         
         // Check if this is an income transaction with generated ID
         if (transaction.budgetId.startsWith('income_') && transaction.type == TransactionType.income) {
-          debugPrint('💰 [DEBUG] Creating virtual budget for income transaction');
           
           // Create a virtual budget for income transaction
           final now = DateTime.now();
@@ -196,8 +184,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
           // For debugging: Check if this is a legacy transaction with categoryId
           final category = await budgetManagementRepository.getCategoryById(transaction.budgetId);
           if (category != null) {
-            debugPrint('🔧 [DEBUG] Found category instead of budget: ${category.name}');
-            debugPrint('🔧 [DEBUG] This looks like a legacy transaction with categoryId in budgetId field');
             
             // Create a temporary budget for this legacy transaction
             final now = DateTime.now();
@@ -224,7 +210,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
       }
     }
     
-    debugPrint('🔍 [DEBUG] _combineWithBudgets: Returning ${result.length} transactions');
     return result;
   }
 

@@ -125,13 +125,7 @@ class BudgetModel extends BudgetEntity {
         break;
     }
     
-    debugPrint('📅 [PERIOD DEBUG] Budget "$name" (${period.value}):');
-    debugPrint('   🕐 Reference date: ${now.day}/${now.month}/${now.year}');
-    debugPrint('   🏁 Period start: ${result.day}/${result.month}/${result.year}');
     
-    final endDate = _calculateCurrentPeriodEnd(now);
-    debugPrint('   🏁 Period end: ${endDate.day}/${endDate.month}/${endDate.year}');
-    debugPrint('---');
     
     return result;
   }
