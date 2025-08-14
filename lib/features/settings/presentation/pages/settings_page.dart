@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:cashflow/core/localization/locale_bloc.dart';
 import 'package:cashflow/core/localization/locale_event.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/services/currency_event.dart';
+import 'package:cashflow/core/services/data_deletion_service.dart';
 import 'package:cashflow/core/models/currency_model.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
@@ -547,32 +549,223 @@ class _DangerZoneSection extends StatelessWidget {
     );
   }
 
-  void _showClearDataDialog(BuildContext context) {
+  void _showClearDataDialog(BuildContext context) async {
+    final dataDeletionService = GetIt.instance<DataDeletionService>();
+    
+    // Get data statistics for confirmation
+    final stats = await dataDeletionService.getDataStatistics();
+    final hasData = await dataDeletionService.hasUserData();
+    
+    if (!hasData) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No user data to clear'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(l10n.clearData),
-          content: Text(l10n.clearDataConfirmation),
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.red, size: 24),
+              SizedBox(width: 8),
+              Text(l10n.clearData),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.clearDataConfirmation,
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Data to be deleted:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red[700],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    if (stats.transactionCount > 0)
+                      _DataItem(
+                        icon: Icons.receipt_long,
+                        label: 'Transactions',
+                        count: stats.transactionCount,
+                      ),
+                    if (stats.budgetCount > 0)
+                      _DataItem(
+                        icon: Icons.account_balance_wallet,
+                        label: 'Budgets',
+                        count: stats.budgetCount,
+                      ),
+                    if (stats.categoryCount > 0)
+                      _DataItem(
+                        icon: Icons.category,
+                        label: 'Categories',
+                        count: stats.categoryCount,
+                      ),
+                    _DataItem(
+                      icon: Icons.settings,
+                      label: 'App Settings',
+                      count: 1,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 12),
+              Text(
+                'This action cannot be undone!',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(l10n.cancel),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: Implement clear data functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.dataCleared)),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => _performDataDeletion(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(l10n.clearData),
             ),
           ],
         );
       },
+    );
+  }
+
+  void _performDataDeletion(BuildContext context) async {
+    Navigator.of(context).pop(); // Close dialog
+    
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Clearing data...'),
+          ],
+        ),
+      ),
+    );
+    
+    try {
+      final dataDeletionService = GetIt.instance<DataDeletionService>();
+      final success = await dataDeletionService.clearAllData();
+      
+      Navigator.of(context).pop(); // Close loading dialog
+      
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Text(l10n.dataCleared),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.error, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Failed to clear data. Please try again.'),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Close loading dialog if still open
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 8),
+              Text('An error occurred while clearing data'),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+}
+
+class _DataItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final int count;
+
+  const _DataItem({
+    required this.icon,
+    required this.label,
+    required this.count,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: Colors.red[600],
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '$label: $count ${count == 1 ? 'item' : 'items'}',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.red[700],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

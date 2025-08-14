@@ -16,6 +16,7 @@ import 'package:cashflow/core/localization/locale_service.dart' as _i751;
 import 'package:cashflow/core/services/ads_service.dart' as _i285;
 import 'package:cashflow/core/services/app_open_ad_manager.dart' as _i576;
 import 'package:cashflow/core/services/currency_bloc.dart' as _i410;
+import 'package:cashflow/core/services/data_deletion_service.dart' as _i988;
 import 'package:cashflow/features/budget_management/data/datasources/budget_local_datasource.dart'
     as _i297;
 import 'package:cashflow/features/budget_management/data/datasources/category_local_datasource.dart'
@@ -207,6 +208,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i878.CompleteOnboarding>(),
         gh<_i212.ResetOnboarding>(),
         gh<_i563.ChangeLocale>(),
+      ),
+    );
+    gh.singleton<_i988.DataDeletionService>(
+      () => _i988.DataDeletionService(
+        gh<_i935.TransactionRepository>(),
+        gh<_i165.BudgetManagementRepository>(),
+        gh<_i1001.OnboardingRepository>(),
       ),
     );
     gh.factory<_i528.TransactionUsecases>(
