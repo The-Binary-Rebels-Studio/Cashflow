@@ -6,20 +6,22 @@ import 'package:yandex_mobileads/mobile_ads.dart';
 class AdsService {
   bool _isInitialized = false;
 
-  // Your app ID from AdMob/Yandex
-  static const String appId = 'ca-app-pub-6875205837709825~1192450057';
-
   // Test ad unit IDs - Yandex demo IDs
-  static const String _testBannerAdUnitId = 'demo-banner-yandex';
+  static const String _testBannerAdUnitId = 'demo-banner-admob';
+  static const String _testAppOpenAdUnitId = 'demo-appopenad-yandex';
 
-  // Production ad unit IDs - replace with your actual ad unit IDs from Yandex/AdMob
+  // Production ad unit IDs - replace with your actual ad unit IDs from Yandex
   static const String _prodBannerAdUnitId = 'R-M-16723402-1';
+  static const String _prodAppOpenAdUnitId = 'R-M-16723402-3';
 
   bool get isInitialized => _isInitialized;
 
   // Get ad unit IDs based on debug mode
   String get bannerAdUnitId =>
       kDebugMode ? _testBannerAdUnitId : _prodBannerAdUnitId;
+
+  String get appOpenAdUnitId =>
+      kDebugMode ? _testAppOpenAdUnitId : _prodAppOpenAdUnitId;
 
   /// Initialize Yandex Mobile Ads SDK
   Future<void> initialize() async {
@@ -29,7 +31,6 @@ class AdsService {
       // Initialize Mobile Ads SDK
       MobileAds.initialize();
       _isInitialized = true;
-
     } catch (e) {
       // Ads initialization failed, will handle gracefully in widget
     }
@@ -39,6 +40,7 @@ class AdsService {
   BannerAdSize getBannerAdSize(int screenWidth, {int maxHeight = 250}) {
     return BannerAdSize.inline(width: screenWidth, maxHeight: maxHeight);
   }
+
 
   // Following Yandex example: widgets create their own BannerAd instances
   // AdsService just provides configuration
