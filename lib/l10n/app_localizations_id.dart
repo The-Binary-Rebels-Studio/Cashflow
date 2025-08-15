@@ -119,6 +119,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get bugDescription => 'Deskripsi Bug';
 
   @override
+  String get bugTitleRequired => 'Judul Bug *';
+
+  @override
+  String get bugTitleHint => 'misal: Aplikasi crash saat membuka budget';
+
+  @override
   String get bugDescriptionRequired => 'Deskripsi Bug *';
 
   @override
@@ -161,11 +167,43 @@ class AppLocalizationsId extends AppLocalizations {
   String get buildMode => 'Mode Build';
 
   @override
-  String get generateBugReport => 'Buat Laporan Bug';
+  String get submitBugReport => 'Kirim Laporan Bug';
 
   @override
-  String get bugReportCopied =>
-      'Laporan bug disalin ke clipboard! Anda sekarang dapat menempelkannya di email atau pesan.';
+  String get bugReportSubmitted => 'Laporan bug berhasil dikirim!';
+
+  @override
+  String get bugReportSubmittedMessage =>
+      'Terima kasih atas laporannya! Masukan Anda sangat berharga dan membantu kami meningkatkan CashFlow untuk semua orang.';
+
+  @override
+  String get bugReportSubmittingMessage => 'Mengirim laporan Anda...';
+
+  @override
+  String get bugReportFailed => 'Gagal mengirim laporan bug';
+
+  @override
+  String get expectedBehaviorRequired => 'Perilaku yang Diharapkan *';
+
+  @override
+  String get expectedBehaviorError => 'Mohon jelaskan perilaku yang diharapkan';
+
+  @override
+  String get actualBehaviorRequired => 'Perilaku yang Terjadi *';
+
+  @override
+  String get actualBehaviorHint => 'Apa yang sebenarnya terjadi?';
+
+  @override
+  String get actualBehaviorError =>
+      'Mohon jelaskan apa yang sebenarnya terjadi';
+
+  @override
+  String get deviceInfoLoading => 'Memuat informasi perangkat...';
+
+  @override
+  String get bugReportFailedMessage =>
+      'Silakan coba lagi atau hubungi support jika masalah berlanjut.';
 
   @override
   String get debugModeYes => 'Ya';
@@ -252,6 +290,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get cancel => 'Batal';
+
+  @override
+  String get ok => 'OK';
 
   @override
   String get dashboardGoodMorning => 'Selamat Pagi!';

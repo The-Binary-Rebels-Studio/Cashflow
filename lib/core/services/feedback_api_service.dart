@@ -9,10 +9,10 @@ import '../models/suggestion_model.dart';
 import '../models/bug_report_model.dart';
 
 /// Service for handling feedback API communication with backend
-/// Base URL: cashflow.binaryrebels.xyz/api/v1
+/// Base URL: configured via dart-define
 @singleton
 class FeedbackApiService {
-  static const String _baseUrl = 'https://cashflow.binaryrebels.xyz/api/v1';
+  static const String _baseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'http://54.169.145.202/api/v1/');
   static const Duration _timeout = Duration(seconds: 30);
   
   late final Dio _dio;
@@ -225,9 +225,6 @@ class FeedbackApiService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error submitting bug report: $e');
-      }
       return ApiResponse<BugReportModel>(
         success: false,
         message: 'Network error occurred while submitting bug report',

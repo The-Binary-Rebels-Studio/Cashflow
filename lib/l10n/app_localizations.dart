@@ -304,6 +304,18 @@ abstract class AppLocalizations {
   /// **'Bug Description'**
   String get bugDescription;
 
+  /// No description provided for @bugTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug Title *'**
+  String get bugTitleRequired;
+
+  /// No description provided for @bugTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., App crashes when opening budget'**
+  String get bugTitleHint;
+
   /// No description provided for @bugDescriptionRequired.
   ///
   /// In en, this message translates to:
@@ -355,7 +367,7 @@ abstract class AppLocalizations {
   /// No description provided for @expectedBehaviorHint.
   ///
   /// In en, this message translates to:
-  /// **'What should have happened instead?'**
+  /// **'What should have happened?'**
   String get expectedBehaviorHint;
 
   /// No description provided for @debugInfoAutoIncluded.
@@ -382,17 +394,77 @@ abstract class AppLocalizations {
   /// **'Build Mode'**
   String get buildMode;
 
-  /// No description provided for @generateBugReport.
+  /// No description provided for @submitBugReport.
   ///
   /// In en, this message translates to:
-  /// **'Generate Bug Report'**
-  String get generateBugReport;
+  /// **'Submit Bug Report'**
+  String get submitBugReport;
 
-  /// No description provided for @bugReportCopied.
+  /// No description provided for @bugReportSubmitted.
   ///
   /// In en, this message translates to:
-  /// **'Bug report copied to clipboard! You can now paste it in an email or message.'**
-  String get bugReportCopied;
+  /// **'Bug report submitted successfully!'**
+  String get bugReportSubmitted;
+
+  /// No description provided for @bugReportSubmittedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your report! Your feedback is incredibly valuable and helps us improve CashFlow for everyone.'**
+  String get bugReportSubmittedMessage;
+
+  /// No description provided for @bugReportSubmittingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting your report...'**
+  String get bugReportSubmittingMessage;
+
+  /// No description provided for @bugReportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit bug report'**
+  String get bugReportFailed;
+
+  /// No description provided for @expectedBehaviorRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected Behavior *'**
+  String get expectedBehaviorRequired;
+
+  /// No description provided for @expectedBehaviorError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe the expected behavior'**
+  String get expectedBehaviorError;
+
+  /// No description provided for @actualBehaviorRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual Behavior *'**
+  String get actualBehaviorRequired;
+
+  /// No description provided for @actualBehaviorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What actually happened?'**
+  String get actualBehaviorHint;
+
+  /// No description provided for @actualBehaviorError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe what actually happened'**
+  String get actualBehaviorError;
+
+  /// No description provided for @deviceInfoLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading device information...'**
+  String get deviceInfoLoading;
+
+  /// No description provided for @bugReportFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again or contact support if the issue persists.'**
+  String get bugReportFailedMessage;
 
   /// No description provided for @debugModeYes.
   ///
@@ -561,6 +633,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
 
   /// No description provided for @dashboardGoodMorning.
   ///

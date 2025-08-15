@@ -32,22 +32,6 @@ import 'package:cashflow/features/budget_management/domain/usecases/budget_manag
     as _i458;
 import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart'
     as _i921;
-import 'package:cashflow/features/feedback/data/datasources/feedback_remote_datasource.dart'
-    as _i906;
-import 'package:cashflow/features/feedback/data/repositories/feedback_repository_impl.dart'
-    as _i138;
-import 'package:cashflow/features/feedback/domain/repositories/feedback_repository.dart'
-    as _i29;
-import 'package:cashflow/features/feedback/domain/usecases/get_device_info.dart'
-    as _i487;
-import 'package:cashflow/features/feedback/domain/usecases/submit_bug_report.dart'
-    as _i873;
-import 'package:cashflow/features/feedback/domain/usecases/submit_suggestion.dart'
-    as _i12;
-import 'package:cashflow/features/feedback/domain/usecases/test_connection.dart'
-    as _i86;
-import 'package:cashflow/features/feedback/presentation/bloc/feedback_bloc.dart'
-    as _i1022;
 import 'package:cashflow/features/localization/data/datasources/localization_local_datasource.dart'
     as _i176;
 import 'package:cashflow/features/localization/data/repositories/localization_repository_impl.dart'
@@ -72,6 +56,22 @@ import 'package:cashflow/features/onboarding/domain/usecases/save_onboarding_set
     as _i133;
 import 'package:cashflow/features/onboarding/presentation/bloc/onboarding_bloc.dart'
     as _i669;
+import 'package:cashflow/features/profile/data/datasources/feedback_remote_datasource.dart'
+    as _i824;
+import 'package:cashflow/features/profile/data/repositories/feedback_repository_impl.dart'
+    as _i618;
+import 'package:cashflow/features/profile/domain/repositories/feedback_repository.dart'
+    as _i635;
+import 'package:cashflow/features/profile/domain/usecases/get_device_info.dart'
+    as _i18;
+import 'package:cashflow/features/profile/domain/usecases/submit_bug_report.dart'
+    as _i55;
+import 'package:cashflow/features/profile/domain/usecases/submit_suggestion.dart'
+    as _i1026;
+import 'package:cashflow/features/profile/domain/usecases/test_connection.dart'
+    as _i157;
+import 'package:cashflow/features/profile/presentation/bloc/feedback_bloc.dart'
+    as _i706;
 import 'package:cashflow/features/transaction/data/datasources/transaction_local_datasource.dart'
     as _i417;
 import 'package:cashflow/features/transaction/data/repositories/transaction_repository_impl.dart'
@@ -135,8 +135,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i410.CurrencyBloc>(
       () => _i410.CurrencyBloc(gh<_i70.DatabaseService>()),
     );
-    gh.lazySingleton<_i906.FeedbackRemoteDataSource>(
-      () => _i906.FeedbackRemoteDataSourceImpl(gh<_i202.FeedbackApiService>()),
+    gh.lazySingleton<_i824.FeedbackRemoteDataSource>(
+      () => _i824.FeedbackRemoteDataSourceImpl(gh<_i202.FeedbackApiService>()),
     );
     gh.factory<_i458.GetBudgetCategories>(
       () => _i458.GetBudgetCategories(gh<_i165.BudgetManagementRepository>()),
@@ -196,28 +196,8 @@ extension GetItInjectableX on _i174.GetIt {
         localDataSource: gh<_i176.LocalizationLocalDataSource>(),
       ),
     );
-    gh.lazySingleton<_i29.FeedbackRepository>(
-      () => _i138.FeedbackRepositoryImpl(gh<_i906.FeedbackRemoteDataSource>()),
-    );
-    gh.factory<_i86.TestConnection>(
-      () => _i86.TestConnection(gh<_i29.FeedbackRepository>()),
-    );
-    gh.factory<_i12.SubmitSuggestion>(
-      () => _i12.SubmitSuggestion(gh<_i29.FeedbackRepository>()),
-    );
-    gh.factory<_i873.SubmitBugReport>(
-      () => _i873.SubmitBugReport(gh<_i29.FeedbackRepository>()),
-    );
-    gh.factory<_i487.GetDeviceInfo>(
-      () => _i487.GetDeviceInfo(gh<_i29.FeedbackRepository>()),
-    );
-    gh.factory<_i1022.FeedbackBloc>(
-      () => _i1022.FeedbackBloc(
-        gh<_i12.SubmitSuggestion>(),
-        gh<_i873.SubmitBugReport>(),
-        gh<_i487.GetDeviceInfo>(),
-        gh<_i86.TestConnection>(),
-      ),
+    gh.lazySingleton<_i635.FeedbackRepository>(
+      () => _i618.FeedbackRepositoryImpl(gh<_i824.FeedbackRemoteDataSource>()),
     );
     gh.factory<_i935.TransactionRepository>(
       () => _i106.TransactionRepositoryImpl(
@@ -229,6 +209,26 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i563.ChangeLocale(
         gh<_i738.LocalizationRepository>(),
         gh<_i581.LocaleBloc>(),
+      ),
+    );
+    gh.factory<_i157.TestConnection>(
+      () => _i157.TestConnection(gh<_i635.FeedbackRepository>()),
+    );
+    gh.factory<_i1026.SubmitSuggestion>(
+      () => _i1026.SubmitSuggestion(gh<_i635.FeedbackRepository>()),
+    );
+    gh.factory<_i55.SubmitBugReport>(
+      () => _i55.SubmitBugReport(gh<_i635.FeedbackRepository>()),
+    );
+    gh.factory<_i18.GetDeviceInfo>(
+      () => _i18.GetDeviceInfo(gh<_i635.FeedbackRepository>()),
+    );
+    gh.factory<_i706.FeedbackBloc>(
+      () => _i706.FeedbackBloc(
+        gh<_i1026.SubmitSuggestion>(),
+        gh<_i55.SubmitBugReport>(),
+        gh<_i18.GetDeviceInfo>(),
+        gh<_i157.TestConnection>(),
       ),
     );
     gh.factory<_i921.BudgetManagementBloc>(

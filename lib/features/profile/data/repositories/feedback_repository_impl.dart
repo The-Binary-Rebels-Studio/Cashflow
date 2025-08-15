@@ -174,20 +174,7 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
         );
       }
 
-      // Validate email if provided
-      if (bugReport.userEmail != null && bugReport.userEmail!.isNotEmpty) {
-        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (!emailRegex.hasMatch(bugReport.userEmail!)) {
-          return ApiResponse<BugReportModel>(
-            success: false,
-            message: 'Invalid email address format',
-            error: ApiError(
-              code: 'VALIDATION_ERROR',
-              message: 'Invalid email',
-            ),
-          );
-        }
-      }
+      // Email validation removed since userEmail field no longer exists
 
       return await _remoteDataSource.submitBugReport(bugReport);
     } catch (e) {

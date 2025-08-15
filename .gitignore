@@ -46,3 +46,6 @@ app.*.map.json
 
 # Claude AI assistant files
 claude/
+
+# Configuration files with sensitive data
+config.json

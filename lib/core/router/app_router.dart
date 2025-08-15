@@ -65,7 +65,7 @@ class AppRouter {
       GoRoute(
         path: '/bug-report',
         name: 'bug_report',
-        builder: (context, state) => const BugReportPage(),
+        builder: (context, state) => const BugReportPageWrapper(),
       ),
       GoRoute(
         path: '/feature-request',

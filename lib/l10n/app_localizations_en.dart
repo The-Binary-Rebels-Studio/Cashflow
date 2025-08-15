@@ -119,6 +119,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bugDescription => 'Bug Description';
 
   @override
+  String get bugTitleRequired => 'Bug Title *';
+
+  @override
+  String get bugTitleHint => 'e.g., App crashes when opening budget';
+
+  @override
   String get bugDescriptionRequired => 'Bug Description *';
 
   @override
@@ -144,7 +150,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expectedBehavior => 'Expected Behavior';
 
   @override
-  String get expectedBehaviorHint => 'What should have happened instead?';
+  String get expectedBehaviorHint => 'What should have happened?';
 
   @override
   String get debugInfoAutoIncluded =>
@@ -160,11 +166,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buildMode => 'Build Mode';
 
   @override
-  String get generateBugReport => 'Generate Bug Report';
+  String get submitBugReport => 'Submit Bug Report';
 
   @override
-  String get bugReportCopied =>
-      'Bug report copied to clipboard! You can now paste it in an email or message.';
+  String get bugReportSubmitted => 'Bug report submitted successfully!';
+
+  @override
+  String get bugReportSubmittedMessage =>
+      'Thank you for your report! Your feedback is incredibly valuable and helps us improve CashFlow for everyone.';
+
+  @override
+  String get bugReportSubmittingMessage => 'Submitting your report...';
+
+  @override
+  String get bugReportFailed => 'Failed to submit bug report';
+
+  @override
+  String get expectedBehaviorRequired => 'Expected Behavior *';
+
+  @override
+  String get expectedBehaviorError => 'Please describe the expected behavior';
+
+  @override
+  String get actualBehaviorRequired => 'Actual Behavior *';
+
+  @override
+  String get actualBehaviorHint => 'What actually happened?';
+
+  @override
+  String get actualBehaviorError => 'Please describe what actually happened';
+
+  @override
+  String get deviceInfoLoading => 'Loading device information...';
+
+  @override
+  String get bugReportFailedMessage =>
+      'Please try again or contact support if the issue persists.';
 
   @override
   String get debugModeYes => 'Yes';
@@ -250,6 +287,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get ok => 'OK';
 
   @override
   String get dashboardGoodMorning => 'Good Morning!';
