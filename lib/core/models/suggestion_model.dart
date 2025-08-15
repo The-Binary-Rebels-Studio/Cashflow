@@ -1,7 +1,11 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'bug_report_model.dart';
 
+part 'suggestion_model.g.dart';
 
-class SuggestionModel {
+@JsonSerializable()
+class SuggestionModel extends Equatable {
   final String title;
   final String description;
   final String useCase;
@@ -14,23 +18,9 @@ class SuggestionModel {
     required this.deviceInfo,
   });
 
-  factory SuggestionModel.fromJson(Map<String, dynamic> json) {
-    return SuggestionModel(
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      useCase: json['use_case'] ?? '',
-      deviceInfo: DeviceInfo.fromJson(json['device_info'] ?? {}),
-    );
-  }
+  factory SuggestionModel.fromJson(Map<String, dynamic> json) => _$SuggestionModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description,
-      'use_case': useCase,
-      'device_info': deviceInfo.toJson(),
-    };
-  }
+  Map<String, dynamic> toJson() => _$SuggestionModelToJson(this);
 
   Map<String, dynamic> toRequestJson() {
     return toJson();
@@ -49,5 +39,13 @@ class SuggestionModel {
       deviceInfo: deviceInfo ?? this.deviceInfo,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    title,
+    description,
+    useCase,
+    deviceInfo,
+  ];
 }
 

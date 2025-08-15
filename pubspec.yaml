@@ -51,6 +51,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
   
+  # JSON Serialization
+  json_annotation: ^4.9.0
+  
   # Dependency Injection
   get_it: ^8.2.0
   injectable: ^2.4.4
@@ -89,6 +92,9 @@ dev_dependencies:
   
   # Dependency Injection code generation
   injectable_generator: ^2.6.2
+  
+  # JSON Serialization code generation
+  json_serializable: ^6.8.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

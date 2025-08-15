@@ -1,6 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 
+part 'budget_model.g.dart';
+
+@JsonSerializable()
 class BudgetModel extends BudgetEntity {
   const BudgetModel({
     required super.id,
@@ -48,6 +53,8 @@ class BudgetModel extends BudgetEntity {
     );
   }
 
+  factory BudgetModel.fromJson(Map<String, dynamic> json) => _$BudgetModelFromJson(json);
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -63,6 +70,8 @@ class BudgetModel extends BudgetEntity {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
+
+  Map<String, dynamic> toJson() => _$BudgetModelToJson(this);
 
   @override
   BudgetModel copyWith({

@@ -1,5 +1,11 @@
 
-class BugReportModel {
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'bug_report_model.g.dart';
+
+@JsonSerializable()
+class BugReportModel extends Equatable {
   final String title;
   final String description;
   final String stepsToReproduce;
@@ -16,27 +22,9 @@ class BugReportModel {
     required this.deviceInfo,
   });
 
-  factory BugReportModel.fromJson(Map<String, dynamic> json) {
-    return BugReportModel(
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      stepsToReproduce: json['steps_to_reproduce'] ?? '',
-      expectedBehavior: json['expected_behavior'] ?? '',
-      actualBehavior: json['actual_behavior'] ?? '',
-      deviceInfo: DeviceInfo.fromJson(json['device_info'] ?? {}),
-    );
-  }
+  factory BugReportModel.fromJson(Map<String, dynamic> json) => _$BugReportModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description,
-      'steps_to_reproduce': stepsToReproduce,
-      'expected_behavior': expectedBehavior,
-      'actual_behavior': actualBehavior,
-      'device_info': deviceInfo.toJson(),
-    };
-  }
+  Map<String, dynamic> toJson() => _$BugReportModelToJson(this);
 
   
   Map<String, dynamic> toRequestJson() {
@@ -60,10 +48,21 @@ class BugReportModel {
       deviceInfo: deviceInfo ?? this.deviceInfo,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    title,
+    description,
+    stepsToReproduce,
+    expectedBehavior,
+    actualBehavior,
+    deviceInfo,
+  ];
 }
 
 
-class DeviceInfo {
+@JsonSerializable()
+class DeviceInfo extends Equatable {
   final String platform;
   final String osVersion;
   final String appVersion;
@@ -82,28 +81,19 @@ class DeviceInfo {
     this.timezone,
   });
 
-  factory DeviceInfo.fromJson(Map<String, dynamic> json) {
-    return DeviceInfo(
-      platform: json['platform'] ?? '',
-      osVersion: json['os_version'] ?? '',
-      appVersion: json['app_version'] ?? '',
-      deviceModel: json['device_model'] ?? '',
-      deviceId: json['device_id'],
-      locale: json['locale'],
-      timezone: json['timezone'],
-    );
-  }
+  factory DeviceInfo.fromJson(Map<String, dynamic> json) => _$DeviceInfoFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'platform': platform,
-      'os_version': osVersion,
-      'app_version': appVersion,
-      'device_model': deviceModel,
-      'device_id': deviceId,
-      'locale': locale,
-      'timezone': timezone,
-    };
-  }
+  Map<String, dynamic> toJson() => _$DeviceInfoToJson(this);
+
+  @override
+  List<Object?> get props => [
+    platform,
+    osVersion,
+    appVersion,
+    deviceModel,
+    deviceId,
+    locale,
+    timezone,
+  ];
 }
 

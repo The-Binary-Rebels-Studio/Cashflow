@@ -1,4 +1,6 @@
-class CurrencyModel {
+import 'package:equatable/equatable.dart';
+
+class CurrencyModel extends Equatable {
   final String code;
   final String name;
   final String country;
@@ -12,14 +14,7 @@ class CurrencyModel {
   });
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CurrencyModel &&
-          runtimeType == other.runtimeType &&
-          code == other.code;
-
-  @override
-  int get hashCode => code.hashCode;
+  List<Object?> get props => [code, name, country, symbol];
 }
 
 class CurrencyData {

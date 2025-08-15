@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 
+part 'category_model.g.dart';
+
+@JsonSerializable()
 class CategoryModel extends CategoryEntity {
   const CategoryModel({
     required super.id,
@@ -42,6 +47,8 @@ class CategoryModel extends CategoryEntity {
     );
   }
 
+  factory CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -55,6 +62,8 @@ class CategoryModel extends CategoryEntity {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
+
+  Map<String, dynamic> toJson() => _$CategoryModelToJson(this);
 
   IconData get icon {
     return IconData(

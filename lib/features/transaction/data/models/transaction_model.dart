@@ -1,5 +1,10 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:cashflow/features/transaction/domain/entities/transaction_entity.dart';
 
+part 'transaction_model.g.dart';
+
+@JsonSerializable()
 class TransactionModel extends TransactionEntity {
   const TransactionModel({
     required super.id,
@@ -26,6 +31,8 @@ class TransactionModel extends TransactionEntity {
       updatedAt: DateTime.parse(map['updated_at'] as String),
     );
   }
+
+  factory TransactionModel.fromJson(Map<String, dynamic> json) => _$TransactionModelFromJson(json);
 
   factory TransactionModel.fromEntity(TransactionEntity entity) {
     return TransactionModel(
@@ -54,6 +61,8 @@ class TransactionModel extends TransactionEntity {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
+
+  Map<String, dynamic> toJson() => _$TransactionModelToJson(this);
 
   @override
   TransactionModel copyWith({

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 
-class LocaleModel {
+class LocaleModel extends Equatable {
   final Locale locale;
   final String name;
   final String nativeName;
@@ -14,14 +15,7 @@ class LocaleModel {
   });
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LocaleModel &&
-          runtimeType == other.runtimeType &&
-          locale == other.locale;
-
-  @override
-  int get hashCode => locale.hashCode;
+  List<Object?> get props => [locale, name, nativeName, flag];
 }
 
 class LocaleData {
