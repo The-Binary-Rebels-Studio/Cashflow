@@ -77,9 +77,9 @@ class _BugReportPageState extends State<BugReportPage> {
       body: BlocListener<FeedbackBloc, FeedbackState>(
         listener: (context, state) {
           if (state is FeedbackBugReportSuccess) {
-            _showSuccessDialog(state.message);
+            _showSuccessToast(state.message);
           } else if (state is FeedbackError) {
-            _showErrorDialog(l10n.bugReportFailed);
+            _showErrorToast(l10n.bugReportFailed);
           } else if (state is FeedbackDeviceInfoSuccess) {
             setState(() {
               _deviceInfo = state.deviceInfo;
@@ -490,41 +490,40 @@ class _BugReportPageState extends State<BugReportPage> {
     );
   }
 
-  void _showSuccessDialog(String message) {
+  void _showSuccessToast(String message) {
     final l10n = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        icon: Icon(Icons.check_circle, color: Colors.green, size: 48),
-        title: Text(l10n.bugReportSubmitted),
-        content: Text(l10n.bugReportSubmittedMessage),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.of(context).pop(); // Go back to previous screen
-            },
-            child: Text(l10n.ok),
-          ),
-        ],
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.bugReportSubmitted),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(seconds: 3),
       ),
     );
+    
+    // Navigate back after showing toast
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
-  void _showErrorDialog(String localizedMessage) {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        icon: Icon(Icons.error, color: Colors.red, size: 48),
-        title: Text(localizedMessage),
-        content: Text(l10n.bugReportFailedMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.ok),
-          ),
-        ],
+  void _showErrorToast(String localizedMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(localizedMessage),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

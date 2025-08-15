@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:cashflow/core/constants/app_constants.dart';
+import 'package:cashflow/core/models/suggestion_model.dart';
+import 'package:cashflow/core/models/bug_report_model.dart';
+import 'package:cashflow/core/di/injection.dart';
+import 'package:cashflow/features/profile/domain/usecases/submit_suggestion.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 
 class FeatureRequestPage extends StatefulWidget {
@@ -19,7 +22,16 @@ class _FeatureRequestPageState extends State<FeatureRequestPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isSubmitting = false;
 
-  String get _deviceInfo =>
+  DeviceInfo get _deviceInfo => DeviceInfo(
+    platform: Platform.operatingSystem,
+    osVersion: Platform.operatingSystemVersion,
+    appVersion: AppConstants.appVersion,
+    deviceModel: 'Unknown',
+    locale: Platform.localeName,
+    timezone: DateTime.now().timeZoneName,
+  );
+
+  String get _deviceInfoString =>
       '''
 App: ${AppConstants.appName}
 Version: ${AppConstants.appVersion}
@@ -51,7 +63,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          l10n.requestFeature,
+          l10n.shareSuggestion,
           style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.bold,
@@ -95,14 +107,14 @@ Generated: ${DateTime.now().toIso8601String()}''';
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(
-                        Icons.lightbulb_outline,
+                        Icons.feedback_outlined,
                         color: Colors.white,
                         size: 32,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.featureRequestTitle,
+                      l10n.suggestionTitle,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -112,7 +124,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.featureRequestSubtitle,
+                      l10n.suggestionSubtitle,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 14,
@@ -127,11 +139,11 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               // Feature Title
               _buildFormSection(
-                l10n.featureTitleRequired,
+                l10n.suggestionTitleRequired,
                 TextFormField(
                   controller: _titleController,
                   decoration: _buildInputDecoration(
-                    hintText: l10n.featureTitleHint,
+                    hintText: l10n.suggestionTitleHint,
                     prefixIcon: const Icon(
                       Icons.title_outlined,
                       size: 20,
@@ -140,7 +152,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return l10n.featureTitleError;
+                      return l10n.suggestionTitleError;
                     }
                     return null;
                   },
@@ -151,12 +163,12 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               // Feature Description
               _buildFormSection(
-                l10n.featureDescription,
+                l10n.suggestionDescription,
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 5,
                   decoration: _buildInputDecoration(
-                    hintText: l10n.featureDescriptionHint,
+                    hintText: l10n.suggestionDescriptionHint,
                     prefixIcon: const Padding(
                       padding: EdgeInsets.only(bottom: 98),
                       child: Icon(
@@ -168,7 +180,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return l10n.featureDescriptionError;
+                      return l10n.suggestionDescriptionError;
                     }
                     return null;
                   },
@@ -179,12 +191,12 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               // Use Case / Why needed
               _buildFormSection(
-                l10n.featureUseCase,
+                l10n.suggestionUseCase,
                 TextFormField(
                   controller: _useCaseController,
                   maxLines: 4,
                   decoration: _buildInputDecoration(
-                    hintText: l10n.featureUseCaseHint,
+                    hintText: l10n.suggestionUseCaseHint,
                     prefixIcon: const Padding(
                       padding: EdgeInsets.only(bottom: 64),
                       child: Icon(
@@ -196,7 +208,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return l10n.featureUseCaseError;
+                      return l10n.suggestionUseCaseError;
                     }
                     return null;
                   },
@@ -246,7 +258,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        _deviceInfo,
+                        _deviceInfoString,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
@@ -280,7 +292,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
                         )
                       : const Icon(Icons.send_outlined, size: 24),
                   label: Text(
-                    _isSubmitting ? l10n.submittingRequest : l10n.generateFeatureRequest,
+                    _isSubmitting ? l10n.submittingSuggestion : l10n.submitSuggestion,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -351,43 +363,88 @@ Generated: ${DateTime.now().toIso8601String()}''';
     );
   }
 
-  void _submitFeatureRequest() {
+  Future<void> _submitFeatureRequest() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isSubmitting = true;
     });
 
-    final featureRequest =
-        '''
-FEATURE REQUEST
-===============
+    try {
+      final suggestion = SuggestionModel(
+        title: _titleController.text.trim(),
+        description: _descriptionController.text.trim(),
+        useCase: _useCaseController.text.trim(),
+        deviceInfo: _deviceInfo,
+      );
 
-Title: ${_titleController.text.trim()}
+      final submitSuggestion = getIt<SubmitSuggestion>();
+      final result = await submitSuggestion(suggestion);
 
-Description:
-${_descriptionController.text.trim()}
-
-Use Case / Why needed:
-${_useCaseController.text.trim()}
-
-Device Information:
-$_deviceInfo
-''';
-
-    Clipboard.setData(ClipboardData(text: featureRequest));
-
-    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         setState(() {
           _isSubmitting = false;
         });
 
-        // Show success message
+        if (result.success) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Suggestion submitted successfully!'),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 4),
+              action: SnackBarAction(
+                label: AppLocalizations.of(context)!.ok,
+                textColor: Colors.white,
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                },
+              ),
+            ),
+          );
+
+          // Clear form
+          _titleController.clear();
+          _descriptionController.clear();
+          _useCaseController.clear();
+        } else {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to submit suggestion'),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 4),
+              action: SnackBarAction(
+                label: AppLocalizations.of(context)!.ok,
+                textColor: Colors.white,
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                },
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.featureRequestCopied),
-            backgroundColor: Colors.green,
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
             margin: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
@@ -395,7 +452,7 @@ $_deviceInfo
             ),
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
-              label: "OK",
+              label: AppLocalizations.of(context)!.ok,
               textColor: Colors.white,
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -403,12 +460,7 @@ $_deviceInfo
             ),
           ),
         );
-
-        // Clear form
-        _titleController.clear();
-        _descriptionController.clear();
-        _useCaseController.clear();
       }
-    });
+    }
   }
 }

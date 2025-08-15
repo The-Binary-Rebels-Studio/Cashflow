@@ -1015,43 +1015,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acknowledgments => 'Acknowledgments';
 
   @override
-  String get requestFeature => 'Request Feature';
+  String get shareSuggestion => 'Share Suggestion';
 
   @override
-  String get featureRequestTitle => 'Suggest a Feature';
+  String get suggestionTitle => 'Share Your Suggestion';
 
   @override
-  String get featureRequestSubtitle =>
+  String get suggestionSubtitle =>
       'Help us improve the app by sharing your ideas and suggestions';
 
   @override
-  String get featureTitleRequired => 'Feature Title *';
+  String get suggestionTitleRequired => 'Suggestion Title *';
 
   @override
-  String get featureTitleHint => 'e.g., Dark mode support for the app';
+  String get suggestionTitleHint =>
+      'e.g., Dark mode support, better navigation, new feature idea';
 
   @override
-  String get featureTitleError => 'Please provide a feature title';
+  String get suggestionTitleError => 'Please provide a suggestion title';
 
   @override
-  String get featureDescription => 'Feature Description *';
+  String get suggestionDescription => 'Suggestion Description *';
 
   @override
-  String get featureDescriptionHint =>
-      'Describe what you would like to see in the app. Be as detailed as possible about the functionality you envision.';
+  String get suggestionDescriptionHint =>
+      'Describe your suggestion in detail. What would you like to see improved, added, or changed in the app?';
 
   @override
-  String get featureDescriptionError => 'Please provide a feature description';
+  String get suggestionDescriptionError =>
+      'Please provide a suggestion description';
 
   @override
-  String get featureUseCase => 'Why do you need this feature? *';
+  String get suggestionUseCase => 'Why is this suggestion important? *';
 
   @override
-  String get featureUseCaseHint =>
-      'Explain how this feature would help you and other users. What problem would it solve?';
+  String get suggestionUseCaseHint =>
+      'Explain how this suggestion would help you and other users. What problem would it solve or what value would it add?';
 
   @override
-  String get featureUseCaseError => 'Please explain why this feature is needed';
+  String get suggestionUseCaseError =>
+      'Please explain why this suggestion is important';
 
   @override
   String get systemInformation => 'System Information';
@@ -1061,10 +1064,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'System info will be included automatically';
 
   @override
-  String get generateFeatureRequest => 'Generate Feature Request';
+  String get submitSuggestion => 'Submit Suggestion';
 
   @override
-  String get submittingRequest => 'Submitting...';
+  String get submittingSuggestion => 'Submitting...';
 
   @override
   String get featureRequestCopied =>

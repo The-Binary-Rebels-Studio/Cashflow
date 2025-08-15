@@ -1021,44 +1021,45 @@ class AppLocalizationsId extends AppLocalizations {
   String get acknowledgments => 'Ucapan Terima Kasih';
 
   @override
-  String get requestFeature => 'Saran Fitur';
+  String get shareSuggestion => 'Berikan Saran';
 
   @override
-  String get featureRequestTitle => 'Sarankan Fitur';
+  String get suggestionTitle => 'Berikan Saran Anda';
 
   @override
-  String get featureRequestSubtitle =>
+  String get suggestionSubtitle =>
       'Bantu kami meningkatkan aplikasi dengan berbagi ide dan saran Anda';
 
   @override
-  String get featureTitleRequired => 'Judul Fitur *';
+  String get suggestionTitleRequired => 'Judul Saran *';
 
   @override
-  String get featureTitleHint => 'contoh: Dukungan mode gelap untuk aplikasi';
+  String get suggestionTitleHint =>
+      'contoh: Dukungan mode gelap, navigasi yang lebih baik, ide fitur baru';
 
   @override
-  String get featureTitleError => 'Mohon berikan judul fitur';
+  String get suggestionTitleError => 'Mohon berikan judul saran';
 
   @override
-  String get featureDescription => 'Deskripsi Fitur *';
+  String get suggestionDescription => 'Deskripsi Saran *';
 
   @override
-  String get featureDescriptionHint =>
-      'Jelaskan apa yang ingin Anda lihat di aplikasi ini. Berikan detail sebanyak mungkin tentang fungsionalitas yang Anda bayangkan.';
+  String get suggestionDescriptionHint =>
+      'Jelaskan saran Anda secara detail. Apa yang ingin Anda lihat diperbaiki, ditambahkan, atau diubah di aplikasi ini?';
 
   @override
-  String get featureDescriptionError => 'Mohon berikan deskripsi fitur';
+  String get suggestionDescriptionError => 'Mohon berikan deskripsi saran';
 
   @override
-  String get featureUseCase => 'Mengapa Anda membutuhkan fitur ini? *';
+  String get suggestionUseCase => 'Mengapa saran ini penting? *';
 
   @override
-  String get featureUseCaseHint =>
-      'Jelaskan bagaimana fitur ini akan membantu Anda dan pengguna lain. Masalah apa yang akan diselesaikan?';
+  String get suggestionUseCaseHint =>
+      'Jelaskan bagaimana saran ini akan membantu Anda dan pengguna lain. Masalah apa yang akan diselesaikan atau nilai apa yang akan ditambahkan?';
 
   @override
-  String get featureUseCaseError =>
-      'Mohon jelaskan mengapa fitur ini diperlukan';
+  String get suggestionUseCaseError =>
+      'Mohon jelaskan mengapa saran ini penting';
 
   @override
   String get systemInformation => 'Informasi Sistem';
@@ -1068,10 +1069,10 @@ class AppLocalizationsId extends AppLocalizations {
       'Info sistem akan disertakan secara otomatis';
 
   @override
-  String get generateFeatureRequest => 'Buat Saran Fitur';
+  String get submitSuggestion => 'Kirim Saran';
 
   @override
-  String get submittingRequest => 'Mengirim...';
+  String get submittingSuggestion => 'Mengirim...';
 
   @override
   String get featureRequestCopied =>

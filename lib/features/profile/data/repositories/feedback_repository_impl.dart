@@ -63,19 +63,26 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
         );
       }
 
-      // Validate email if provided
-      if (suggestion.userEmail != null && suggestion.userEmail!.isNotEmpty) {
-        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (!emailRegex.hasMatch(suggestion.userEmail!)) {
-          return ApiResponse<SuggestionModel>(
-            success: false,
-            message: 'Invalid email address format',
-            error: ApiError(
-              code: 'VALIDATION_ERROR',
-              message: 'Invalid email',
-            ),
-          );
-        }
+      if (suggestion.useCase.trim().isEmpty) {
+        return ApiResponse<SuggestionModel>(
+          success: false,
+          message: 'Use case cannot be empty',
+          error: ApiError(
+            code: 'VALIDATION_ERROR',
+            message: 'Use case is required',
+          ),
+        );
+      }
+
+      if (suggestion.useCase.trim().length < 10) {
+        return ApiResponse<SuggestionModel>(
+          success: false,
+          message: 'Use case must be at least 10 characters long',
+          error: ApiError(
+            code: 'VALIDATION_ERROR',
+            message: 'Use case too short',
+          ),
+        );
       }
 
       return await _remoteDataSource.submitSuggestion(suggestion);

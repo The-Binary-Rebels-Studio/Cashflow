@@ -173,8 +173,8 @@ class _MenuSection extends StatelessWidget {
           ),
           const Divider(height: 1),
           _MenuItem(
-            icon: Icons.lightbulb_outline,
-            title: l10n.requestFeature,
+            icon: Icons.feedback_outlined,
+            title: l10n.shareSuggestion,
             color: Colors.green,
             onTap: () => context.push('/feature-request'),
           ),

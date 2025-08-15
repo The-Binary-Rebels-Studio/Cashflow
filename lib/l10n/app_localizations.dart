@@ -2038,77 +2038,77 @@ abstract class AppLocalizations {
   /// **'Acknowledgments'**
   String get acknowledgments;
 
-  /// No description provided for @requestFeature.
+  /// No description provided for @shareSuggestion.
   ///
   /// In en, this message translates to:
-  /// **'Request Feature'**
-  String get requestFeature;
+  /// **'Share Suggestion'**
+  String get shareSuggestion;
 
-  /// No description provided for @featureRequestTitle.
+  /// No description provided for @suggestionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Suggest a Feature'**
-  String get featureRequestTitle;
+  /// **'Share Your Suggestion'**
+  String get suggestionTitle;
 
-  /// No description provided for @featureRequestSubtitle.
+  /// No description provided for @suggestionSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Help us improve the app by sharing your ideas and suggestions'**
-  String get featureRequestSubtitle;
+  String get suggestionSubtitle;
 
-  /// No description provided for @featureTitleRequired.
+  /// No description provided for @suggestionTitleRequired.
   ///
   /// In en, this message translates to:
-  /// **'Feature Title *'**
-  String get featureTitleRequired;
+  /// **'Suggestion Title *'**
+  String get suggestionTitleRequired;
 
-  /// No description provided for @featureTitleHint.
+  /// No description provided for @suggestionTitleHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g., Dark mode support for the app'**
-  String get featureTitleHint;
+  /// **'e.g., Dark mode support, better navigation, new feature idea'**
+  String get suggestionTitleHint;
 
-  /// No description provided for @featureTitleError.
+  /// No description provided for @suggestionTitleError.
   ///
   /// In en, this message translates to:
-  /// **'Please provide a feature title'**
-  String get featureTitleError;
+  /// **'Please provide a suggestion title'**
+  String get suggestionTitleError;
 
-  /// No description provided for @featureDescription.
+  /// No description provided for @suggestionDescription.
   ///
   /// In en, this message translates to:
-  /// **'Feature Description *'**
-  String get featureDescription;
+  /// **'Suggestion Description *'**
+  String get suggestionDescription;
 
-  /// No description provided for @featureDescriptionHint.
+  /// No description provided for @suggestionDescriptionHint.
   ///
   /// In en, this message translates to:
-  /// **'Describe what you would like to see in the app. Be as detailed as possible about the functionality you envision.'**
-  String get featureDescriptionHint;
+  /// **'Describe your suggestion in detail. What would you like to see improved, added, or changed in the app?'**
+  String get suggestionDescriptionHint;
 
-  /// No description provided for @featureDescriptionError.
+  /// No description provided for @suggestionDescriptionError.
   ///
   /// In en, this message translates to:
-  /// **'Please provide a feature description'**
-  String get featureDescriptionError;
+  /// **'Please provide a suggestion description'**
+  String get suggestionDescriptionError;
 
-  /// No description provided for @featureUseCase.
+  /// No description provided for @suggestionUseCase.
   ///
   /// In en, this message translates to:
-  /// **'Why do you need this feature? *'**
-  String get featureUseCase;
+  /// **'Why is this suggestion important? *'**
+  String get suggestionUseCase;
 
-  /// No description provided for @featureUseCaseHint.
+  /// No description provided for @suggestionUseCaseHint.
   ///
   /// In en, this message translates to:
-  /// **'Explain how this feature would help you and other users. What problem would it solve?'**
-  String get featureUseCaseHint;
+  /// **'Explain how this suggestion would help you and other users. What problem would it solve or what value would it add?'**
+  String get suggestionUseCaseHint;
 
-  /// No description provided for @featureUseCaseError.
+  /// No description provided for @suggestionUseCaseError.
   ///
   /// In en, this message translates to:
-  /// **'Please explain why this feature is needed'**
-  String get featureUseCaseError;
+  /// **'Please explain why this suggestion is important'**
+  String get suggestionUseCaseError;
 
   /// No description provided for @systemInformation.
   ///
@@ -2122,17 +2122,17 @@ abstract class AppLocalizations {
   /// **'System info will be included automatically'**
   String get systemInfoAutoIncluded;
 
-  /// No description provided for @generateFeatureRequest.
+  /// No description provided for @submitSuggestion.
   ///
   /// In en, this message translates to:
-  /// **'Generate Feature Request'**
-  String get generateFeatureRequest;
+  /// **'Submit Suggestion'**
+  String get submitSuggestion;
 
-  /// No description provided for @submittingRequest.
+  /// No description provided for @submittingSuggestion.
   ///
   /// In en, this message translates to:
   /// **'Submitting...'**
-  String get submittingRequest;
+  String get submittingSuggestion;
 
   /// No description provided for @featureRequestCopied.
   ///

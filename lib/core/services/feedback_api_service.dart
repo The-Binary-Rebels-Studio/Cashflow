@@ -51,13 +51,14 @@ class FeedbackApiService {
   /// {
   ///   "title": "Add Dark Mode Support",
   ///   "description": "Please add dark mode to improve user experience in low light conditions",
-  ///   "category": "feature",
-  ///   "priority": "medium",
-  ///   "user_email": "user@example.com",
-  ///   "user_name": "John Doe",
-  ///   "metadata": {
+  ///   "use_case": "Users need dark mode for better experience during night time usage",
+  ///   "device_info": {
+  ///     "platform": "android",
+  ///     "os_version": "Android 13",
   ///     "app_version": "1.0.0",
-  ///     "platform": "android"
+  ///     "device_model": "Samsung Galaxy S23",
+  ///     "locale": "en_US",
+  ///     "timezone": "Asia/Jakarta"
   ///   }
   /// }
   /// 
@@ -66,19 +67,16 @@ class FeedbackApiService {
   ///   "success": true,
   ///   "message": "Suggestion submitted successfully",
   ///   "data": {
-  ///     "id": "sug_123456789",
   ///     "title": "Add Dark Mode Support",
   ///     "description": "Please add dark mode to improve user experience in low light conditions",
-  ///     "category": "feature",
-  ///     "priority": "medium",
-  ///     "user_email": "user@example.com",
-  ///     "user_name": "John Doe",
-  ///     "status": "submitted",
-  ///     "created_at": "2025-01-15T10:30:00Z",
-  ///     "updated_at": "2025-01-15T10:30:00Z",
-  ///     "metadata": {
+  ///     "use_case": "Users need dark mode for better experience during night time usage",
+  ///     "device_info": {
+  ///       "platform": "android",
+  ///       "os_version": "Android 13",
   ///       "app_version": "1.0.0",
-  ///       "platform": "android"
+  ///       "device_model": "Samsung Galaxy S23",
+  ///       "locale": "en_US",
+  ///       "timezone": "Asia/Jakarta"
   ///     }
   ///   },
   ///   "meta": {
@@ -90,15 +88,9 @@ class FeedbackApiService {
     SuggestionModel suggestion,
   ) async {
     try {
-      // Add device metadata
-      final metadata = await _getDeviceMetadata();
-      final suggestionWithMetadata = suggestion.copyWith(
-        metadata: {...?suggestion.metadata, ...metadata},
-      );
-      
       final response = await _dio.post(
         '/suggestions',
-        data: suggestionWithMetadata.toRequestJson(),
+        data: suggestion.toRequestJson(),
       );
 
       final responseData = response.data;
@@ -325,17 +317,6 @@ class FeedbackApiService {
     }
   }
 
-  /// Get device metadata for suggestions
-  Future<Map<String, dynamic>> _getDeviceMetadata() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    return {
-      'app_version': packageInfo.version,
-      'platform': Platform.operatingSystem,
-      'os_version': Platform.operatingSystemVersion,
-      'locale': Platform.localeName,
-      'timezone': DateTime.now().timeZoneName,
-    };
-  }
 
   /// Dispose resources
   void dispose() {
