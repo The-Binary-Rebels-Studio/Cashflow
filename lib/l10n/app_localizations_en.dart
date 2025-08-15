@@ -361,6 +361,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardMoreTransactionsSoon => 'More transactions coming soon';
 
   @override
+  String get dashboardNoSpendingDataYet => 'No spending data yet';
+
+  @override
+  String get dashboardOverBudget => 'over budget';
+
+  @override
+  String get dashboardUsed => 'used';
+
+  @override
   String get currencyUSD => 'US Dollar (USD)';
 
   @override

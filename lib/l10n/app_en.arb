@@ -131,6 +131,9 @@
   "dashboardGrabTransport": "Grab Transport",
   "dashboardSalaryDeposit": "Salary Deposit",
   "dashboardMoreTransactionsSoon": "More transactions coming soon",
+  "dashboardNoSpendingDataYet": "No spending data yet",
+  "dashboardOverBudget": "over budget",
+  "dashboardUsed": "used",
   
   "currencyUSD": "US Dollar (USD)",
   "currencyEUR": "Euro (EUR)",

@@ -365,6 +365,15 @@ class AppLocalizationsId extends AppLocalizations {
       'Lebih banyak transaksi akan segera hadir';
 
   @override
+  String get dashboardNoSpendingDataYet => 'Belum ada data pengeluaran';
+
+  @override
+  String get dashboardOverBudget => 'melebihi anggaran';
+
+  @override
+  String get dashboardUsed => 'terpakai';
+
+  @override
   String get currencyUSD => 'Dolar Amerika (USD)';
 
   @override

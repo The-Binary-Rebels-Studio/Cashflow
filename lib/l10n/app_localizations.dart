@@ -778,6 +778,24 @@ abstract class AppLocalizations {
   /// **'More transactions coming soon'**
   String get dashboardMoreTransactionsSoon;
 
+  /// No description provided for @dashboardNoSpendingDataYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No spending data yet'**
+  String get dashboardNoSpendingDataYet;
+
+  /// No description provided for @dashboardOverBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'over budget'**
+  String get dashboardOverBudget;
+
+  /// No description provided for @dashboardUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'used'**
+  String get dashboardUsed;
+
   /// No description provided for @currencyUSD.
   ///
   /// In en, this message translates to:

@@ -152,7 +152,7 @@ class SpendingChart extends StatelessWidget {
             Icon(Icons.pie_chart_outline, size: 48, color: Colors.grey[400]),
             const SizedBox(height: 8),
             Text(
-              'No spending data yet',
+              AppLocalizations.of(context)!.dashboardNoSpendingDataYet,
               style: TextStyle(color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
@@ -222,7 +222,7 @@ class _BudgetSpendingItem extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            '${percentage.toStringAsFixed(0)}% ${isOverBudget ? 'over budget' : 'used'}',
+            '${percentage.toStringAsFixed(0)}% ${isOverBudget ? AppLocalizations.of(context)!.dashboardOverBudget : AppLocalizations.of(context)!.dashboardUsed}',
             style: TextStyle(
               fontSize: 9,
               color: isOverBudget ? Colors.red : Colors.grey[500],

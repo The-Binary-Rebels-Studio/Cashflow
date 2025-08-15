@@ -363,6 +363,15 @@ class AppLocalizationsMs extends AppLocalizations {
       'Lebih banyak transaksi akan datang tidak lama lagi';
 
   @override
+  String get dashboardNoSpendingDataYet => 'Tiada data perbelanjaan lagi';
+
+  @override
+  String get dashboardOverBudget => 'melebihi bajet';
+
+  @override
+  String get dashboardUsed => 'digunakan';
+
+  @override
   String get currencyUSD => 'Dolar Amerika (USD)';
 
   @override

@@ -131,6 +131,9 @@
   "dashboardGrabTransport": "Pengangkutan Grab",
   "dashboardSalaryDeposit": "Deposit Gaji",
   "dashboardMoreTransactionsSoon": "Lebih banyak transaksi akan datang tidak lama lagi",
+  "dashboardNoSpendingDataYet": "Tiada data perbelanjaan lagi",
+  "dashboardOverBudget": "melebihi bajet",
+  "dashboardUsed": "digunakan",
   
   "currencyUSD": "Dolar Amerika (USD)",
   "currencyEUR": "Euro (EUR)",
