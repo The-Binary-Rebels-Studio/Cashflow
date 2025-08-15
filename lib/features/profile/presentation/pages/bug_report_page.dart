@@ -476,17 +476,15 @@ class _BugReportPageState extends State<BugReportPage> {
       return;
     }
 
-    final bugReport = BugReportModel(
-      title: _titleController.text.trim(),
-      description: _descriptionController.text.trim(),
-      stepsToReproduce: _stepsController.text.trim(),
-      expectedBehavior: _expectedController.text.trim(),
-      actualBehavior: _actualController.text.trim(),
-      deviceInfo: _deviceInfo!,
-    );
 
     context.read<FeedbackBloc>().add(
-      FeedbackBugReportSubmitted(bugReport: bugReport),
+      FeedbackBugReportSubmitted(
+        title: _titleController.text.trim(),
+        description: _descriptionController.text.trim(),
+        stepsToReproduce: _stepsController.text.trim(),
+        expectedBehavior: _expectedController.text.trim(),
+        actualBehavior: _actualController.text.trim(),
+      ),
     );
   }
 

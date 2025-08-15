@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:yandex_mobileads/mobile_ads.dart';
 import 'ads_service.dart';
@@ -33,15 +32,9 @@ class AppOpenAdManager {
       onAdLoaded: (AppOpenAd appOpenAd) {
         _appOpenAd = appOpenAd;
         _loadingInProgress = false;
-        if (kDebugMode) {
-          print('✅ App open ad loaded successfully');
-        }
       },
       onAdFailedToLoad: (AdRequestError error) {
         _loadingInProgress = false;
-        if (kDebugMode) {
-          print('❌ App open ad failed to load: ${error.description}');
-        }
         // Retry after delay
         Future.delayed(const Duration(seconds: 30), () {
           if (!isLoaded) loadAppOpenAd();
@@ -87,32 +80,17 @@ class AppOpenAdManager {
       eventListener: AppOpenAdEventListener(
         onAdShown: () {
           isAdShowing = true;
-          if (kDebugMode) {
-            print('👁️ App open ad shown');
-          }
         },
         onAdFailedToShow: (AdError error) {
-          if (kDebugMode) {
-            print('💥 Failed to show app open ad: ${error.description}');
-          }
         },
         onAdDismissed: () {
           isAdShowing = false;
           clearAppOpenAd();
           loadAppOpenAd();
-          if (kDebugMode) {
-            print('🚪 App open ad dismissed');
-          }
         },
         onAdClicked: () {
-          if (kDebugMode) {
-            print('👆 App open ad clicked');
-          }
         },
         onAdImpression: (ImpressionData? data) {
-          if (kDebugMode) {
-            print('📊 App open ad impression recorded');
-          }
         },
       ),
     );

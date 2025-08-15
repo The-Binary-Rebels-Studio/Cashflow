@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import '../../../../core/models/suggestion_model.dart';
+import '../../../../core/models/bug_report_model.dart';
 import '../../domain/usecases/submit_suggestion.dart';
 import '../../domain/usecases/submit_bug_report.dart';
 import '../../domain/usecases/get_device_info.dart';
@@ -7,8 +9,6 @@ import '../../domain/usecases/test_connection.dart';
 import 'feedback_event.dart';
 import 'feedback_state.dart';
 
-/// BLoC for managing feedback feature state and business logic
-/// Handles suggestion submissions, bug reports, and connection testing
 @injectable
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
   final SubmitSuggestion _submitSuggestion;
@@ -29,7 +29,6 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     on<FeedbackStateReset>(_onStateReset);
   }
 
-  /// Handle suggestion submission event
   Future<void> _onSuggestionSubmitted(
     FeedbackSuggestionSubmitted event,
     Emitter<FeedbackState> emit,
@@ -37,29 +36,33 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     emit(const FeedbackLoading(message: 'Submitting suggestion...'));
 
     try {
-      final result = await _submitSuggestion(event.suggestion);
+      final deviceInfo = await _getDeviceInfo();
+      
+      final suggestionModel = SuggestionModel(
+        title: event.suggestion.title,
+        description: event.suggestion.description,
+        useCase: event.suggestion.useCase,
+        deviceInfo: deviceInfo,
+      );
 
-      if (result.success && result.data != null) {
-        emit(FeedbackSuggestionSuccess(
-          suggestion: result.data!,
-          message: result.message,
-        ));
+      final result = await _submitSuggestion(suggestionModel);
+
+      if (result.success) {
+        emit(const FeedbackSuggestionSuccess(message: 'Suggestion submitted successfully'));
       } else {
         emit(FeedbackError(
           message: result.message,
           errorCode: result.error?.code,
-          validationErrors: result.error?.validationErrors,
         ));
       }
     } catch (e) {
-      emit(FeedbackError(
-        message: 'An unexpected error occurred while submitting suggestion',
+      emit(const FeedbackError(
+        message: 'An unexpected error occurred',
         errorCode: 'BLOC_ERROR',
       ));
     }
   }
 
-  /// Handle bug report submission event
   Future<void> _onBugReportSubmitted(
     FeedbackBugReportSubmitted event,
     Emitter<FeedbackState> emit,
@@ -67,29 +70,35 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     emit(const FeedbackLoading(message: 'Submitting bug report...'));
 
     try {
-      final result = await _submitBugReport(event.bugReport);
+      final deviceInfo = await _getDeviceInfo();
+      
+      final bugReportModel = BugReportModel(
+        title: event.title,
+        description: event.description,
+        stepsToReproduce: event.stepsToReproduce,
+        expectedBehavior: event.expectedBehavior,
+        actualBehavior: event.actualBehavior,
+        deviceInfo: deviceInfo,
+      );
 
-      if (result.success && result.data != null) {
-        emit(FeedbackBugReportSuccess(
-          bugReport: result.data!,
-          message: result.message,
-        ));
+      final result = await _submitBugReport(bugReportModel);
+
+      if (result.success) {
+        emit(const FeedbackBugReportSuccess(message: 'Bug report submitted successfully'));
       } else {
         emit(FeedbackError(
           message: result.message,
           errorCode: result.error?.code,
-          validationErrors: result.error?.validationErrors,
         ));
       }
     } catch (e) {
-      emit(FeedbackError(
-        message: 'An unexpected error occurred while submitting bug report',
+      emit(const FeedbackError(
+        message: 'An unexpected error occurred',
         errorCode: 'BLOC_ERROR',
       ));
     }
   }
 
-  /// Handle connection test event
   Future<void> _onConnectionTested(
     FeedbackConnectionTested event,
     Emitter<FeedbackState> emit,
@@ -118,7 +127,6 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     }
   }
 
-  /// Handle device info request event
   Future<void> _onDeviceInfoRequested(
     FeedbackDeviceInfoRequested event,
     Emitter<FeedbackState> emit,
@@ -136,7 +144,6 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     }
   }
 
-  /// Handle state reset event
   void _onStateReset(
     FeedbackStateReset event,
     Emitter<FeedbackState> emit,

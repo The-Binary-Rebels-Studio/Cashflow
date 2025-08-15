@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cashflow/core/constants/app_constants.dart';
-import 'package:cashflow/core/models/suggestion_model.dart';
-import 'package:cashflow/core/models/bug_report_model.dart';
-import 'package:cashflow/core/di/injection.dart';
-import 'package:cashflow/features/profile/domain/usecases/submit_suggestion.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
+import '../bloc/feedback_bloc.dart';
+import '../bloc/feedback_event.dart';
+import '../bloc/feedback_state.dart';
+import '../dto/suggestion_dto.dart';
 
 class FeatureRequestPage extends StatefulWidget {
   const FeatureRequestPage({super.key});
@@ -20,16 +21,7 @@ class _FeatureRequestPageState extends State<FeatureRequestPage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _useCaseController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isSubmitting = false;
 
-  DeviceInfo get _deviceInfo => DeviceInfo(
-    platform: Platform.operatingSystem,
-    osVersion: Platform.operatingSystemVersion,
-    appVersion: AppConstants.appVersion,
-    deviceModel: 'Unknown',
-    locale: Platform.localeName,
-    timezone: DateTime.now().timeZoneName,
-  );
 
   String get _deviceInfoString =>
       '''
@@ -71,7 +63,40 @@ Generated: ${DateTime.now().toIso8601String()}''';
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: BlocListener<FeedbackBloc, FeedbackState>(
+        listener: (context, state) {
+          if (state is FeedbackSuggestionSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+            _titleController.clear();
+            _descriptionController.clear();
+            _useCaseController.clear();
+          } else if (state is FeedbackError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.userMessage),
+                backgroundColor: Colors.red,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        },
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
@@ -277,42 +302,48 @@ Generated: ${DateTime.now().toIso8601String()}''';
               SizedBox(
                 width: double.infinity,
                 height: 56,
-                child: ElevatedButton.icon(
-                  onPressed: _isSubmitting ? null : _submitFeatureRequest,
-                  icon: _isSubmitting
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                          ),
-                        )
-                      : const Icon(Icons.send_outlined, size: 24),
-                  label: Text(
-                    _isSubmitting ? l10n.submittingSuggestion : l10n.submitSuggestion,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                    shadowColor: const Color(0xFF4CAF50).withValues(alpha: 0.3),
-                  ),
+                child: BlocBuilder<FeedbackBloc, FeedbackState>(
+                  builder: (context, state) {
+                    final isLoading = state is FeedbackLoading;
+                    return ElevatedButton.icon(
+                      onPressed: isLoading ? null : _submitFeatureRequest,
+                      icon: isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : const Icon(Icons.send_outlined, size: 24),
+                      label: Text(
+                        isLoading ? l10n.submittingSuggestion : l10n.submitSuggestion,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4CAF50),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                        shadowColor: const Color(0xFF4CAF50).withValues(alpha: 0.3),
+                      ),
+                    );
+                  },
                 ),
               ),
 
               const SizedBox(height: 32),
             ],
           ),
+        ),
         ),
       ),
     );
@@ -363,104 +394,17 @@ Generated: ${DateTime.now().toIso8601String()}''';
     );
   }
 
-  Future<void> _submitFeatureRequest() async {
+  void _submitFeatureRequest() {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isSubmitting = true;
-    });
+    final suggestion = SuggestionDto(
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+      useCase: _useCaseController.text.trim(),
+    );
 
-    try {
-      final suggestion = SuggestionModel(
-        title: _titleController.text.trim(),
-        description: _descriptionController.text.trim(),
-        useCase: _useCaseController.text.trim(),
-        deviceInfo: _deviceInfo,
-      );
-
-      final submitSuggestion = getIt<SubmitSuggestion>();
-      final result = await submitSuggestion(suggestion);
-
-      if (mounted) {
-        setState(() {
-          _isSubmitting = false;
-        });
-
-        if (result.success) {
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Suggestion submitted successfully!'),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.all(16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              duration: const Duration(seconds: 4),
-              action: SnackBarAction(
-                label: AppLocalizations.of(context)!.ok,
-                textColor: Colors.white,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                },
-              ),
-            ),
-          );
-
-          // Clear form
-          _titleController.clear();
-          _descriptionController.clear();
-          _useCaseController.clear();
-        } else {
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to submit suggestion'),
-              backgroundColor: Colors.red,
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.all(16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              duration: const Duration(seconds: 4),
-              action: SnackBarAction(
-                label: AppLocalizations.of(context)!.ok,
-                textColor: Colors.white,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                },
-              ),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isSubmitting = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            duration: const Duration(seconds: 4),
-            action: SnackBarAction(
-              label: AppLocalizations.of(context)!.ok,
-              textColor: Colors.white,
-              onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
-          ),
-        );
-      }
-    }
+    context.read<FeedbackBloc>().add(
+      FeedbackSuggestionSubmitted(suggestion: suggestion),
+    );
   }
 }

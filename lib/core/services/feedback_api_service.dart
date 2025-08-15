@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -8,8 +7,6 @@ import '../models/api_response.dart';
 import '../models/suggestion_model.dart';
 import '../models/bug_report_model.dart';
 
-/// Service for handling feedback API communication with backend
-/// Base URL: configured via dart-define
 @singleton
 class FeedbackApiService {
   static const String _baseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'http://54.169.145.202/api/v1/');
@@ -33,15 +30,6 @@ class FeedbackApiService {
     
     _deviceInfo = DeviceInfoPlugin();
     
-    // Add interceptors for logging in debug mode
-    if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-        logPrint: (obj) => print(obj),
-      ));
-    }
   }
 
   /// Submit a feature suggestion to the backend
@@ -110,9 +98,6 @@ class FeedbackApiService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error submitting suggestion: $e');
-      }
       
       return ApiResponse<SuggestionModel>(
         success: false,
@@ -303,9 +288,6 @@ class FeedbackApiService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error testing connection: $e');
-      }
       return ApiResponse<Map<String, dynamic>>(
         success: false,
         message: 'Unable to connect to server',
