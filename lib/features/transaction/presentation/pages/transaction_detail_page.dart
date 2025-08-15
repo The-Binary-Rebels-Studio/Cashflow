@@ -403,39 +403,47 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   IconData _getCategoryIcon() {
     if (_transaction == null) return Icons.attach_money;
 
-    try {
-      return IconData(
-        int.parse(_category!.iconCodePoint),
-        fontFamily: 'MaterialIcons',
-      );
-    } catch (e) {
-      final categoryName = _category!.name.toLowerCase();
-      if (categoryName.contains('food') || categoryName.contains('dining')) {
-        return Icons.restaurant;
-      }
-      if (categoryName.contains('transport') || categoryName.contains('travel')) {
-        return Icons.directions_car;
-      }
-      if (categoryName.contains('shopping') || categoryName.contains('retail')) {
-        return Icons.shopping_cart;
-      }
-      if (categoryName.contains('bill') || categoryName.contains('utility')) {
-        return Icons.receipt;
-      }
-      if (categoryName.contains('entertainment')) {
-        return Icons.movie;
-      }
-      if (categoryName.contains('health') || categoryName.contains('medical')) {
-        return Icons.local_hospital;
-      }
-      if (categoryName.contains('education')) {
-        return Icons.school;
-      }
-      if (categoryName.contains('income') || categoryName.contains('salary')) {
-        return Icons.account_balance_wallet;
-      }
-      return Icons.attach_money;
+    const iconMap = {
+      '57411': Icons.restaurant,
+      '57669': Icons.directions_car,
+      '59511': Icons.shopping_cart,
+      '57699': Icons.receipt,
+      '57458': Icons.movie,
+      '57704': Icons.local_hospital,
+      '57437': Icons.school,
+      '58730': Icons.account_balance_wallet,
+    };
+    
+    final iconFromMap = iconMap[_category!.iconCodePoint];
+    if (iconFromMap != null) return iconFromMap;
+    
+    // Fallback based on category name
+    final categoryName = _category!.name.toLowerCase();
+    if (categoryName.contains('food') || categoryName.contains('dining')) {
+      return Icons.restaurant;
     }
+    if (categoryName.contains('transport') || categoryName.contains('travel')) {
+      return Icons.directions_car;
+    }
+    if (categoryName.contains('shopping') || categoryName.contains('retail')) {
+      return Icons.shopping_cart;
+    }
+    if (categoryName.contains('bill') || categoryName.contains('utility')) {
+      return Icons.receipt;
+    }
+    if (categoryName.contains('entertainment')) {
+      return Icons.movie;
+    }
+    if (categoryName.contains('health') || categoryName.contains('medical')) {
+      return Icons.local_hospital;
+    }
+    if (categoryName.contains('education')) {
+      return Icons.school;
+    }
+    if (categoryName.contains('income') || categoryName.contains('salary')) {
+      return Icons.account_balance_wallet;
+    }
+    return Icons.attach_money;
   }
 
   Color _getCategoryColor() {

@@ -56,14 +56,18 @@ class TransactionItem {
       categoryColor = Colors.blue;
     }
     
-    try {
-      iconData = IconData(
-        int.parse(category.iconCodePoint),
-        fontFamily: 'MaterialIcons',
-      );
-    } catch (e) {
-      iconData = Icons.category;
-    }
+    const iconMap = {
+      '57411': Icons.restaurant,
+      '57669': Icons.directions_car,
+      '59511': Icons.shopping_cart,
+      '57699': Icons.receipt,
+      '57458': Icons.movie,
+      '57704': Icons.local_hospital,
+      '57437': Icons.school,
+      '58730': Icons.account_balance_wallet,
+    };
+    
+    iconData = iconMap[category.iconCodePoint] ?? Icons.category;
     
     return TransactionItem(
       id: budget.id,
@@ -89,14 +93,18 @@ class TransactionItem {
       categoryColor = Colors.green;
     }
     
-    try {
-      iconData = IconData(
-        int.parse(category.iconCodePoint),
-        fontFamily: 'MaterialIcons',
-      );
-    } catch (e) {
-      iconData = Icons.category;
-    }
+    const iconMap = {
+      '57411': Icons.restaurant,
+      '57669': Icons.directions_car,
+      '59511': Icons.shopping_cart,
+      '57699': Icons.receipt,
+      '57458': Icons.movie,
+      '57704': Icons.local_hospital,
+      '57437': Icons.school,
+      '58730': Icons.account_balance_wallet,
+    };
+    
+    iconData = iconMap[category.iconCodePoint] ?? Icons.category;
     
     return TransactionItem(
       id: category.id,

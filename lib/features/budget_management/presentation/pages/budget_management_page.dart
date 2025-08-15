@@ -838,13 +838,18 @@ class _BudgetPlansSliver extends StatelessWidget {
   }
 
   IconData _getIconData(String iconCodePoint) {
-    try {
-      return IconData(
-        int.parse(iconCodePoint),
-        fontFamily: 'MaterialIcons',
-      );
-    } catch (e) {
-      return Icons.category;
-    }
+    // For tree shaking compatibility, return predefined icons
+    const iconMap = {
+      '57411': Icons.restaurant,
+      '57669': Icons.directions_car,
+      '59511': Icons.shopping_cart,
+      '57699': Icons.receipt,
+      '57458': Icons.movie,
+      '57704': Icons.local_hospital,
+      '57437': Icons.school,
+      '58730': Icons.account_balance_wallet,
+    };
+    
+    return iconMap[iconCodePoint] ?? Icons.category;
   }
 }

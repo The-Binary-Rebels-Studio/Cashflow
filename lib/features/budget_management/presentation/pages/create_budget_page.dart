@@ -696,15 +696,18 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
       categoryColor = Colors.grey;
     }
 
-    IconData iconData;
-    try {
-      iconData = IconData(
-        int.parse(category.iconCodePoint),
-        fontFamily: 'MaterialIcons',
-      );
-    } catch (e) {
-      iconData = Icons.category;
-    }
+    const iconMap = {
+      '57411': Icons.restaurant,
+      '57669': Icons.directions_car,
+      '59511': Icons.shopping_cart,
+      '57699': Icons.receipt,
+      '57458': Icons.movie,
+      '57704': Icons.local_hospital,
+      '57437': Icons.school,
+      '58730': Icons.account_balance_wallet,
+    };
+    
+    IconData iconData = iconMap[category.iconCodePoint] ?? Icons.category;
 
     return Expanded(
       child: Row(
