@@ -32,46 +32,46 @@ class FeedbackApiService {
     
   }
 
-  /// Submit a feature suggestion to the backend
-  /// 
-  /// Request Example:
-  /// POST /suggestions
-  /// {
-  ///   "title": "Add Dark Mode Support",
-  ///   "description": "Please add dark mode to improve user experience in low light conditions",
-  ///   "use_case": "Users need dark mode for better experience during night time usage",
-  ///   "device_info": {
-  ///     "platform": "android",
-  ///     "os_version": "Android 13",
-  ///     "app_version": "1.0.0",
-  ///     "device_model": "Samsung Galaxy S23",
-  ///     "locale": "en_US",
-  ///     "timezone": "Asia/Jakarta"
-  ///   }
-  /// }
-  /// 
-  /// Expected Response:
-  /// {
-  ///   "success": true,
-  ///   "message": "Suggestion submitted successfully",
-  ///   "data": {
-  ///     "title": "Add Dark Mode Support",
-  ///     "description": "Please add dark mode to improve user experience in low light conditions",
-  ///     "use_case": "Users need dark mode for better experience during night time usage",
-  ///     "device_info": {
-  ///       "platform": "android",
-  ///       "os_version": "Android 13",
-  ///       "app_version": "1.0.0",
-  ///       "device_model": "Samsung Galaxy S23",
-  ///       "locale": "en_US",
-  ///       "timezone": "Asia/Jakarta"
-  ///     }
-  ///   },
-  ///   "meta": {
-  ///     "timestamp": "2025-01-15T10:30:00Z",
-  ///     "version": "v1"
-  ///   }
-  /// }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   Future<ApiResponse<SuggestionModel>> submitSuggestion(
     SuggestionModel suggestion,
   ) async {
@@ -110,72 +110,72 @@ class FeedbackApiService {
     }
   }
 
-  /// Submit a bug report to the backend
-  /// 
-  /// Request Example:
-  /// POST /bug-reports
-  /// {
-  ///   "title": "App crashes when adding transaction",
-  ///   "description": "The app crashes consistently when trying to add a new transaction with amount over 1000",
-  ///   "steps_to_reproduce": "1. Open app\n2. Click Add Transaction\n3. Enter amount > 1000\n4. Click Save",
-  ///   "expected_behavior": "Transaction should be saved successfully",
-  ///   "actual_behavior": "App crashes and closes",
-  ///   "severity": "high",
-  ///   "category": "crash",
-  ///   "user_email": "user@example.com",
-  ///   "user_name": "Jane Doe",
-  ///   "device_info": {
-  ///     "platform": "android",
-  ///     "os_version": "Android 13",
-  ///     "app_version": "1.0.0",
-  ///     "device_model": "Samsung Galaxy S23",
-  ///     "locale": "en_US",
-  ///     "timezone": "Asia/Jakarta"
-  ///   },
-  ///   "attachments": [],
-  ///   "metadata": {
-  ///     "crash_stack_trace": "...",
-  ///     "memory_usage": "256MB"
-  ///   }
-  /// }
-  /// 
-  /// Expected Response:
-  /// {
-  ///   "success": true,
-  ///   "message": "Bug report submitted successfully",
-  ///   "data": {
-  ///     "id": "bug_123456789",
-  ///     "title": "App crashes when adding transaction",
-  ///     "description": "The app crashes consistently when trying to add a new transaction with amount over 1000",
-  ///     "steps_to_reproduce": "1. Open app\n2. Click Add Transaction\n3. Enter amount > 1000\n4. Click Save",
-  ///     "expected_behavior": "Transaction should be saved successfully",
-  ///     "actual_behavior": "App crashes and closes",
-  ///     "severity": "high",
-  ///     "category": "crash",
-  ///     "user_email": "user@example.com",
-  ///     "user_name": "Jane Doe",
-  ///     "device_info": {
-  ///       "platform": "android",
-  ///       "os_version": "Android 13",
-  ///       "app_version": "1.0.0",
-  ///       "device_model": "Samsung Galaxy S23",
-  ///       "locale": "en_US",
-  ///       "timezone": "Asia/Jakarta"
-  ///     },
-  ///     "status": "reported",
-  ///     "created_at": "2025-01-15T10:30:00Z",
-  ///     "updated_at": "2025-01-15T10:30:00Z",
-  ///     "attachments": [],
-  ///     "metadata": {
-  ///       "crash_stack_trace": "...",
-  ///       "memory_usage": "256MB"
-  ///     }
-  ///   },
-  ///   "meta": {
-  ///     "timestamp": "2025-01-15T10:30:00Z",
-  ///     "version": "v1"
-  ///   }
-  /// }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   Future<ApiResponse<BugReportModel>> submitBugReport(
     BugReportModel bugReport,
   ) async {
@@ -213,7 +213,7 @@ class FeedbackApiService {
     }
   }
 
-  /// Get current device information
+  
   Future<DeviceInfo> getCurrentDeviceInfo() async {
     final packageInfo = await PackageInfo.fromPlatform();
     
@@ -251,25 +251,25 @@ class FeedbackApiService {
     }
   }
 
-  /// Test backend connectivity
-  /// 
-  /// Request Example:
-  /// GET /health
-  /// 
-  /// Expected Response:
-  /// {
-  ///   "success": true,
-  ///   "message": "Service is healthy",
-  ///   "data": {
-  ///     "status": "ok",
-  ///     "timestamp": "2025-01-15T10:30:00Z",
-  ///     "version": "v1"
-  ///   },
-  ///   "meta": {
-  ///     "timestamp": "2025-01-15T10:30:00Z",
-  ///     "version": "v1"
-  ///   }
-  /// }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   Future<ApiResponse<Map<String, dynamic>>> testConnection() async {
     try {
       final response = await _dio.get('/health');
@@ -300,7 +300,7 @@ class FeedbackApiService {
   }
 
 
-  /// Dispose resources
+  
   void dispose() {
     _dio.close();
   }

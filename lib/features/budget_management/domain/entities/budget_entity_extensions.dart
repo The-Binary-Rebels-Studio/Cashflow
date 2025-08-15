@@ -35,7 +35,7 @@ extension CategoryEntityLocalization on CategoryEntity {
   String localizedName(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     
-    // Map English category names to localized keys
+    
     switch (name.toLowerCase()) {
       case 'food & dining':
         return localizations.categoryFoodDining;
@@ -66,7 +66,7 @@ extension CategoryEntityLocalization on CategoryEntity {
       case 'other income':
         return localizations.categoryOtherIncome;
       default:
-        // Fallback to original name if no localization found
+        
         return name;
     }
   }

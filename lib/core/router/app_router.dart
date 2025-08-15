@@ -16,30 +16,30 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     redirect: (context, state) async {
-      // Check if we're already on the right path to avoid infinite redirects
+      
       final isOnOnboarding = state.fullPath == '/onboarding';
       
-      // Check onboarding status
+      
       final getOnboardingStatus = getIt<GetOnboardingStatus>();
       final status = await getOnboardingStatus();
       final isOnboardingCompleted = status.isCompleted;
       
-      // If onboarding is not completed and user is not on onboarding page
+      
       if (!isOnboardingCompleted && !isOnOnboarding) {
         return '/onboarding';
       }
       
-      // If onboarding is completed and user is on onboarding page
+      
       if (isOnboardingCompleted && isOnOnboarding) {
         return '/main';
       }
       
-      // If user is on root path, redirect based on onboarding status
+      
       if (state.fullPath == '/') {
         return isOnboardingCompleted ? '/main' : '/onboarding';
       }
       
-      // No redirect needed
+      
       return null;
     },
     routes: [

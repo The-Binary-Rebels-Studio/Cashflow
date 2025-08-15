@@ -3,15 +3,15 @@ import 'package:yandex_mobileads/mobile_ads.dart';
 import '../../core/di/injection.dart';
 import '../../core/services/ads_service.dart';
 
-/// Adaptive Inline Banner Ad Widget - follows official Yandex example pattern
+
 class BannerAdWidget extends StatefulWidget {
-  final double? height; // Optional, adaptive ads determine their own height
+  final double? height; 
   final EdgeInsets margin;
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
   final VoidCallback? onAdLoaded;
   final VoidCallback? onAdFailed;
-  final int maxHeight; // Maximum height for adaptive banner
+  final int maxHeight; 
 
   const BannerAdWidget({
     super.key,
@@ -33,20 +33,20 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isLoading = false;
   bool _hasError = false;
-  bool _isBannerAlreadyCreated = false; // Following Yandex example naming
+  bool _isBannerAlreadyCreated = false; 
   double _actualHeight = 60;
 
   @override
   void initState() {
     super.initState();
     _adsService = getIt<AdsService>();
-    // Don't load automatically, wait for proper context
+    
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Load ad once when dependencies are ready
+    
     if (!_isBannerAlreadyCreated && !_isLoading && _adsService.isInitialized) {
       _loadBanner();
     }
@@ -67,13 +67,13 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     try {
       final windowSize = MediaQuery.of(context).size;
       
-      // Create adaptive inline banner size following Yandex example
+      
       final adSize = BannerAdSize.inline(
         width: windowSize.width.toInt(),
         maxHeight: widget.maxHeight,
       );
       
-      // Get calculated banner size first
+      
       final calculatedBannerSize = await adSize.getCalculatedBannerAdSize();
       if (mounted) {
         setState(() {
@@ -81,7 +81,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         });
       }
       
-      // Create banner following Yandex example pattern
+      
       _bannerAd = _createBanner(adSize);
       
       if (mounted) {
@@ -126,16 +126,16 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         }
       },
       onAdClicked: () {
-        // Ad clicked
+        
       },
       onLeftApplication: () {
-        // User left app from ad
+        
       },
       onReturnedToApplication: () {
-        // User returned to app
+        
       },
       onImpression: (data) {
-        // Ad impression recorded
+        
       },
       onAdClose: () {
         if (mounted) {
@@ -153,14 +153,14 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Use actual ad height if available, otherwise use provided height or default
+    
     final containerHeight = _isLoading || _hasError 
         ? (widget.height ?? 60) 
         : _actualHeight;
     
     return Container(
       height: containerHeight,
-      width: double.infinity, // Use full width for adaptive banner
+      width: double.infinity, 
       margin: widget.margin,
       decoration: BoxDecoration(
         color: widget.backgroundColor ?? Colors.grey[50],
@@ -206,7 +206,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       );
     }
 
-    // Following Yandex example - return AdWidget when banner is created
+    
     return AdWidget(bannerAd: _bannerAd!);
   }
 }

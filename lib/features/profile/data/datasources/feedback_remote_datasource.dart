@@ -4,19 +4,18 @@ import '../../../../core/models/api_response.dart';
 import '../../../../core/models/suggestion_model.dart';
 import '../../../../core/models/bug_report_model.dart';
 
-/// Remote data source for feedback operations
-/// Handles communication with the backend API
+
 abstract class FeedbackRemoteDataSource {
-  /// Submit a feature suggestion to the backend
+  
   Future<ApiResponse<SuggestionModel>> submitSuggestion(SuggestionModel suggestion);
   
-  /// Submit a bug report to the backend
+  
   Future<ApiResponse<BugReportModel>> submitBugReport(BugReportModel bugReport);
   
-  /// Test backend connectivity
+  
   Future<ApiResponse<Map<String, dynamic>>> testConnection();
   
-  /// Get current device information
+  
   Future<DeviceInfo> getCurrentDeviceInfo();
 }
 
@@ -83,7 +82,7 @@ class FeedbackRemoteDataSourceImpl implements FeedbackRemoteDataSource {
     try {
       return await _apiService.getCurrentDeviceInfo();
     } catch (e) {
-      // Return a fallback device info if unable to get actual info
+      
       return const DeviceInfo(
         platform: 'unknown',
         osVersion: 'unknown',

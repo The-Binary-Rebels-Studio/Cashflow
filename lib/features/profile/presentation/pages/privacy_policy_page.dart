@@ -14,7 +14,7 @@ class PrivacyPolicyPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section with Back Button
+              
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -39,7 +39,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
               ),
 
-              // Hero Section
+              
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16.0),
                 padding: const EdgeInsets.all(24.0),
@@ -86,7 +86,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Key Points Section
+              
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -100,7 +100,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // Key benefit cards
+                    
                     Row(
                       children: [
                         Expanded(
@@ -152,7 +152,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Detailed Information
+              
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -203,7 +203,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Contact Section
+              
               Container(
                 margin: const EdgeInsets.all(16.0),
                 padding: const EdgeInsets.all(20.0),

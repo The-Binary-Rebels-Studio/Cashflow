@@ -36,7 +36,7 @@ class _LocaleSelectionModalState extends State<LocaleSelectionModal> {
       ),
       child: Column(
         children: [
-          // Handle bar
+          
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -47,7 +47,7 @@ class _LocaleSelectionModalState extends State<LocaleSelectionModal> {
             ),
           ),
           
-          // Header
+          
           Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -74,7 +74,7 @@ class _LocaleSelectionModalState extends State<LocaleSelectionModal> {
             ),
           ),
           
-          // Locale list
+          
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -123,7 +123,7 @@ class _LocaleSelectionModalState extends State<LocaleSelectionModal> {
         ),
         child: Row(
           children: [
-            // Flag container
+            
             Container(
               width: 48,
               height: 48,
@@ -141,7 +141,7 @@ class _LocaleSelectionModalState extends State<LocaleSelectionModal> {
             
             const SizedBox(width: 16),
             
-            // Language info
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +166,7 @@ class _LocaleSelectionModalState extends State<LocaleSelectionModal> {
               ),
             ),
             
-            // Selection indicator
+            
             AnimatedOpacity(
               duration: const Duration(milliseconds: 200),
               opacity: isSelected ? 1.0 : 0.0,

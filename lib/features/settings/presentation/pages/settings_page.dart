@@ -552,7 +552,7 @@ class _DangerZoneSection extends StatelessWidget {
   void _showClearDataDialog(BuildContext context) async {
     final dataDeletionService = GetIt.instance<DataDeletionService>();
     
-    // Get data statistics for confirmation
+    
     final stats = await dataDeletionService.getDataStatistics();
     final hasData = await dataDeletionService.hasUserData();
     
@@ -661,9 +661,9 @@ class _DangerZoneSection extends StatelessWidget {
   }
 
   void _performDataDeletion(BuildContext context) async {
-    Navigator.of(context).pop(); // Close dialog
+    Navigator.of(context).pop(); 
     
-    // Show loading indicator
+    
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -683,7 +683,7 @@ class _DangerZoneSection extends StatelessWidget {
       final dataDeletionService = GetIt.instance<DataDeletionService>();
       final success = await dataDeletionService.clearAllData();
       
-      Navigator.of(context).pop(); // Close loading dialog
+      Navigator.of(context).pop(); 
       
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -715,7 +715,7 @@ class _DangerZoneSection extends StatelessWidget {
         );
       }
     } catch (e) {
-      Navigator.of(context).pop(); // Close loading dialog if still open
+      Navigator.of(context).pop(); 
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

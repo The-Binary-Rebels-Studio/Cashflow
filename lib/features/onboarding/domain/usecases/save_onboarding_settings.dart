@@ -11,10 +11,10 @@ class SaveOnboardingSettings {
   SaveOnboardingSettings(this._onboardingRepository, this._changeLocale);
 
   Future<void> call(OnboardingSettings settings) async {
-    // Complete onboarding first
+    
     await _onboardingRepository.completeOnboarding();
     
-    // Save locale and apply it immediately
+    
     await _changeLocale(settings.selectedLocale.locale);
   }
 }

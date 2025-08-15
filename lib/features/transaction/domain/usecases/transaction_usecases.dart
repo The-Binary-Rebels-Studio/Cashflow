@@ -112,7 +112,7 @@ class TransactionUsecases {
 
   Future<Result<void>> addTransaction(TransactionEntity transaction) async {
     try {
-      // Validation
+      
       final validationResult = _validateTransaction(transaction);
       if (validationResult.isFailure) {
         return failure(validationResult.failure!);
@@ -131,7 +131,7 @@ class TransactionUsecases {
 
   Future<Result<void>> updateTransaction(TransactionEntity transaction) async {
     try {
-      // Validation
+      
       final validationResult = _validateTransaction(transaction);
       if (validationResult.isFailure) {
         return failure(validationResult.failure!);
@@ -231,17 +231,17 @@ class TransactionUsecases {
     }
   }
 
-  /// Validates transaction entity
+  
   Result<void> _validateTransaction(TransactionEntity transaction) {
     
     final Map<String, List<String>> fieldErrors = {};
     
-    // Description is optional - only validate if provided
+    
     if (transaction.description != null && transaction.description!.trim().isEmpty) {
       fieldErrors['description'] = ['Transaction description cannot be empty if provided'];
     }
     
-    // Amount validation: income must be positive, expense must be negative, and not zero
+    
     if (transaction.amount == 0) {
       fieldErrors['amount'] = ['Transaction amount cannot be zero'];
     } else if (transaction.type == TransactionType.income && transaction.amount <= 0) {

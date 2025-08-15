@@ -5,8 +5,7 @@ import '../../../../core/models/bug_report_model.dart';
 import '../../domain/repositories/feedback_repository.dart';
 import '../datasources/feedback_remote_datasource.dart';
 
-/// Implementation of FeedbackRepository
-/// Handles business logic and delegates data operations to datasources
+
 @LazySingleton(as: FeedbackRepository)
 class FeedbackRepositoryImpl implements FeedbackRepository {
   final FeedbackRemoteDataSource _remoteDataSource;
@@ -18,7 +17,7 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
     SuggestionModel suggestion,
   ) async {
     try {
-      // Validate suggestion data before submission
+      
       if (suggestion.title.trim().isEmpty) {
         return ApiResponse<SuggestionModel>(
           success: false,
@@ -103,7 +102,7 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
     BugReportModel bugReport,
   ) async {
     try {
-      // Validate bug report data before submission
+      
       if (bugReport.title.trim().isEmpty) {
         return ApiResponse<BugReportModel>(
           success: false,
@@ -181,7 +180,7 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
         );
       }
 
-      // Email validation removed since userEmail field no longer exists
+      
 
       return await _remoteDataSource.submitBugReport(bugReport);
     } catch (e) {
@@ -217,7 +216,7 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
     try {
       return await _remoteDataSource.getCurrentDeviceInfo();
     } catch (e) {
-      // Return fallback device info if unable to get actual info
+      
       return const DeviceInfo(
         platform: 'unknown',
         osVersion: 'unknown',

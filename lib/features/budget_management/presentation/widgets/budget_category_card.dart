@@ -26,7 +26,7 @@ class BudgetCategoryCard extends StatelessWidget {
       final transactionBloc = context.read<TransactionBloc>();
       double totalSpent = 0;
 
-      // Calculate spent amount for each budget in this category
+      
       for (final budget in budgets) {
         final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
         final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
@@ -73,7 +73,7 @@ class BudgetCategoryCard extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context, double totalBudget, double totalSpent, double remaining, double spentPercentage) {
-    // Safe parsing of category color
+    
     Color categoryColor;
     try {
       categoryColor = Color(int.parse(category.colorValue));
@@ -109,10 +109,10 @@ class BudgetCategoryCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Row
+              
               Row(
                 children: [
-                  // Category Icon
+                  
                   Container(
                     width: 56,
                     height: 56,
@@ -143,7 +143,7 @@ class BudgetCategoryCard extends StatelessWidget {
                   
                   const SizedBox(width: 16),
                   
-                  // Category Info
+                  
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +188,7 @@ class BudgetCategoryCard extends StatelessWidget {
                     ),
                   ),
                   
-                  // Total Amount
+                  
                   BlocBuilder<CurrencyBloc, CurrencyModel>(
                     builder: (context, currency) {
                       return Column(
@@ -222,7 +222,7 @@ class BudgetCategoryCard extends StatelessWidget {
               if (budgets.isNotEmpty) ...[
                 const SizedBox(height: 20),
                 
-                // Progress Bar
+                
                 Row(
                   children: [
                     Expanded(
@@ -268,7 +268,7 @@ class BudgetCategoryCard extends StatelessWidget {
                 
                 const SizedBox(height: 16),
                 
-                // Spent vs Remaining
+                
                 BlocBuilder<CurrencyBloc, CurrencyModel>(
                   builder: (context, currency) {
                     return Row(
@@ -295,7 +295,7 @@ class BudgetCategoryCard extends StatelessWidget {
                 
                 const SizedBox(height: 16),
                 
-                // Budget Plans List
+                
                 ...budgets.take(3).map((budget) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Row(

@@ -129,17 +129,17 @@ class TransactionLocalDatasourceImpl implements TransactionLocalDatasource {
 
   @override
   Future<double> getTotalByBudgetAndDateRange(String budgetId, DateTime startDate, DateTime endDate) async {
-    // Use date-only comparison to avoid time precision issues
+    
     final startDateString = DateTime(startDate.year, startDate.month, startDate.day).toIso8601String();
     final endDateString = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59).toIso8601String();
     
     
-    // Debug: Show all transactions for this category first
+    
     final allTransactions = await _database.rawQuery(
       'SELECT title, amount, date FROM transactions WHERE budget_id = ? ORDER BY date DESC',
       [budgetId],
     );
-    for (final tx in allTransactions.take(5)) { // Show max 5 recent transactions
+    for (final tx in allTransactions.take(5)) { 
     }
     
     final List<Map<String, dynamic>> result = await _database.rawQuery(

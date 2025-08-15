@@ -25,16 +25,16 @@ class BudgetPlanItem extends StatelessWidget {
     required this.onDelete,
   });
 
-  // Calculate actual spent amount for this budget using Result pattern
+  
   Future<double> _calculateSpentAmount(BuildContext context) async {
     try {
       final transactionBloc = context.read<TransactionBloc>();
       
-      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      
       final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
       final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
       
-      // Get total spent using Result pattern for budget-specific period
+      
       final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
         budget.id,
         periodStart,
@@ -43,19 +43,19 @@ class BudgetPlanItem extends StatelessWidget {
       
       return result.when(
         success: (totalSpent) {
-          // Debug: Print calculation details
           
-          // Return absolute value since expenses are stored as negative
+          
+          
           return totalSpent.abs();
         },
         failure: (failure) {
           
-          // Return 0 as fallback for any error
+          
           return 0.0;
         },
       );
     } catch (e) {
-      // If unexpected error, return 0 as fallback
+      
       return 0.0;
     }
   }
@@ -63,10 +63,10 @@ class BudgetPlanItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<double>(
-      key: Key('budget_${budget.id}_${DateTime.now().millisecondsSinceEpoch}'), // Force refresh
+      key: Key('budget_${budget.id}_${DateTime.now().millisecondsSinceEpoch}'), 
       future: _calculateSpentAmount(context),
       builder: (context, snapshot) {
-        // Show loading state while calculating
+        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Card(
             elevation: 0,
@@ -106,7 +106,7 @@ class BudgetPlanItem extends StatelessWidget {
         final remaining = budget.amount - totalSpent;
         final spentPercentage = budget.amount > 0 ? (totalSpent / budget.amount) : 0.0;
     
-    // Safe parsing of category color
+    
     Color categoryColor;
     if (category != null) {
       try {
@@ -136,11 +136,11 @@ class BudgetPlanItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row
+            
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Plan Icon
+                
                 Container(
                   width: 48,
                   height: 48,
@@ -173,7 +173,7 @@ class BudgetPlanItem extends StatelessWidget {
                 
                 const SizedBox(width: 16),
                 
-                // Plan Info
+                
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +212,7 @@ class BudgetPlanItem extends StatelessWidget {
                   ),
                 ),
                 
-                // Amount & Menu
+                
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -277,7 +277,7 @@ class BudgetPlanItem extends StatelessWidget {
             
             const SizedBox(height: 20),
             
-            // Progress Section
+            
             Row(
               children: [
                 Expanded(
@@ -341,7 +341,7 @@ class BudgetPlanItem extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            // Stats Row
+            
             BlocBuilder<CurrencyBloc, CurrencyModel>(
               builder: (context, currency) {
                 return Row(
@@ -368,7 +368,7 @@ class BudgetPlanItem extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            // Tags Row
+            
             Row(
               children: [
                 _InfoTag(
@@ -393,7 +393,7 @@ class BudgetPlanItem extends StatelessWidget {
   }
 
 
-  /// Format period display to show current period for recurring budget
+  
   String _formatPeriodDisplay(BudgetEntity budget) {
     final budgetModel = BudgetModel.fromEntity(budget);
     final currentPeriodStart = budgetModel.getCurrentPeriodStart();

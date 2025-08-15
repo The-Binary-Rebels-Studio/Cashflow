@@ -73,14 +73,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     try {
       emit(OnboardingLoading());
       
-      // Save currency
+      
       final currencyBloc = GetIt.instance<CurrencyBloc>();
       currencyBloc.add(CurrencySelected(currency: event.settings.selectedCurrency));
       
-      // Save locale
+      
       await _changeLocale(event.settings.selectedLocale.locale);
       
-      // Complete onboarding
+      
       await _completeOnboarding();
       
       emit(OnboardingCompleted());

@@ -69,9 +69,9 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               const SizedBox(height: 24),
-              // Adaptive banner ad after income/expense stats
+              
               const BannerAdWidget(
-                maxHeight: 120, // Lebih compact
+                maxHeight: 120, 
                 margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
@@ -102,9 +102,9 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 24),
               const SpendingChart(),
               const SizedBox(height: 24),
-              // Banner ad between chart and transactions
+              
               const BannerAdWidget(
-                maxHeight: 90, // Lebih compact
+                maxHeight: 90, 
                 margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),

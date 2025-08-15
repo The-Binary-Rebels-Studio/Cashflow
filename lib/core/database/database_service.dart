@@ -56,7 +56,7 @@ class DatabaseService {
       )
     ''');
     
-    // Create index for better query performance
+    
     await db.execute('CREATE INDEX idx_categories_type ON categories(type)');
     await db.execute('CREATE INDEX idx_categories_active ON categories(is_active)');
     
@@ -77,7 +77,7 @@ class DatabaseService {
       )
     ''');
     
-    // Create indexes for budgets
+    
     await db.execute('CREATE INDEX idx_budgets_category ON budgets(category_id)');
     await db.execute('CREATE INDEX idx_budgets_period ON budgets(period)');
     await db.execute('CREATE INDEX idx_budgets_active ON budgets(is_active)');
@@ -98,7 +98,7 @@ class DatabaseService {
       )
     ''');
     
-    // Create indexes for transactions
+    
     await db.execute('CREATE INDEX idx_transactions_budget ON transactions(budget_id)');
     await db.execute('CREATE INDEX idx_transactions_type ON transactions(type)');
     await db.execute('CREATE INDEX idx_transactions_date ON transactions(date)');
@@ -107,8 +107,8 @@ class DatabaseService {
 
   static Future<void> _migrateToVersion(Database db, int version) async {
     switch (version) {
-      // Migration logic will be added here when app is released
-      // For now, all tables are created in onCreate
+      
+      
       default:
         break;
     }

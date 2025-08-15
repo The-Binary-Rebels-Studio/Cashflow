@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Reusable Native Ad Widget - Placeholder for now  
-/// Will use R-M-16723402-2 when Yandex Native Ad API is fixed
+
 class NativeAdWidget extends StatelessWidget {
   final double height;
   final EdgeInsets margin;
@@ -22,7 +21,7 @@ class NativeAdWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Temporarily show placeholder until native ad API is fixed
+    
     return Container(
       height: height,
       margin: margin,

@@ -191,7 +191,7 @@ extension on RecentTransactions {
       currency.symbol,
       context,
       showSign: true,
-      useHomeFormat: false, // Compact format untuk recent transactions
+      useHomeFormat: false, 
     );
     
     return TransactionItem(

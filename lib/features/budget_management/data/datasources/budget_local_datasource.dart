@@ -39,8 +39,8 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
   @override
   Future<List<BudgetModel>> getActiveBudgets() async {
-    // For recurring budgets, we only need to check isActive flag
-    // Budget periods are calculated dynamically based on current date
+    
+    
     final List<Map<String, dynamic>> maps = await _database.query(
       _tableName,
       where: 'is_active = ?',
@@ -48,7 +48,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
       orderBy: 'created_at DESC',
     );
 
-    // Debug: Print active budgets found
+    
  
 
     return List.generate(maps.length, (i) => BudgetModel.fromMap(maps[i]));

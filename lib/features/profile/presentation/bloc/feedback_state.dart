@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../../core/models/bug_report_model.dart';
 
-/// Base class for all feedback states
+
 abstract class FeedbackState extends Equatable {
   const FeedbackState();
 
@@ -9,12 +9,12 @@ abstract class FeedbackState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Initial state of the feedback feature
+
 class FeedbackInitial extends FeedbackState {
   const FeedbackInitial();
 }
 
-/// State when a feedback operation is in progress
+
 class FeedbackLoading extends FeedbackState {
   final String? message;
 
@@ -24,7 +24,7 @@ class FeedbackLoading extends FeedbackState {
   List<Object?> get props => [message];
 }
 
-/// State when suggestion submission is successful
+
 class FeedbackSuggestionSuccess extends FeedbackState {
   final String message;
 
@@ -36,7 +36,7 @@ class FeedbackSuggestionSuccess extends FeedbackState {
   List<Object?> get props => [message];
 }
 
-/// State when bug report submission is successful
+
 class FeedbackBugReportSuccess extends FeedbackState {
   final String message;
 
@@ -48,7 +48,7 @@ class FeedbackBugReportSuccess extends FeedbackState {
   List<Object?> get props => [message];
 }
 
-/// State when connection test is successful
+
 class FeedbackConnectionSuccess extends FeedbackState {
   final Map<String, dynamic> connectionData;
   final String message;
@@ -62,7 +62,7 @@ class FeedbackConnectionSuccess extends FeedbackState {
   List<Object?> get props => [connectionData, message];
 }
 
-/// State when device info is retrieved successfully
+
 class FeedbackDeviceInfoSuccess extends FeedbackState {
   final DeviceInfo deviceInfo;
 
@@ -72,7 +72,7 @@ class FeedbackDeviceInfoSuccess extends FeedbackState {
   List<Object?> get props => [deviceInfo];
 }
 
-/// State when a feedback operation fails
+
 class FeedbackError extends FeedbackState {
   final String message;
   final String? errorCode;
@@ -91,7 +91,7 @@ class FeedbackError extends FeedbackState {
       message.toLowerCase().contains('network') ||
       message.toLowerCase().contains('connection');
 
-  /// Get user-friendly error message
+  
   String get userMessage {
     if (isNetworkError) {
       return 'Please check your internet connection and try again.';

@@ -36,7 +36,7 @@ class _TransactionPageState extends State<TransactionPage>
   void initState() {
     super.initState();
     _loadBudgets();
-    // Load transactions when page is first created
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TransactionBloc>().add(const TransactionDataRequested());
     });
@@ -51,7 +51,7 @@ class _TransactionPageState extends State<TransactionPage>
       l10n.filterThisWeek,
       l10n.filterThisMonth,
       l10n.filterThisYear,
-      l10n.filterSpecificDate, // Add specific date option
+      l10n.filterSpecificDate, 
     ];
     _sortOptions = [l10n.sortByDate, l10n.sortByAmount, l10n.sortByCategory];
     _budgets = [l10n.all];
@@ -69,15 +69,15 @@ class _TransactionPageState extends State<TransactionPage>
         _budgets = [l10n.all, ...budgets.map((budget) => budget.name)];
       });
     } catch (e) {
-      // Budget loading failed, handle gracefully
+      
     }
   }
 
-  // Public method to refresh transactions from external call (like tab change)
+  
   void refreshTransactions() {
-    // Refresh transaction data via bloc
+    
     context.read<TransactionBloc>().add(const TransactionDataRequested());
-    // Also refresh budget data in case it changed
+    
     _loadBudgets();
   }
 
@@ -99,7 +99,7 @@ class _TransactionPageState extends State<TransactionPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Required by AutomaticKeepAliveClientMixin
+    super.build(context); 
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -158,7 +158,7 @@ class _TransactionPageState extends State<TransactionPage>
                 });
               },
               onBudgetsRefreshed: () {
-                // Refresh budget list when BudgetSelectorSheet detects changes
+                
                 _loadBudgets();
               },
             ),

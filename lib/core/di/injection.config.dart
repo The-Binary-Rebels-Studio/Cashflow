@@ -1,14 +1,6 @@
-// dart format width=80
-// GENERATED CODE - DO NOT MODIFY BY HAND
 
-// **************************************************************************
-// InjectableConfigGenerator
-// **************************************************************************
 
-// ignore_for_file: type=lint
-// coverage:ignore-file
 
-// ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:cashflow/core/database/database_service.dart' as _i70;
 import 'package:cashflow/core/di/injection_module.dart' as _i104;
 import 'package:cashflow/core/localization/locale_bloc.dart' as _i581;
@@ -87,7 +79,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:sqflite/sqflite.dart' as _i779;
 
 extension GetItInjectableX on _i174.GetIt {
-  // initializes the registration of main-scope dependencies inside of GetIt
+  
   Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,

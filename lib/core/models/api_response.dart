@@ -1,4 +1,4 @@
-/// Generic API response model following REST API best practices
+
 class ApiResponse<T> {
   final bool success;
   final String message;
@@ -44,7 +44,7 @@ class ApiResponse<T> {
   }
 }
 
-/// API error model for standardized error handling
+
 class ApiError {
   final String code;
   final String message;
@@ -81,7 +81,7 @@ class ApiError {
   }
 }
 
-/// Validation error for field-specific errors
+
 class ValidationError {
   final String field;
   final String message;
@@ -110,7 +110,7 @@ class ValidationError {
   }
 }
 
-/// API metadata for pagination and additional info
+
 class ApiMeta {
   final int? total;
   final int? perPage;

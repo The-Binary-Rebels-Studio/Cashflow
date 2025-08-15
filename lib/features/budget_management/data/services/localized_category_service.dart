@@ -16,7 +16,7 @@ class LocalizedCategoryService {
       final nameKey = categoryData['nameKey'] as String;
       final descKey = categoryData['descriptionKey'] as String;
       
-      // Get localized text based on key
+      
       String name = _getLocalizedText(localizations, nameKey);
       String description = _getLocalizedText(localizations, descKey);
       
@@ -42,7 +42,7 @@ class LocalizedCategoryService {
       final nameKey = categoryData['nameKey'] as String;
       final descKey = categoryData['descriptionKey'] as String;
       
-      // Get localized text based on key
+      
       String name = _getLocalizedText(localizations, nameKey);
       String description = _getLocalizedText(localizations, descKey);
       
@@ -62,7 +62,7 @@ class LocalizedCategoryService {
   
   String _getLocalizedText(AppLocalizations localizations, String key) {
     switch (key) {
-      // Expense categories
+      
       case 'categoryFoodDining': return localizations.categoryFoodDining;
       case 'categoryFoodDiningDesc': return localizations.categoryFoodDiningDesc;
       case 'categoryTransportation': return localizations.categoryTransportation;
@@ -80,7 +80,7 @@ class LocalizedCategoryService {
       case 'categoryTravel': return localizations.categoryTravel;
       case 'categoryTravelDesc': return localizations.categoryTravelDesc;
       
-      // Income categories
+      
       case 'categorySalary': return localizations.categorySalary;
       case 'categorySalaryDesc': return localizations.categorySalaryDesc;
       case 'categoryFreelance': return localizations.categoryFreelance;
@@ -94,7 +94,7 @@ class LocalizedCategoryService {
       case 'categoryOtherIncome': return localizations.categoryOtherIncome;
       case 'categoryOtherIncomeDesc': return localizations.categoryOtherIncomeDesc;
       
-      default: return key; // Fallback to key if not found
+      default: return key; 
     }
   }
   

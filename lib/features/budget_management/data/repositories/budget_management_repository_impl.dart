@@ -18,7 +18,7 @@ class BudgetManagementRepositoryImpl implements BudgetManagementRepository {
   }) : _budgetDataSource = budgetDataSource,
        _categoryDataSource = categoryDataSource;
 
-  // Category operations
+  
   @override
   Future<List<CategoryEntity>> getAllCategories() async {
     final models = await _categoryDataSource.getAllCategories();
@@ -57,7 +57,7 @@ class BudgetManagementRepositoryImpl implements BudgetManagementRepository {
   Future<void> initializePredefinedCategories() => 
       _categoryDataSource.initializePredefinedCategories();
 
-  // Budget operations
+  
   @override
   Future<List<BudgetEntity>> getAllBudgets() async {
     final models = await _budgetDataSource.getAllBudgets();
@@ -98,7 +98,7 @@ class BudgetManagementRepositoryImpl implements BudgetManagementRepository {
   Future<void> deleteBudget(String id) => 
       _budgetDataSource.deleteBudget(id);
 
-  // Combined operations
+  
   @override
   Future<Map<CategoryEntity, List<BudgetEntity>>> getBudgetsGroupedByCategory() async {
     final categories = await _categoryDataSource.getAllCategories();

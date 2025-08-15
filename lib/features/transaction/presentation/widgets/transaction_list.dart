@@ -72,12 +72,12 @@ class _TransactionListState extends State<TransactionList> {
     final l10n = AppLocalizations.of(context)!;
     if (widget.selectedBudget == l10n.all) return transactions;
     
-    // Safely find the selected budget
+    
     final selectedBudget = _budgets.where((budget) => budget.name == widget.selectedBudget).firstOrNull;
     
     if (selectedBudget == null) {
-      // If no budget matches the selected name, return all transactions
-      // This can happen during loading or if budget data is not yet available
+      
+      
       return transactions;
     }
     
@@ -105,7 +105,7 @@ class _TransactionListState extends State<TransactionList> {
     final now = DateTime.now();
     final l10n = AppLocalizations.of(context)!;
     
-    // Check if it's a specific date filter
+    
     if (widget.specificDate != null) {
       final specificDate = DateTime(widget.specificDate!.year, widget.specificDate!.month, widget.specificDate!.day);
       final txDate = DateTime(transactionDate.year, transactionDate.month, transactionDate.day);
@@ -139,7 +139,7 @@ class _TransactionListState extends State<TransactionList> {
     } else if (widget.sortBy == l10n.sortByCategory) {
       sortedTransactions.sort((a, b) => a.budget.name.compareTo(b.budget.name));
     } else {
-      // Default to date sorting
+      
       sortedTransactions.sort((a, b) => b.transaction.date.compareTo(a.transaction.date));
     }
 
@@ -176,14 +176,14 @@ class _TransactionListState extends State<TransactionList> {
   }
 
   int _calculateItemCount(int groupCount) {
-    // Always add 1 for banner ad at index 0, then add more banner ads every 10 items
-    if (groupCount == 0) return 0; // No items at all
+    
+    if (groupCount == 0) return 0; 
     final additionalAdCount = groupCount >= 10 ? (groupCount / 10).floor() : 0;
-    return 1 + groupCount + additionalAdCount; // 1 (header banner) + groups + additional ads
+    return 1 + groupCount + additionalAdCount; 
   }
 
   Widget _buildListItem(List<TransactionGroup> groups, int index) {
-    // Index 0 = Header banner ad
+    
     if (index == 0) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
@@ -195,8 +195,8 @@ class _TransactionListState extends State<TransactionList> {
       );
     }
 
-    // Calculate additional banner ad positions (every 11 items after header)
-    final adjustedIndex = index - 1; // Remove header offset
+    
+    final adjustedIndex = index - 1; 
     final adPositions = <int>{};
     
     if (groups.length >= 10) {
@@ -216,7 +216,7 @@ class _TransactionListState extends State<TransactionList> {
       );
     }
 
-    // Calculate actual group index
+    
     final adsBeforeThisIndex = adPositions.where((pos) => pos < adjustedIndex).length;
     final groupIndex = adjustedIndex - adsBeforeThisIndex;
     
@@ -354,7 +354,7 @@ class _TransactionGroup extends StatelessWidget {
       currency.symbol,
       context,
       showSign: true,
-      useHomeFormat: false, // Compact format untuk day total
+      useHomeFormat: false, 
     );
   }
 
@@ -371,19 +371,19 @@ class _TransactionTile extends StatelessWidget {
 
   IconData _getTransactionIcon() {
     if (transaction.transaction.type.value == 'income') {
-      return Icons.attach_money; // Dollar icon for income
+      return Icons.attach_money; 
     }
     
-    // For expense transactions, use shopping cart as default
-    // Could be enhanced later to fetch actual category icons
-    return Icons.shopping_cart; // Default expense icon
+    
+    
+    return Icons.shopping_cart; 
   }
 
   Color _getTransactionIconColor() {
-    // Always use the transaction type for background color
+    
     return transaction.transaction.type.value == 'income' 
-        ? Colors.green    // Green for income
-        : Colors.red;     // Red for expenses
+        ? Colors.green    
+        : Colors.red;     
   }
 
   @override
@@ -395,7 +395,7 @@ class _TransactionTile extends StatelessWidget {
       currency.symbol,
       context,
       showSign: true,
-      useHomeFormat: false, // Compact format untuk transaction tile
+      useHomeFormat: false, 
     );
     final transactionIcon = _getTransactionIcon();
     final iconColor = _getTransactionIconColor();

@@ -2,7 +2,7 @@ import 'package:cashflow/features/budget_management/domain/entities/budget_entit
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 
 abstract class BudgetManagementRepository {
-  // Category operations
+  
   Future<List<CategoryEntity>> getAllCategories();
   Future<List<CategoryEntity>> getCategoriesByType(CategoryType type);
   Future<CategoryEntity?> getCategoryById(String id);
@@ -11,7 +11,7 @@ abstract class BudgetManagementRepository {
   Future<void> deleteCategory(String id);
   Future<void> initializePredefinedCategories();
 
-  // Budget operations
+  
   Future<List<BudgetEntity>> getAllBudgets();
   Future<List<BudgetEntity>> getActiveBudgets();
   Future<BudgetEntity?> getBudgetById(String id);
@@ -20,7 +20,7 @@ abstract class BudgetManagementRepository {
   Future<void> updateBudget(BudgetEntity budget);
   Future<void> deleteBudget(String id);
 
-  // Combined operations
+  
   Future<Map<CategoryEntity, List<BudgetEntity>>> getBudgetsGroupedByCategory();
   Future<List<BudgetEntity>> getBudgetsForCategory(String categoryId);
   Future<double> getTotalBudgetForCategory(String categoryId);

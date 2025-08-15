@@ -103,7 +103,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Card
+              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -162,7 +162,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               const SizedBox(height: 32),
 
-              // Feature Title
+              
               _buildFormSection(
                 l10n.suggestionTitleRequired,
                 TextFormField(
@@ -186,7 +186,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               const SizedBox(height: 24),
 
-              // Feature Description
+              
               _buildFormSection(
                 l10n.suggestionDescription,
                 TextFormField(
@@ -214,7 +214,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               const SizedBox(height: 24),
 
-              // Use Case / Why needed
+              
               _buildFormSection(
                 l10n.suggestionUseCase,
                 TextFormField(
@@ -242,7 +242,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               const SizedBox(height: 24),
 
-              // Device Info
+              
               _buildFormSection(
                 l10n.systemInformation,
                 Container(
@@ -298,7 +298,7 @@ Generated: ${DateTime.now().toIso8601String()}''';
 
               const SizedBox(height: 40),
 
-              // Submit Button
+              
               SizedBox(
                 width: double.infinity,
                 height: 56,

@@ -56,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
       dense: true,
       onTap: () {
         Clipboard.setData(ClipboardData(text: value));
-        // Show snackbar would require context, so we'll skip it for now
+        
       },
     );
   }

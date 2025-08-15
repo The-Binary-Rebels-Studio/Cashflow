@@ -14,7 +14,7 @@ class BudgetWithCategory extends Equatable {
   @override
   List<Object> get props => [budget, category];
 
-  // Convenience getters
+  
   String get id => budget.id;
   String get name => budget.name;
   String get description => budget.description;

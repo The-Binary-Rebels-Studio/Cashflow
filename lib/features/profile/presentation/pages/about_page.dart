@@ -15,7 +15,7 @@ class AboutPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section with Back Button
+              
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -41,7 +41,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               
-              // App Hero Section
+              
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16.0),
                 padding: const EdgeInsets.all(32.0),
@@ -115,7 +115,7 @@ class AboutPage extends StatelessWidget {
               
               const SizedBox(height: 32),
               
-              // Key Features
+              
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -180,7 +180,7 @@ class AboutPage extends StatelessWidget {
               
               const SizedBox(height: 32),
               
-              // App Info
+              
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -222,7 +222,7 @@ class AboutPage extends StatelessWidget {
               
               const SizedBox(height: 32),
               
-              // Developer Section
+              
               Container(
                 margin: const EdgeInsets.all(16.0),
                 padding: const EdgeInsets.all(24.0),
@@ -279,7 +279,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               
-              // Version Info
+              
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

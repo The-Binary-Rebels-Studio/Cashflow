@@ -41,7 +41,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     emit(TransactionLoading());
     
-    // Execute all use cases and collect results
+    
     final results = await Future.wait([
       transactionUsecases.getAllTransactions(),
       transactionUsecases.getTransactionsByType(TransactionType.income),
@@ -50,7 +50,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       transactionUsecases.getTotalByType(TransactionType.expense),
     ]);
     
-    // Check if any operation failed
+    
     for (final result in results) {
       if (result.isFailure) {
         emit(TransactionError(_getErrorMessage(result.failure!)));
@@ -59,14 +59,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
     
     try {
-      // All operations succeeded, extract values
+      
       final transactions = results[0].value as List<TransactionWithBudget>;
       final incomeTransactions = results[1].value as List<TransactionWithBudget>;
       final expenseTransactions = results[2].value as List<TransactionWithBudget>;
       final totalIncome = results[3].value as double;
       final totalExpense = results[4].value as double;
       
-      final balance = totalIncome + totalExpense; // expense amounts are negative
+      final balance = totalIncome + totalExpense; 
       
       final expenseCategories = await budgetManagementRepository.getCategoriesByType(CategoryType.expense);
       final incomeCategories = await budgetManagementRepository.getCategoriesByType(CategoryType.income);
@@ -78,8 +78,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         expenseCategories: expenseCategories,
         incomeCategories: incomeCategories,
         totalIncome: totalIncome,
-        totalExpense: totalExpense.abs(), // Display as positive in UI
-        balance: balance, // This is the correct calculation: income + (negative)expense
+        totalExpense: totalExpense.abs(), 
+        balance: balance, 
       ));
     } catch (e) {
       emit(TransactionError('Failed to process transaction data: ${e.toString()}'));
@@ -120,7 +120,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         
         budgetResult.fold(
           onSuccess: (info) => budgetInfo = info,
-          onFailure: (_) => budgetInfo = null, // Ignore budget calculation errors
+          onFailure: (_) => budgetInfo = null, 
         );
       }
 
@@ -189,13 +189,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             emit(currentState.copyWith(budgetPreview: budgetInfo));
           },
           onFailure: (_) {
-            // Silently handle budget preview errors
+            
             emit(currentState.copyWith(budgetPreview: null));
           },
         );
       }
     } catch (e) {
-      // Silently handle budget preview errors
+      
     }
   }
 
@@ -216,7 +216,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (currentState is TransactionFormState) {
       emit(currentState.copyWith(
         selectedType: event.type,
-        selectedBudgetId: null, // Reset category when type changes
+        selectedBudgetId: null, 
         clearBudgetPreview: true,
       ));
     }
@@ -233,7 +233,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         clearBudgetPreview: true,
       ));
       
-      // Preview budget impact for expenses
+      
       if (currentState.selectedType == TransactionType.expense && 
           currentState.amount != null && 
           currentState.amount! > 0) {
@@ -273,7 +273,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (currentState is TransactionFormState) {
       emit(currentState.copyWith(amount: event.amount));
       
-      // Preview budget impact for expenses
+      
       if (currentState.selectedType == TransactionType.expense && 
           currentState.selectedBudgetId != null && 
           event.amount > 0) {
@@ -340,7 +340,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     add(const TransactionFormInitialized());
   }
 
-  /// Convert AppFailure to user-friendly error message
+  
   String _getErrorMessage(AppFailure failure) {
     switch (failure.runtimeType) {
       case ValidationFailure _:

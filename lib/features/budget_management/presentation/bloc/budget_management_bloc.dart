@@ -47,7 +47,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
   ) async {
     emit(BudgetManagementLoading());
     
-    // Initialize predefined categories first
+    
     final initResult = await _initializeBudgetCategories();
     
     if (initResult.isFailure) {
@@ -55,7 +55,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
       return;
     }
     
-    // Load all data
+    
     add(const BudgetManagementDataRequested());
   }
 
@@ -65,7 +65,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
   ) async {
     emit(BudgetManagementLoading());
     
-    // Execute all use cases and collect results
+    
     final results = await Future.wait([
       _getBudgetCategories(),
       _getExpenseBudgetCategories(),
@@ -76,7 +76,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
       _getBudgetSummary(),
     ]);
     
-    // Check if any operation failed
+    
     for (final result in results) {
       if (result.isFailure) {
         emit(BudgetManagementError(_getErrorMessage(result.failure!)));
@@ -84,7 +84,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
       }
     }
     
-    // All operations succeeded, extract values
+    
     final categories = results[0].value as List<CategoryEntity>;
     final expenseCategories = results[1].value as List<CategoryEntity>;
     final incomeCategories = results[2].value as List<CategoryEntity>;
@@ -121,7 +121,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
     result.fold(
       onSuccess: (_) async {
         emit(const BudgetManagementOperationSuccess('budgetCreatedSuccess'));
-        // Reload data
+        
         add(const BudgetManagementDataRequested());
       },
       onFailure: (failure) => emit(BudgetManagementError(_getErrorMessage(failure))),
@@ -139,7 +139,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
     result.fold(
       onSuccess: (_) async {
         emit(const BudgetManagementOperationSuccess('budgetUpdatedSuccess'));
-        // Reload data
+        
         add(const BudgetManagementDataRequested());
       },
       onFailure: (failure) => emit(BudgetManagementError(_getErrorMessage(failure))),
@@ -157,14 +157,14 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
     result.fold(
       onSuccess: (_) async {
         emit(const BudgetManagementOperationSuccess('budgetDeletedSuccess'));
-        // Reload data
+        
         add(const BudgetManagementDataRequested());
       },
       onFailure: (failure) => emit(BudgetManagementError(_getErrorMessage(failure))),
     );
   }
 
-  /// Convert AppFailure to user-friendly error message
+  
   String _getErrorMessage(AppFailure failure) {
     switch (failure.runtimeType) {
       case ValidationFailure _:
@@ -195,7 +195,7 @@ class BudgetManagementBloc extends Bloc<BudgetManagementEvent, BudgetManagementS
     }
   }
 
-  // Convenience getters
+  
   List<CategoryEntity> get budgetCategories {
     final currentState = state;
     if (currentState is BudgetManagementLoaded) {

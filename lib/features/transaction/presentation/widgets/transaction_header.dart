@@ -44,7 +44,7 @@ class TransactionHeader extends StatelessWidget {
     this.specificDate,
   });
 
-  // Format amount for compact display in summary cards using localized abbreviations
+  
   String _formatCompactAmount(double amount, BuildContext context) {
     final currencyBloc = GetIt.instance<CurrencyBloc>();
     final currency = currencyBloc.selectedCurrency;
@@ -54,7 +54,7 @@ class TransactionHeader extends StatelessWidget {
       currency.symbol,
       context,
       showSign: true,
-      useHomeFormat: false, // Use compact format for header
+      useHomeFormat: false, 
     );
   }
 
@@ -279,7 +279,7 @@ class TransactionHeader extends StatelessWidget {
   }
 
   void _showBudgetSelector(BuildContext context) {
-    // Store the original context that has access to BlocProvider
+    
     final parentContext = context;
     
     showModalBottomSheet(
@@ -292,7 +292,7 @@ class TransactionHeader extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: BudgetSelectorSheet(
-          parentContext: parentContext, // Pass the parent context
+          parentContext: parentContext, 
           budgets: budgets,
           selectedBudget: selectedBudget,
           onBudgetChanged: onBudgetChanged,
@@ -366,7 +366,7 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100, // Increased height to accommodate 2-line titles
+      height: 100, 
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
@@ -375,7 +375,7 @@ class _SummaryCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space evenly
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, 
         children: [
           Row(
             children: [
@@ -396,7 +396,7 @@ class _SummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          // Amount with better handling for large numbers
+          
           Flexible(
             child: FittedBox(
               fit: BoxFit.scaleDown,

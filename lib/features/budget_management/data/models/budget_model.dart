@@ -93,34 +93,34 @@ class BudgetModel extends BudgetEntity {
     );
   }
 
-  /// Check if this budget is currently active
-  /// For recurring budgets, they are always active if isActive = true
+  
+  
   bool get isCurrentlyActive {
     return isActive;
   }
 
-  /// Get the current period start date based on today's date
+  
   DateTime getCurrentPeriodStart([DateTime? referenceDate]) {
     final now = referenceDate ?? DateTime.now();
     
     DateTime result;
     switch (period) {
       case BudgetPeriod.weekly:
-        // Start of current week (Monday)
+        
         final weekday = now.weekday;
         result = DateTime(now.year, now.month, now.day).subtract(Duration(days: weekday - 1));
         break;
       case BudgetPeriod.monthly:
-        // Start of current month
+        
         result = DateTime(now.year, now.month, 1);
         break;
       case BudgetPeriod.quarterly:
-        // Start of current quarter
+        
         final quarterStartMonth = ((now.month - 1) ~/ 3) * 3 + 1;
         result = DateTime(now.year, quarterStartMonth, 1);
         break;
       case BudgetPeriod.yearly:
-        // Start of current year
+        
         result = DateTime(now.year, 1, 1);
         break;
     }
@@ -130,7 +130,7 @@ class BudgetModel extends BudgetEntity {
     return result;
   }
 
-  /// Private helper to calculate current period start without debug prints
+  
   DateTime _calculateCurrentPeriodStart(DateTime now) {
     switch (period) {
       case BudgetPeriod.weekly:
@@ -146,7 +146,7 @@ class BudgetModel extends BudgetEntity {
     }
   }
 
-  /// Private helper to calculate current period end without debug prints
+  
   DateTime _calculateCurrentPeriodEnd(DateTime now) {
     final currentStart = _calculateCurrentPeriodStart(now);
     
@@ -162,25 +162,25 @@ class BudgetModel extends BudgetEntity {
     }
   }
 
-  /// Get the current period end date based on today's date
+  
   DateTime getCurrentPeriodEnd([DateTime? referenceDate]) {
     final now = referenceDate ?? DateTime.now();
     return _calculateCurrentPeriodEnd(now);
   }
 
-  /// Get progress percentage (0.0 to 1.0)
-  /// This would require spent amount from transactions
+  
+  
   double getProgress(double spentAmount) {
     if (amount <= 0) return 0.0;
     return (spentAmount / amount).clamp(0.0, 1.0);
   }
 
-  /// Get remaining amount
+  
   double getRemainingAmount(double spentAmount) {
     return (amount - spentAmount).clamp(0.0, amount);
   }
 
-  /// Check if budget is exceeded
+  
   bool isExceeded(double spentAmount) {
     return spentAmount > amount;
   }

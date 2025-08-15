@@ -32,7 +32,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize selected locale based on current app locale
+    
     final localeBloc = context.read<LocaleBloc>();
     final currentLocale = localeBloc.currentLocale;
     _selectedLocale = LocaleData.getLocaleByCode(currentLocale.languageCode) ?? LocaleData.supportedLocales.first;
@@ -154,7 +154,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: SafeArea(
           child: Column(
             children: [
-              // Skip button
+              
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Align(
@@ -173,7 +173,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ),
               
-              // Page content
+              
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
@@ -189,13 +189,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ),
               
-              // Page indicators
+              
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Page indicators
+                    
                     Row(
                       children: List.generate(
                         pages.length,
@@ -203,7 +203,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ),
                     ),
                     
-                    // Next/Get Started button
+                    
                     _buildActionButton(context, l10n, pages),
                   ],
                 ),
@@ -232,7 +232,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           const Spacer(),
           
-          // Animated icon container
+          
           Container(
             width: 140,
             height: 140,
@@ -256,7 +256,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 48),
           
-          // Title
+          
           Text(
             data.title,
             style: const TextStyle(
@@ -269,7 +269,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 24),
           
-          // Subtitle
+          
           Text(
             data.subtitle,
             style: TextStyle(
@@ -294,7 +294,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           const Spacer(),
           
-          // Icon and title section
+          
           Container(
             width: 120,
             height: 120,
@@ -318,7 +318,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 32),
           
-          // Title
+          
           Text(
             data.title,
             style: const TextStyle(
@@ -331,7 +331,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 16),
           
-          // Subtitle
+          
           Text(
             data.subtitle,
             style: TextStyle(
@@ -344,12 +344,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 40),
           
-          // Selected currency display
+          
           _buildSelectedCurrencyCard(),
           
           const SizedBox(height: 24),
           
-          // Select currency button
+          
           _buildSelectCurrencyButton(l10n),
           
           const Spacer(),
@@ -366,7 +366,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           const Spacer(),
           
-          // Icon and title section
+          
           Container(
             width: 120,
             height: 120,
@@ -390,7 +390,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 32),
           
-          // Title
+          
           Text(
             data.title,
             style: const TextStyle(
@@ -403,7 +403,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 16),
           
-          // Subtitle
+          
           Text(
             data.subtitle,
             style: TextStyle(
@@ -416,12 +416,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
           
           const SizedBox(height: 40),
           
-          // Selected locale display
+          
           _buildSelectedLocaleCard(),
           
           const SizedBox(height: 24),
           
-          // Select locale button
+          
           _buildSelectLocaleButton(l10n),
           
           const Spacer(),
@@ -581,7 +581,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             context: context,
             selectedLocale: _selectedLocale,
             onLocaleSelected: (locale) async {
-              // Update the app's locale in real-time using clean architecture
+              
               final changeLocale = getIt<ChangeLocale>();
               await changeLocale(locale.locale);
               

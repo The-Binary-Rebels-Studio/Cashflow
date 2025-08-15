@@ -10,13 +10,13 @@ import 'package:cashflow/core/utils/currency_formatter.dart';
 class SpendingChart extends StatelessWidget {
   const SpendingChart({super.key});
 
-  // Group expenses by budget and calculate spending vs budget
+  
   List<BudgetSpendingData> _calculateBudgetSpending(List<TransactionWithBudget> expenseTransactions) {
     final Map<String, BudgetSpendingData> budgetMap = {};
     
     for (final txn in expenseTransactions) {
       final budgetId = txn.budget.id;
-      final amount = txn.transaction.amount.abs(); // Convert to positive for spending
+      final amount = txn.transaction.amount.abs(); 
       
       if (budgetMap.containsKey(budgetId)) {
         budgetMap[budgetId] = budgetMap[budgetId]!.copyWith(
@@ -48,7 +48,7 @@ class SpendingChart extends StatelessWidget {
       Colors.indigo,
     ];
     
-    // Simple hash to get consistent color for same budget name
+    
     final hash = budgetName.hashCode.abs();
     return colors[hash % colors.length];
   }
@@ -65,7 +65,7 @@ class SpendingChart extends StatelessWidget {
       return PieChartSectionData(
         color: data.color,
         value: percentage,
-        title: percentage >= 10 ? '${percentage.toStringAsFixed(0)}%' : '', // Only show percentage if >= 10%
+        title: percentage >= 10 ? '${percentage.toStringAsFixed(0)}%' : '', 
         radius: 50,
         titleStyle: const TextStyle(
           fontSize: 11,
@@ -124,7 +124,7 @@ class SpendingChart extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: budgetSpendingData
-                              .take(4) // Show max 4 categories to fit
+                              .take(4) 
                               .map((data) => _BudgetSpendingItem(data: data))
                               .toList(),
                         ),

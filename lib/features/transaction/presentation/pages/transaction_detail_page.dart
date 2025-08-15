@@ -55,7 +55,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             _budget = transaction.budget;
           });
 
-          // Load related category information through budget
+          
           await _loadCategoryInfo(transaction.budget.categoryId);
 
           setState(() {
@@ -79,15 +79,15 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
   Future<void> _loadCategoryInfo(String categoryId) async {
     try {
-      // Handle virtual income category
+      
       if (categoryId == 'virtual_income_category') {
         final now = DateTime.now();
         final virtualCategory = CategoryEntity(
           id: 'virtual_income_category',
           name: 'Income',
           description: 'Virtual category for income transactions',
-          iconCodePoint: '0xe4b8', // attach_money icon
-          colorValue: '0xFF4CAF50', // Green color
+          iconCodePoint: '0xe4b8', 
+          colorValue: '0xFF4CAF50', 
           type: CategoryType.income,
           isActive: true,
           createdAt: now,
@@ -124,7 +124,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
       result.when(
         success: (_) {
-          // Refresh transaction list
+          
           transactionBloc.add(const TransactionDataRequested());
 
           if (mounted) {
@@ -185,7 +185,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Handle bar
+                
                 Container(
                   margin: const EdgeInsets.only(top: 12),
                   width: 40,
@@ -196,12 +196,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   ),
                 ),
                 
-                // Header section with icon and title
+                
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     children: [
-                      // Icon
+                      
                       Container(
                         width: 72,
                         height: 72,
@@ -217,7 +217,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       ),
                       const SizedBox(height: 20),
                       
-                      // Title
+                      
                       Text(
                         l10n.deleteConfirmationTitle,
                         style: const TextStyle(
@@ -231,7 +231,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       ),
                       const SizedBox(height: 8),
                       
-                      // Subtitle
+                      
                       Text(
                         l10n.deleteConfirmationMessage,
                         style: TextStyle(
@@ -246,7 +246,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   ),
                 ),
                 
-                // Content section with white background
+                
                 Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -264,7 +264,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   ),
                   child: Column(
                     children: [
-                      // Transaction preview
+                      
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
@@ -294,7 +294,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 GetIt.instance<CurrencyBloc>().state.symbol,
                                 context,
                                 showSign: true,
-                                useHomeFormat: true, // Detail format untuk transaction detail
+                                useHomeFormat: true, 
                               ),
                               style: TextStyle(
                                 fontSize: 20,
@@ -310,7 +310,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Warning message
+                      
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -343,7 +343,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   ),
                 ),
                 
-                // Action buttons
+                
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Row(
@@ -534,7 +534,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               onSelected: (value) {
                 switch (value) {
                   case 'edit':
-                    // TODO: Navigate to edit transaction page
+                    
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.editFunctionalityComingSoon),
@@ -664,7 +664,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           ],
           const SizedBox(height: 20),
           _buildTimestampSection(),
-          const SizedBox(height: 100), // Space for potential actions
+          const SizedBox(height: 100), 
         ],
       ),
     );
@@ -783,7 +783,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           ),
           const SizedBox(height: 20),
 
-          // Category
+          
           _buildDetailRow(
             AppLocalizations.of(context)!.category,
             category.localizedName(context),
@@ -800,7 +800,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
           const SizedBox(height: 16),
 
-          // Type chip only
+          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -833,7 +833,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
           const SizedBox(height: 16),
 
-          // Amount breakdown
+          
           _buildDetailRow(
             AppLocalizations.of(context)!.amount,
             CurrencyFormatter.formatWithSymbol(
@@ -852,7 +852,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
           const SizedBox(height: 16),
 
-          // Date and Time
+          
           Row(
             children: [
               Expanded(
@@ -1005,7 +1005,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               ),
               const SizedBox(height: 12),
 
-              // Progress bar
+              
               Container(
                 height: 8,
                 decoration: BoxDecoration(
@@ -1157,7 +1157,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
     try {
       final transactionBloc = context.read<TransactionBloc>();
-      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      
       final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(_budget!);
       final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(_budget!);
 

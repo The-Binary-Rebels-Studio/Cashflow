@@ -20,11 +20,11 @@ void main() async {
   
   await configureDependencies();
   
-  // Initialize Ads Service
+  
   final adsService = getIt<AdsService>();
   await adsService.initialize();
   
-  // Initialize App Open Ad Manager
+  
   final appOpenAdManager = getIt<AppOpenAdManager>();
   await appOpenAdManager.initialize();
   

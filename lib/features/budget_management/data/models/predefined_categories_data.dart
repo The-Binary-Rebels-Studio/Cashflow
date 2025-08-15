@@ -3,50 +3,50 @@ class PredefinedCategoriesData {
     {
       'nameKey': 'categoryFoodDining',
       'descriptionKey': 'categoryFoodDiningDesc',
-      'icon_code_point': '0xe57d', // Icons.restaurant
-      'color_value': '0xFFFF9800', // Orange
+      'icon_code_point': '0xe57d', 
+      'color_value': '0xFFFF9800', 
     },
     {
       'nameKey': 'categoryTransportation',
       'descriptionKey': 'categoryTransportationDesc',
-      'icon_code_point': '0xe539', // Icons.directions_car
-      'color_value': '0xFF2196F3', // Blue
+      'icon_code_point': '0xe539', 
+      'color_value': '0xFF2196F3', 
     },
     {
       'nameKey': 'categoryShopping',
       'descriptionKey': 'categoryShoppingDesc',
-      'icon_code_point': '0xe59c', // Icons.shopping_cart
-      'color_value': '0xFFE91E63', // Pink
+      'icon_code_point': '0xe59c', 
+      'color_value': '0xFFE91E63', 
     },
     {
       'nameKey': 'categoryBillsUtilities',
       'descriptionKey': 'categoryBillsUtilitiesDesc',
-      'icon_code_point': '0xe8e5', // Icons.receipt_long
-      'color_value': '0xFF9C27B0', // Purple
+      'icon_code_point': '0xe8e5', 
+      'color_value': '0xFF9C27B0', 
     },
     {
       'nameKey': 'categoryHealthcare',
       'descriptionKey': 'categoryHealthcareDesc',
-      'icon_code_point': '0xe559', // Icons.local_hospital
-      'color_value': '0xFFF44336', // Red
+      'icon_code_point': '0xe559', 
+      'color_value': '0xFFF44336', 
     },
     {
       'nameKey': 'categoryEntertainment',
       'descriptionKey': 'categoryEntertainmentDesc',
-      'icon_code_point': '0xe01d', // Icons.movie
-      'color_value': '0xFF673AB7', // Deep Purple
+      'icon_code_point': '0xe01d', 
+      'color_value': '0xFF673AB7', 
     },
     {
       'nameKey': 'categoryEducation',
       'descriptionKey': 'categoryEducationDesc',
-      'icon_code_point': '0xe80c', // Icons.school
-      'color_value': '0xFF3F51B5', // Indigo
+      'icon_code_point': '0xe80c', 
+      'color_value': '0xFF3F51B5', 
     },
     {
       'nameKey': 'categoryTravel',
       'descriptionKey': 'categoryTravelDesc',
-      'icon_code_point': '0xe539', // Icons.flight
-      'color_value': '0xFF00BCD4', // Cyan
+      'icon_code_point': '0xe539', 
+      'color_value': '0xFF00BCD4', 
     },
   ];
 
@@ -54,38 +54,38 @@ class PredefinedCategoriesData {
     {
       'nameKey': 'categorySalary',
       'descriptionKey': 'categorySalaryDesc',
-      'icon_code_point': '0xe8e6', // Icons.work
-      'color_value': '0xFF4CAF50', // Green
+      'icon_code_point': '0xe8e6', 
+      'color_value': '0xFF4CAF50', 
     },
     {
       'nameKey': 'categoryFreelance',
       'descriptionKey': 'categoryFreelanceDesc',
-      'icon_code_point': '0xe8e6', // Icons.laptop
-      'color_value': '0xFF8BC34A', // Light Green
+      'icon_code_point': '0xe8e6', 
+      'color_value': '0xFF8BC34A', 
     },
     {
       'nameKey': 'categoryBusiness',
       'descriptionKey': 'categoryBusinessDesc',
-      'icon_code_point': '0xe2bc', // Icons.business
-      'color_value': '0xFF4CAF50', // Green
+      'icon_code_point': '0xe2bc', 
+      'color_value': '0xFF4CAF50', 
     },
     {
       'nameKey': 'categoryInvestment',
       'descriptionKey': 'categoryInvestmentDesc',
-      'icon_code_point': '0xe8e8', // Icons.trending_up
-      'color_value': '0xFF4CAF50', // Green
+      'icon_code_point': '0xe8e8', 
+      'color_value': '0xFF4CAF50', 
     },
     {
       'nameKey': 'categoryBonus',
       'descriptionKey': 'categoryBonusDesc',
-      'icon_code_point': '0xe8e2', // Icons.card_giftcard
-      'color_value': '0xFF4CAF50', // Green
+      'icon_code_point': '0xe8e2', 
+      'color_value': '0xFF4CAF50', 
     },
     {
       'nameKey': 'categoryOtherIncome',
       'descriptionKey': 'categoryOtherIncomeDesc',
-      'icon_code_point': '0xe263', // Icons.attach_money
-      'color_value': '0xFF4CAF50', // Green
+      'icon_code_point': '0xe263', 
+      'color_value': '0xFF4CAF50', 
     },
   ];
 }

@@ -12,10 +12,10 @@ class ChangeLocale {
   ChangeLocale(this._repository, this._localeBloc);
 
   Future<void> call(Locale locale) async {
-    // Save to local storage via repository
+    
     await _repository.setLocale(locale);
     
-    // Update app state immediately via LocaleBloc
+    
     _localeBloc.add(LocaleChanged(locale: locale));
   }
 }

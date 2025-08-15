@@ -13,7 +13,7 @@ import 'package:cashflow/features/budget_management/domain/entities/budget_entit
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/services/currency_event.dart';
 
-// Custom TextInputFormatter for thousands separator
+
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   static const String _separator = '.';
 
@@ -22,24 +22,24 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Remove all non-digits
+    
     String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
 
-    // If empty, return empty
+    
     if (newText.isEmpty) {
       return newValue.copyWith(text: '');
     }
 
-    // Add thousands separators
+    
     String formattedText = _addThousandsSeparator(newText);
 
-    // Calculate cursor position
+    
     int selectionIndex = newValue.selection.end;
     int originalLength = newValue.text.length;
     int formattedLength = formattedText.length;
     int lengthDifference = formattedLength - originalLength;
 
-    // Adjust cursor position
+    
     selectionIndex += lengthDifference;
     if (selectionIndex > formattedLength) {
       selectionIndex = formattedLength;
@@ -73,17 +73,17 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   }
 }
 
-// Helper function to get raw number from formatted string
+
 String getRawNumber(String formattedText) {
   return formattedText.replaceAll('.', '');
 }
 
-// Helper function to format number with thousands separator
+
 String formatNumberWithSeparator(double number) {
   final formatter = ThousandsSeparatorInputFormatter();
   final intValue = number.toInt().toString();
 
-  // Use formatter to add separators
+  
   final textEditingValue = TextEditingValue(text: intValue);
   final formattedValue = formatter.formatEditUpdate(
     const TextEditingValue(text: ''),
@@ -132,14 +132,14 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
   @override
   void initState() {
     super.initState();
-    // Initialize budget management data to load categories
+    
     context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
-    // Initialize currency service to load saved currency
+    
     context.read<CurrencyBloc>().add(const CurrencyInitialized());
 
     if (widget.budget != null) {
       _nameController.text = widget.budget!.name;
-      // Format amount with thousands separator for display
+      
       _amountController.text = formatNumberWithSeparator(widget.budget!.amount);
       _descriptionController.text = widget.budget!.description;
       _selectedCategoryId = widget.budget!.categoryId;
@@ -190,7 +190,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
       body: BlocConsumer<BudgetManagementBloc, BudgetManagementState>(
         listener: (context, state) {
           if (state is BudgetManagementOperationSuccess) {
-            // Show success message
+            
             String localizedMessage;
             switch (state.message) {
               case 'budgetCreatedSuccess':
@@ -203,7 +203,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 localizedMessage = AppLocalizations.of(context)!.budgetDeletedSuccess;
                 break;
               default:
-                localizedMessage = state.message; // Fallback to original message
+                localizedMessage = state.message; 
             }
             
             ScaffoldMessenger.of(context).showSnackBar(
@@ -212,10 +212,10 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 backgroundColor: Colors.green,
               ),
             );
-            // Close the page after successful operation
+            
             context.pop();
           } else if (state is BudgetManagementError) {
-            // Show error message
+            
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -232,7 +232,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header Card
+                  
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
@@ -299,7 +299,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   const SizedBox(height: 32),
 
-                  // Budget Name
+                  
                   _buildFormSection(
                     AppLocalizations.of(context)!.budgetName,
                     TextFormField(
@@ -321,7 +321,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   const SizedBox(height: 24),
 
-                  // Category Selection
+                  
                   _buildFormSection(
                     AppLocalizations.of(context)!.category,
                     BlocBuilder<BudgetManagementBloc, BudgetManagementState>(
@@ -386,7 +386,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   const SizedBox(height: 24),
 
-                  // Amount and Period Row
+                  
                   Row(
                     children: [
                       Expanded(
@@ -450,7 +450,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                                       context,
                                     )!.enterAmount;
                                   }
-                                  // Remove thousands separators for validation
+                                  
                                   final rawValue = getRawNumber(value);
                                   final amount = double.tryParse(rawValue);
                                   if (amount == null || amount <= 0) {
@@ -509,7 +509,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   const SizedBox(height: 24),
 
-                  // Description
+                  
                   _buildFormSection(
                     AppLocalizations.of(context)!.budgetDescription,
                     TextFormField(
@@ -519,7 +519,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(
                             bottom: 64,
-                          ), // Sesuaikan untuk multiline
+                          ), 
                           child: Icon(
                             Icons.notes_outlined,
                             size: 20,
@@ -553,7 +553,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
                   const SizedBox(height: 40),
 
-                  // Action Buttons
+                  
                   Row(
                     children: [
                       Expanded(
@@ -763,7 +763,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
         ),
         child: Column(
           children: [
-            // Handle bar
+            
             Container(
               margin: const EdgeInsets.only(top: 12),
               width: 40,
@@ -773,7 +773,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            // Header
+            
             Padding(
               padding: const EdgeInsets.all(24),
               child: Row(
@@ -799,7 +799,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 ],
               ),
             ),
-            // Categories List or Empty State
+            
             Expanded(
               child: categories.isEmpty
                   ? Center(
@@ -893,7 +893,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
+            
             Container(
               margin: const EdgeInsets.only(top: 12),
               width: 40,
@@ -903,7 +903,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            // Header
+            
             Padding(
               padding: const EdgeInsets.all(24),
               child: Row(
@@ -927,7 +927,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
                 ],
               ),
             ),
-            // Periods List
+            
             ...BudgetPeriod.values.map((period) {
               final isSelected = period == _selectedPeriod;
               return Container(
@@ -1030,8 +1030,8 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
               context.read<BudgetManagementBloc>().add(BudgetDeleteRequested(
                 id: widget.budget!.id,
               ));
-              Navigator.of(context).pop(); // Close dialog
-              // Don't manually close screen - let BlocConsumer handle success state
+              Navigator.of(context).pop(); 
+              
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
@@ -1052,7 +1052,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
       return;
     }
 
-    // Validate category selection
+    
     if (_selectedCategoryId == null || _selectedCategoryId!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -1067,7 +1067,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
 
     try {
       final name = _nameController.text.trim();
-      // Remove thousands separators before parsing
+      
       final rawAmount = getRawNumber(_amountController.text);
       final amount = double.parse(rawAmount);
       final description = _descriptionController.text.trim();
@@ -1098,7 +1098,7 @@ class _CreateBudgetViewState extends State<_CreateBudgetView> {
         ));
       }
 
-      // Success will be handled by BlocConsumer listener
+      
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

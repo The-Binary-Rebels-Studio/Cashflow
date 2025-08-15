@@ -63,7 +63,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
       ),
       child: Column(
         children: [
-          // Handle bar
+          
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -74,7 +74,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
             ),
           ),
           
-          // Header
+          
           Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -101,7 +101,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
             ),
           ),
           
-          // Search bar
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Container(
@@ -132,7 +132,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
           
           const SizedBox(height: 24),
           
-          // Currency list
+          
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -215,7 +215,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
         ),
         child: Row(
           children: [
-            // Currency symbol container
+            
             Container(
               width: 48,
               height: 48,
@@ -237,7 +237,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
             
             const SizedBox(width: 16),
             
-            // Currency info
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +262,7 @@ class _CurrencySelectionModalState extends State<CurrencySelectionModal> {
               ),
             ),
             
-            // Selection indicator
+            
             AnimatedOpacity(
               duration: const Duration(milliseconds: 200),
               opacity: isSelected ? 1.0 : 0.0,

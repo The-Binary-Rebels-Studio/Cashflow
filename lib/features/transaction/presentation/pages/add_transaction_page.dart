@@ -19,18 +19,18 @@ import 'package:cashflow/features/budget_management/domain/entities/budget_entit
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/shared/widgets/banner_ad_widget.dart';
 
-// Generic item for transaction selection (Budget Plans for expense, Categories for income)
+
 class TransactionItem {
   final String id;
   final String name;
-  final double remainingAmount; // Only for budget plans
-  final bool isBudgetPlan; // true for budget plans, false for categories
+  final double remainingAmount; 
+  final bool isBudgetPlan; 
   final String displayName;
   final String description;
   final IconData icon;
   final Color color;
-  final BudgetEntity? budget; // null for categories
-  final CategoryEntity? category; // null for budget plans
+  final BudgetEntity? budget; 
+  final CategoryEntity? category; 
 
   const TransactionItem({
     required this.id,
@@ -45,7 +45,7 @@ class TransactionItem {
     this.category,
   });
 
-  // Create from Budget Plan (for expense)
+  
   factory TransactionItem.fromBudget(BudgetEntity budget, double remainingAmount, CategoryEntity category) {
     Color categoryColor;
     IconData iconData;
@@ -78,7 +78,7 @@ class TransactionItem {
     );
   }
 
-  // Create from Category (for income)
+  
   factory TransactionItem.fromCategory(CategoryEntity category) {
     Color categoryColor;
     IconData iconData;
@@ -113,7 +113,7 @@ class TransactionItem {
 
 }
 
-// Custom TextInputFormatter for thousands separator  
+
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   static const String _separator = '.';
 
@@ -122,24 +122,24 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Remove all non-digits
+    
     String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
 
-    // If empty, return empty
+    
     if (newText.isEmpty) {
       return newValue.copyWith(text: '');
     }
 
-    // Add thousands separators
+    
     String formattedText = _addThousandsSeparator(newText);
 
-    // Calculate cursor position
+    
     int selectionIndex = newValue.selection.end;
     int originalLength = newValue.text.length;
     int formattedLength = formattedText.length;
     int lengthDifference = formattedLength - originalLength;
 
-    // Adjust cursor position
+    
     selectionIndex += lengthDifference;
     if (selectionIndex > formattedLength) {
       selectionIndex = formattedLength;
@@ -173,7 +173,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   }
 }
 
-// Helper function to get raw number from formatted string
+
 String getRawNumber(String formattedText) {
   return formattedText.replaceAll('.', '');
 }
@@ -215,7 +215,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   final _descriptionController = TextEditingController();
 
   TransactionType? _selectedType;
-  String? _selectedItemId; // Can be budget ID or category ID
+  String? _selectedItemId; 
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
 
@@ -224,29 +224,29 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   void initState() {
     super.initState();
     
-    // Set initial type
+    
     if (widget.initialType != null) {
       _selectedType = widget.initialType!;
     }
 
-    // Add listener to amount controller for real-time budget preview updates
+    
     _amountController.addListener(_onAmountChanged);
 
-    // Initialize services
+    
     context.read<CurrencyBloc>().add(const CurrencyInitialized());
     _refreshBudgetData();
   }
   
-  // Refresh budget data
+  
   void _refreshBudgetData() {
     context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
   }
 
-  // Handle amount change for real-time budget preview updates
+  
   void _onAmountChanged() {
     if (_selectedType == TransactionType.expense && _selectedItemId != null) {
       setState(() {
-        // This will trigger rebuild of budget preview section
+        
       });
     }
   }
@@ -261,45 +261,45 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     super.dispose();
   }
 
-  // Get available transaction items (Budget Plans for expense only)
+  
   Future<List<TransactionItem>> _getAvailableTransactionItems(BudgetManagementState budgetState) async {
     List<TransactionItem> transactionItems = [];
     
     if (budgetState is BudgetManagementLoaded) {
       if (_selectedType == TransactionType.expense) {
-        // For expenses, use Budget Plans
+        
         final budgets = budgetState.budgetPlans;
         
         for (final budget in budgets) {
-          // Get category info for this budget
+          
           final category = budgetState.expenseCategories
               .where((cat) => cat.id == budget.categoryId)
               .firstOrNull;
           
           if (category != null) {
-            // Calculate remaining budget based on actual transactions
+            
             final remainingAmount = await _calculateRemainingBudget(budget);
             
             transactionItems.add(TransactionItem.fromBudget(budget, remainingAmount, category));
           }
         }
       }
-      // Income transactions don't need budget selection - title describes the income source
+      
     }
 
     return transactionItems;
   }
 
-  // Calculate remaining budget for a specific budget plan
+  
   Future<double> _calculateRemainingBudget(BudgetEntity budget) async {
     try {
       final transactionBloc = context.read<TransactionBloc>();
       
-      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      
       final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
       final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
       
-      // Get total spent using Result pattern for budget-specific period
+      
       final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
         budget.id,
         periodStart,
@@ -308,26 +308,26 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       
       return result.when(
         success: (totalSpent) {
-          // Debug: Print calculation details
           
-          // Remaining = budget amount - absolute value of expenses (expenses are negative)
+          
+          
           final remaining = budget.amount - totalSpent.abs();
           
           
           return remaining;
         },
         failure: (failure) {
-          // If error, return budget amount as fallback
+          
           return budget.amount;
         },
       );
     } catch (e) {
-      // If unexpected error, return budget amount as fallback
+      
       return budget.amount;
     }
   }
 
-  // Format currency for display
+  
   String _formatCurrency(double amount) {
     final currencyBloc = context.read<CurrencyBloc>();
     final symbol = currencyBloc.selectedCurrency.symbol;
@@ -335,7 +335,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     return '$symbol $formattedAmount';
   }
   
-  // Format number with thousands separator
+  
   String _formatNumber(double number) {
     final formatter = ThousandsSeparatorInputFormatter();
     final intValue = number.toInt().toString();
@@ -348,7 +348,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   }
 
 
-  // Show dialog when no budget plans exist
+  
   void _showNoBudgetDialog() {
     showModalBottomSheet(
       context: context,
@@ -370,7 +370,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Drag Handle
+            
             Container(
               width: 40,
               height: 4,
@@ -381,7 +381,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
             ),
             const SizedBox(height: 24),
             
-            // Icon
+            
             Container(
               width: 80,
               height: 80,
@@ -397,7 +397,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
             ),
             const SizedBox(height: 24),
             
-            // Title
+            
             Text(
               AppLocalizations.of(context)!.noBudgetPlans,
               style: const TextStyle(
@@ -409,7 +409,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
             ),
             const SizedBox(height: 12),
             
-            // Description
+            
             Text(
               AppLocalizations.of(context)!.createBudgetPlanDescription,
               style: TextStyle(
@@ -421,7 +421,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
             ),
             const SizedBox(height: 8),
             
-            // Sub description
+            
             Text(
               AppLocalizations.of(context)!.whatWouldYouLikeToDo,
               style: TextStyle(
@@ -433,7 +433,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
             ),
             const SizedBox(height: 32),
             
-            // Action Button
+            
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -467,7 +467,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               ),
             ),
             
-            // Padding for safe area
+            
             SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
           ],
         ),
@@ -504,7 +504,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Card
+              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -583,7 +583,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 32),
 
-              // Transaction Type Toggle
+              
               _buildFormSection(
                 l10n.transactionType,
                 Container(
@@ -616,7 +616,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              // Transaction Title
+              
               _buildFormSection(
                 l10n.transactionTitle,
                 TextFormField(
@@ -636,7 +636,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              // Amount and Date Row
+              
               Row(
                 children: [
                   Expanded(
@@ -741,7 +741,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              // Budget Selection (only for expenses)
+              
               if (_selectedType == TransactionType.expense) ...[
                 _buildFormSection(
                   l10n.transactionCategory,
@@ -778,7 +778,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
                           final transactionItems = snapshot.data ?? [];
                           
-                          // Find selected transaction item
+                          
                           final selectedTransactionItem = transactionItems
                               .where((item) => item.id == _selectedItemId)
                               .firstOrNull;
@@ -827,7 +827,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              // Description
+              
               _buildFormSection(
                 l10n.transactionDescription,
                 TextFormField(
@@ -869,22 +869,22 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 32),
 
-              // Budget Preview (for expenses)
+              
               if (_selectedType == TransactionType.expense) ...[
                 _buildBudgetPreviewSection(),
                 const SizedBox(height: 24),
               ],
 
-              // Banner ad before action buttons - strategic placement
+              
               const BannerAdWidget(
-                maxHeight: 80, // Compact height
+                maxHeight: 80, 
                 margin: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
 
               const SizedBox(height: 16),
 
-              // Action Buttons
+              
               Row(
                 children: [
                   Expanded(
@@ -1017,7 +1017,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       onTap: () {
         setState(() {
           _selectedType = type;
-          _selectedItemId = null; // Reset selection when type changes
+          _selectedItemId = null; 
         });
       },
       child: Container(
@@ -1099,7 +1099,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   }
 
   Widget _buildBudgetPreviewSection() {
-    // Only show for expense transactions when a budget plan is selected
+    
     if (_selectedType != TransactionType.expense || _selectedItemId == null) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -1163,7 +1163,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                 .firstOrNull;
 
             if (selectedItem == null || !selectedItem.isBudgetPlan) {
-              return const SizedBox(); // Don't show preview for non-budget items
+              return const SizedBox(); 
             }
 
             final budget = selectedItem.budget!;
@@ -1187,7 +1187,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header
+                  
                   Row(
                     children: [
                       Container(
@@ -1237,7 +1237,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
                   const SizedBox(height: 16),
 
-                  // Budget Stats
+                  
                   Row(
                     children: [
                       Expanded(
@@ -1271,7 +1271,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                     Divider(color: Colors.grey[300]),
                     const SizedBox(height: 16),
 
-                    // After Transaction Preview
+                    
                     Row(
                       children: [
                         Icon(
@@ -1397,7 +1397,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     final budgetState = context.read<BudgetManagementBloc>().state;
     final transactionItems = await _getAvailableTransactionItems(budgetState);
 
-    // Check if no budget plans exist for expense
+    
     final realItems = transactionItems;
     
     if (realItems.isEmpty && _selectedType == TransactionType.expense) {
@@ -1422,7 +1422,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           onCreateBudget: () async {
             Navigator.pop(modalContext);
             await context.push(AppConstants.budgetManagementRoute);
-            // Refresh data when returning from budget management
+            
             if (mounted) {
               _refreshBudgetData();
             }
@@ -1447,7 +1447,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       return;
     }
 
-    // Only check budget selection for expense transactions
+    
     if (_selectedType == TransactionType.expense && _selectedItemId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -1461,19 +1461,19 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     setState(() => _isLoading = true);
 
     try {
-      // Get transaction data
+      
       final title = _titleController.text.trim();
       final rawAmount = getRawNumber(_amountController.text);
       final amount = double.parse(rawAmount);
       final description = _descriptionController.text.trim();
 
-      // Determine the budget ID to use for the transaction
+      
       String? budgetId;
       if (!mounted) return;
       final budgetState = context.read<BudgetManagementBloc>().state;
       
       if (_selectedType == TransactionType.expense) {
-        // For expenses, we need a budget selection
+        
         if (budgetState is BudgetManagementLoaded) {
           final transactionItems = await _getAvailableTransactionItems(budgetState);
           final selectedItem = transactionItems
@@ -1481,7 +1481,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               .firstOrNull;
               
           if (selectedItem != null && selectedItem.isBudgetPlan) {
-            // For budget plans, use the budget ID
+            
             budgetId = selectedItem.budget!.id;
           }
         }
@@ -1490,17 +1490,17 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           throw Exception('Budget ID not found. Please select a valid budget plan.');
         }
       } else {
-        // For income transactions, create a general income budget ID based on the title
-        // This ensures data consistency while simplifying the user experience
+        
+        
         budgetId = 'income_${title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_')}_${DateTime.now().millisecondsSinceEpoch}';
       }
 
-      // Create transaction entity
+      
       final transaction = TransactionEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(), // Simple ID generation
+        id: DateTime.now().millisecondsSinceEpoch.toString(), 
         title: title,
         description: description.isEmpty ? null : description,
-        amount: _selectedType == TransactionType.expense ? -amount : amount, // Negative for expenses
+        amount: _selectedType == TransactionType.expense ? -amount : amount, 
         budgetId: budgetId,
         type: _selectedType!,
         date: _selectedDate,
@@ -1508,20 +1508,20 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         updatedAt: DateTime.now(),
       );
 
-      // Debug: Print transaction details
+      
 
-      // Save transaction using bloc
+      
       if (!mounted) return;
       final transactionBloc = context.read<TransactionBloc>();
       final budgetBloc = context.read<BudgetManagementBloc>();
       await transactionBloc.transactionUsecases.addTransaction(transaction);
 
-      // Refresh both budget and transaction data
+      
       if (mounted) {
-        // Refresh budget management data
+        
         budgetBloc.add(const BudgetManagementDataRequested());
         
-        // Also refresh transaction data to ensure fresh data for calculations
+        
         transactionBloc.add(const TransactionDataRequested());
       }
 
@@ -1603,15 +1603,15 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
           _filteredItems = widget.transactionItems
               .where((item) {
                 final searchQuery = query.toLowerCase();
-                // Search in name
+                
                 if (item.name.toLowerCase().contains(searchQuery)) {
                   return true;
                 }
-                // Search in description
+                
                 if (item.description.toLowerCase().contains(searchQuery)) {
                   return true;
                 }
-                // Search in budget description if available
+                
                 if (item.budget != null && item.budget!.description.toLowerCase().contains(searchQuery)) {
                   return true;
                 }
@@ -1633,7 +1633,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
       ),
       child: Column(
         children: [
-          // Handle bar
+          
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -1644,7 +1644,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
             ),
           ),
           
-          // Header
+          
           Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
@@ -1668,7 +1668,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
             ),
           ),
           
-          // Search Input
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
@@ -1707,7 +1707,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
           
           const SizedBox(height: 16),
           
-          // Results count
+          
           if (_searchController.text.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1726,9 +1726,9 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
           
           const SizedBox(height: 8),
           
-          // Check if no budget plans exist
+          
           if (widget.transactionItems.isEmpty) ...[
-            // Show modern guidance when no budget plans are available
+            
             Expanded(
               child: Center(
                 child: Container(
@@ -1755,7 +1755,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Modern icon with background
+                      
                       Container(
                         width: 64,
                         height: 64,
@@ -1819,7 +1819,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
               ),
             ),
           ] else ...[
-            // Budget Items List
+            
             Expanded(
               child: _filteredItems.isEmpty
                   ? _buildEmptySearchState()

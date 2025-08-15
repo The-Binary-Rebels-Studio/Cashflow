@@ -1,6 +1,6 @@
 import 'bug_report_model.dart';
 
-/// Model for feature suggestion submission
+
 class SuggestionModel {
   final String title;
   final String description;

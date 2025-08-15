@@ -1,4 +1,4 @@
-/// Model for bug report submission - simple form data only
+
 class BugReportModel {
   final String title;
   final String description;
@@ -38,9 +38,9 @@ class BugReportModel {
     };
   }
 
-  /// Create request payload for submission
+  
   Map<String, dynamic> toRequestJson() {
-    return toJson(); // Same as toJson since we only have form fields
+    return toJson(); 
   }
 
   BugReportModel copyWith({
@@ -62,7 +62,7 @@ class BugReportModel {
   }
 }
 
-/// Device information for bug reports
+
 class DeviceInfo {
   final String platform;
   final String osVersion;

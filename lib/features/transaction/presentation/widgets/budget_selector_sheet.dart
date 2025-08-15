@@ -11,7 +11,7 @@ import 'package:cashflow/features/budget_management/presentation/utils/budget_ca
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 
 class BudgetSelectorSheet extends StatefulWidget {
-  final BuildContext parentContext; // Context that has access to BlocProvider
+  final BuildContext parentContext; 
   final List<String> budgets;
   final String selectedBudget;
   final ValueChanged<String> onBudgetChanged;
@@ -63,10 +63,10 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         _categoryEntities = categories;
       });
 
-      // Notify parent that budgets might have changed
+      
       widget.onBudgetsRefreshed?.call();
     } catch (e) {
-      // Budget loading failed, handle gracefully
+      
     }
   }
 
@@ -93,7 +93,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
     final category = _getCategoryForBudget(budget);
     if (category == null) {
-      // Fallback to meaningful icon based on budget name
+      
       return _getFallbackIconByName(budget.name);
     }
 
@@ -103,7 +103,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         fontFamily: 'MaterialIcons',
       );
     } catch (e) {
-      // If parsing fails, fallback to meaningful icon based on category name
+      
       return _getFallbackIconByCategory(category.name);
     }
   }
@@ -111,7 +111,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
   IconData _getFallbackIconByName(String budgetName) {
     final name = budgetName.toLowerCase();
 
-    // Food & Dining
+    
     if (name.contains('makanan') ||
         name.contains('food') ||
         name.contains('makan') ||
@@ -120,7 +120,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('cafe')) {
       return Icons.restaurant;
     }
-    // Transportation
+    
     else if (name.contains('transport') ||
         name.contains('bensin') ||
         name.contains('fuel') ||
@@ -131,7 +131,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('perjalanan')) {
       return Icons.directions_car;
     }
-    // Shopping & Retail
+    
     else if (name.contains('belanja') ||
         name.contains('shopping') ||
         name.contains('retail') ||
@@ -140,7 +140,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('elektronik')) {
       return Icons.shopping_cart;
     }
-    // Bills & Utilities
+    
     else if (name.contains('tagihan') ||
         name.contains('listrik') ||
         name.contains('air') ||
@@ -150,7 +150,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('utilities')) {
       return Icons.receipt;
     }
-    // Entertainment
+    
     else if (name.contains('hiburan') ||
         name.contains('entertainment') ||
         name.contains('movie') ||
@@ -159,7 +159,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('spotify')) {
       return Icons.movie;
     }
-    // Health & Medical
+    
     else if (name.contains('kesehatan') ||
         name.contains('health') ||
         name.contains('medical') ||
@@ -168,7 +168,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('hospital')) {
       return Icons.local_hospital;
     }
-    // Education
+    
     else if (name.contains('pendidikan') ||
         name.contains('education') ||
         name.contains('sekolah') ||
@@ -177,7 +177,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('course')) {
       return Icons.school;
     }
-    // Income
+    
     else if (name.contains('gaji') ||
         name.contains('salary') ||
         name.contains('income') ||
@@ -185,7 +185,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('bonus')) {
       return Icons.account_balance_wallet;
     }
-    // Savings & Investment
+    
     else if (name.contains('tabungan') ||
         name.contains('saving') ||
         name.contains('investasi') ||
@@ -193,14 +193,14 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('deposito')) {
       return Icons.savings;
     }
-    // Home & Family
+    
     else if (name.contains('rumah') ||
         name.contains('home') ||
         name.contains('family') ||
         name.contains('keluarga')) {
       return Icons.home;
     }
-    // Default
+    
     else {
       return Icons.account_balance_wallet;
     }
@@ -209,7 +209,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
   IconData _getFallbackIconByCategory(String categoryName) {
     final name = categoryName.toLowerCase();
 
-    // Similar logic but for category names
+    
     if (name.contains('food') ||
         name.contains('dining') ||
         name.contains('makanan')) {
@@ -241,7 +241,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
     } else if (name.contains('home') || name.contains('rumah')) {
       return Icons.home;
     } else {
-      return Icons.account_balance_wallet; // Default
+      return Icons.account_balance_wallet; 
     }
   }
 
@@ -250,17 +250,17 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 
     final category = _getCategoryForBudget(budget);
     if (category == null) {
-      // Fallback to meaningful color based on budget name
+      
       return _getFallbackColorByName(budget.name);
     }
 
     try {
-      // First try to use the stored color value from database
+      
       return Color(
         int.parse('0xFF${category.colorValue.replaceFirst('#', '')}'),
       );
     } catch (e) {
-      // If parsing fails, fallback to meaningful color based on category name
+      
       return _getFallbackColorByCategory(category.name);
     }
   }
@@ -268,7 +268,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
   Color _getFallbackColorByName(String budgetName) {
     final name = budgetName.toLowerCase();
 
-    // Food & Dining
+    
     if (name.contains('makanan') ||
         name.contains('food') ||
         name.contains('makan') ||
@@ -277,7 +277,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('cafe')) {
       return Colors.orange;
     }
-    // Transportation
+    
     else if (name.contains('transport') ||
         name.contains('bensin') ||
         name.contains('fuel') ||
@@ -288,7 +288,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('perjalanan')) {
       return Colors.blue;
     }
-    // Shopping & Retail
+    
     else if (name.contains('belanja') ||
         name.contains('shopping') ||
         name.contains('retail') ||
@@ -297,7 +297,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('elektronik')) {
       return Colors.purple;
     }
-    // Bills & Utilities
+    
     else if (name.contains('tagihan') ||
         name.contains('listrik') ||
         name.contains('air') ||
@@ -307,7 +307,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('utilities')) {
       return Colors.red;
     }
-    // Entertainment
+    
     else if (name.contains('hiburan') ||
         name.contains('entertainment') ||
         name.contains('movie') ||
@@ -316,7 +316,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('spotify')) {
       return Colors.pink;
     }
-    // Health & Medical
+    
     else if (name.contains('kesehatan') ||
         name.contains('health') ||
         name.contains('medical') ||
@@ -325,7 +325,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('hospital')) {
       return Colors.teal;
     }
-    // Education
+    
     else if (name.contains('pendidikan') ||
         name.contains('education') ||
         name.contains('sekolah') ||
@@ -334,7 +334,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('course')) {
       return Colors.indigo;
     }
-    // Income
+    
     else if (name.contains('gaji') ||
         name.contains('salary') ||
         name.contains('income') ||
@@ -342,7 +342,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('bonus')) {
       return Colors.green;
     }
-    // Savings & Investment
+    
     else if (name.contains('tabungan') ||
         name.contains('saving') ||
         name.contains('investasi') ||
@@ -350,7 +350,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('deposito')) {
       return Colors.cyan;
     }
-    // Default
+    
     else {
       return Colors.grey;
     }
@@ -359,7 +359,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
   Color _getFallbackColorByCategory(String categoryName) {
     final name = categoryName.toLowerCase();
 
-    // Similar logic but for category names
+    
     if (name.contains('food') ||
         name.contains('dining') ||
         name.contains('makanan')) {
@@ -389,7 +389,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
         name.contains('investment')) {
       return Colors.cyan;
     } else {
-      return Colors.green; // Default for budgets
+      return Colors.green; 
     }
   }
 
@@ -404,7 +404,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
             if (budget.toLowerCase().contains(query.toLowerCase())) {
               return true;
             }
-            // Also search in budget descriptions
+            
             final budgetEntity = _getBudgetEntity(budget);
             if (budgetEntity != null) {
               return budgetEntity.description.toLowerCase().contains(
@@ -447,7 +447,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
           ),
           const SizedBox(height: 16),
 
-          // Search Input
+          
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
@@ -485,7 +485,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
           ),
           const SizedBox(height: 16),
 
-          // Budget Count Info
+          
           if (_searchController.text.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -499,7 +499,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
               ),
             ),
 
-          // Budget List
+          
           Flexible(
             child: _filteredBudgets.isEmpty
                 ? _buildEmptyState()
@@ -516,7 +516,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
                       return _BudgetTile(
                         key: Key('budget_tile_$budget'),
                         parentContext:
-                            widget.parentContext, // Pass parent context
+                            widget.parentContext, 
                         budget: budget,
                         budgetEntity: budgetEntity,
                         isSelected: isSelected,
@@ -575,7 +575,7 @@ class _BudgetSelectorSheetState extends State<BudgetSelectorSheet> {
 }
 
 class _BudgetTile extends StatelessWidget {
-  final BuildContext parentContext; // Context that has access to BlocProvider
+  final BuildContext parentContext; 
   final String budget;
   final BudgetEntity? budgetEntity;
   final bool isSelected;
@@ -596,7 +596,7 @@ class _BudgetTile extends StatelessWidget {
     required this.onTap,
   });
 
-  // Calculate actual spent amount for this budget using the same logic as Budget Management
+  
   Future<double> _calculateSpentAmount(BuildContext context) async {
     if (budgetEntity == null) {
       return 0.0;
@@ -605,12 +605,12 @@ class _BudgetTile extends StatelessWidget {
     try {
       final transactionBloc = parentContext.read<TransactionBloc>();
 
-      // Calculate budget-specific period (from budget creation date, not rolling periods)
+      
       final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budgetEntity!);
       final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budgetEntity!);
 
 
-      // Get total spent using Result pattern for current period
+      
       final result = await transactionBloc.transactionUsecases
           .getTotalByBudgetAndDateRange(
             budgetEntity!.id,
@@ -620,7 +620,7 @@ class _BudgetTile extends StatelessWidget {
 
       return result.when(
         success: (totalSpent) {
-          // Return absolute value since expenses are stored as negative
+          
           return totalSpent.abs();
         },
         failure: (failure) {

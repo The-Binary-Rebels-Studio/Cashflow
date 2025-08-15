@@ -23,7 +23,7 @@ class OnboardingLocalDataSourceImpl implements OnboardingLocalDataSource {
       
       return result.isNotEmpty;
     } catch (e) {
-      // If there's an error (like table doesn't exist yet), assume onboarding not completed
+      
       return false;
     }
   }
@@ -33,11 +33,11 @@ class OnboardingLocalDataSourceImpl implements OnboardingLocalDataSource {
     final db = await DatabaseService.instance;
     
     try {
-      // First, check if any record exists
+      
       final existing = await db.query(_tableName, limit: 1);
       
       if (existing.isNotEmpty) {
-        // Update existing record
+        
         await db.update(
           _tableName,
           {'onboarding_completed': completed ? 1 : 0},
@@ -45,7 +45,7 @@ class OnboardingLocalDataSourceImpl implements OnboardingLocalDataSource {
           whereArgs: [existing.first['id']],
         );
       } else {
-        // Insert new record
+        
         await db.insert(
           _tableName,
           {
@@ -56,12 +56,12 @@ class OnboardingLocalDataSourceImpl implements OnboardingLocalDataSource {
         );
       }
     } catch (e) {
-      // If column doesn't exist yet, the migration might not have run
-      // Force a database refresh and retry
+      
+      
       await DatabaseService.close();
       final newDb = await DatabaseService.instance;
       
-      // Retry the operation
+      
       final existing = await newDb.query(_tableName, limit: 1);
       
       if (existing.isNotEmpty) {

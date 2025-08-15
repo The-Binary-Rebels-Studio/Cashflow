@@ -56,16 +56,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
       );
     } else {
       
-      // Check if this is an income transaction with generated ID
+      
       if (transaction.budgetId.startsWith('income_') && transaction.type == TransactionType.income) {
         
-        // Create a virtual budget for income transaction
+        
         final now = DateTime.now();
         final virtualBudget = BudgetEntity(
           id: transaction.budgetId,
-          name: transaction.title, // Use transaction title as budget name
+          name: transaction.title, 
           description: 'Income transaction - no budget plan required',
-          amount: 0, // Income doesn't have budget limits
+          amount: 0, 
           categoryId: 'virtual_income_category',
           period: BudgetPeriod.monthly,
           startDate: now,
@@ -80,11 +80,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
           budget: virtualBudget,
         );
       } else {
-        // For debugging: Check if this is a legacy transaction with categoryId
+        
         final category = await budgetManagementRepository.getCategoryById(transaction.budgetId);
         if (category != null) {
           
-          // Create a temporary budget for this legacy transaction
+          
           final now = DateTime.now();
           final tempBudget = BudgetEntity(
             id: transaction.budgetId,
@@ -157,16 +157,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
         ));
       } else {
         
-        // Check if this is an income transaction with generated ID
+        
         if (transaction.budgetId.startsWith('income_') && transaction.type == TransactionType.income) {
           
-          // Create a virtual budget for income transaction
+          
           final now = DateTime.now();
           final virtualBudget = BudgetEntity(
             id: transaction.budgetId,
-            name: transaction.title, // Use transaction title as budget name
+            name: transaction.title, 
             description: 'Income transaction - no budget plan required',
-            amount: 0, // Income doesn't have budget limits
+            amount: 0, 
             categoryId: 'virtual_income_category',
             period: BudgetPeriod.monthly,
             startDate: now,
@@ -181,11 +181,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
             budget: virtualBudget,
           ));
         } else {
-          // For debugging: Check if this is a legacy transaction with categoryId
+          
           final category = await budgetManagementRepository.getCategoryById(transaction.budgetId);
           if (category != null) {
             
-            // Create a temporary budget for this legacy transaction
+            
             final now = DateTime.now();
             final tempBudget = BudgetEntity(
               id: transaction.budgetId,

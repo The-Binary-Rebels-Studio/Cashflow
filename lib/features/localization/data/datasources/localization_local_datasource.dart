@@ -61,7 +61,7 @@ class LocalizationLocalDataSourceImpl implements LocalizationLocalDataSource {
         );
       }
     } catch (e) {
-      // Handle database errors gracefully
+      
       rethrow;
     }
   }

@@ -38,7 +38,7 @@ class _BugReportPageState extends State<BugReportPage> {
   @override
   void initState() {
     super.initState();
-    // Request device info when page loads
+    
     context.read<FeedbackBloc>().add(const FeedbackDeviceInfoRequested());
   }
 
@@ -93,7 +93,7 @@ class _BugReportPageState extends State<BugReportPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header Card
+                
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
@@ -152,7 +152,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 32),
 
-                // Bug Title
+                
                 _buildFormSection(
                   l10n.bugTitleRequired,
                   TextFormField(
@@ -176,7 +176,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 24),
 
-                // Bug Description
+                
                 _buildFormSection(
                   l10n.bugDescription,
                   TextFormField(
@@ -204,7 +204,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 24),
 
-                // Steps to Reproduce
+                
                 _buildFormSection(
                   l10n.stepsToReproduce,
                   TextFormField(
@@ -232,7 +232,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 24),
 
-                // Expected Behavior
+                
                 _buildFormSection(
                   l10n.expectedBehaviorRequired,
                   TextFormField(
@@ -260,7 +260,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 24),
 
-                // Actual Behavior
+                
                 _buildFormSection(
                   l10n.actualBehaviorRequired,
                   TextFormField(
@@ -288,7 +288,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 24),
 
-                // Device Info
+                
                 _buildFormSection(
                   l10n.debugInformation,
                   Container(
@@ -360,7 +360,7 @@ class _BugReportPageState extends State<BugReportPage> {
 
                 const SizedBox(height: 40),
 
-                // Submit Button
+                
                 BlocBuilder<FeedbackBloc, FeedbackState>(
                   builder: (context, state) {
                     final isLoading = state is FeedbackLoading;
@@ -503,7 +503,7 @@ class _BugReportPageState extends State<BugReportPage> {
       ),
     );
     
-    // Navigate back after showing toast
+    
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
         Navigator.of(context).pop();

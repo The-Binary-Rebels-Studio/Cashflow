@@ -12,15 +12,15 @@ import 'package:cashflow/l10n/app_localizations.dart';
 class BudgetOverviewCard extends StatelessWidget {
   const BudgetOverviewCard({super.key});
 
-  // Calculate total spent across all budget plans using Result pattern
+  
   Future<double> _calculateTotalSpent(BuildContext context, BudgetManagementLoaded state) async {
     try {
       final transactionBloc = context.read<TransactionBloc>();
       double totalSpent = 0;
 
-      // Calculate spent amount for each budget plan using budget-specific period
+      
       for (final budget in state.budgetPlans) {
-        // Use budget creation date as the period start to ensure only relevant transactions are counted
+        
         final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
         final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
         
@@ -33,10 +33,10 @@ class BudgetOverviewCard extends StatelessWidget {
         
         result.fold(
           onSuccess: (spentInBudget) {
-            totalSpent += spentInBudget.abs(); // Add absolute value (expenses are negative)
+            totalSpent += spentInBudget.abs(); 
           },
           onFailure: (failure) {
-            // Continue with 0 for this budget instead of failing completely
+            
           },
         );
       }
@@ -52,14 +52,14 @@ class BudgetOverviewCard extends StatelessWidget {
     return BlocBuilder<BudgetManagementBloc, BudgetManagementState>(
       builder: (context, state) {
         if (state is! BudgetManagementLoaded) {
-          // Loading or error state - show placeholder
+          
           return _buildOverviewCard(context, 0, 0, 0, 0, 0);
         }
 
         return FutureBuilder<double>(
           future: _calculateTotalSpent(context, state),
           builder: (context, snapshot) {
-            // Calculate totals
+            
             final totalBudget = state.budgetPlans.fold(0.0, (sum, budget) => sum + budget.amount);
             final activePlans = state.activeBudgetPlans.length;
             final totalSpent = snapshot.data ?? 0.0;
@@ -97,7 +97,7 @@ class BudgetOverviewCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -128,7 +128,7 @@ class BudgetOverviewCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 
-                // Total Budget Amount
+                
                 BlocBuilder<CurrencyBloc, CurrencyModel>(
                   builder: (context, currency) {
                     return Column(
@@ -157,7 +157,7 @@ class BudgetOverviewCard extends StatelessWidget {
                 
                 const SizedBox(height: 24),
                 
-                // Progress Bar
+                
                 Container(
                   height: 8,
                   decoration: BoxDecoration(
@@ -177,7 +177,7 @@ class BudgetOverviewCard extends StatelessWidget {
                 
                 const SizedBox(height: 20),
                 
-                // Stats Row
+                
                 Row(
                   children: [
                     Expanded(

@@ -159,7 +159,7 @@ class CreateBudgetPlan {
     required BudgetPeriod period,
   }) async {
     try {
-      // Validation
+      
       if (name.trim().isEmpty) {
         return failure(ValidationFailure(
           message: 'Budget name cannot be empty',
@@ -205,22 +205,22 @@ class CreateBudgetPlan {
     return 'budget_${DateTime.now().millisecondsSinceEpoch}_${(DateTime.now().microsecond % 1000)}';
   }
 
-  /// Calculate start date - always starts at the beginning of the period
+  
   DateTime _calculateStartDate(DateTime currentDate, BudgetPeriod period) {
     switch (period) {
       case BudgetPeriod.weekly:
-        // Start of current week (Monday)
+        
         final weekday = currentDate.weekday;
         return currentDate.subtract(Duration(days: weekday - 1));
       case BudgetPeriod.monthly:
-        // Start of current month
+        
         return DateTime(currentDate.year, currentDate.month, 1);
       case BudgetPeriod.quarterly:
-        // Start of current quarter
+        
         final quarterStartMonth = ((currentDate.month - 1) ~/ 3) * 3 + 1;
         return DateTime(currentDate.year, quarterStartMonth, 1);
       case BudgetPeriod.yearly:
-        // Start of current year
+        
         return DateTime(currentDate.year, 1, 1);
     }
   }
@@ -228,13 +228,13 @@ class CreateBudgetPlan {
   DateTime _calculateEndDate(DateTime startDate, BudgetPeriod period) {
     switch (period) {
       case BudgetPeriod.weekly:
-        return startDate.add(const Duration(days: 6)); // Sunday of the same week
+        return startDate.add(const Duration(days: 6)); 
       case BudgetPeriod.monthly:
-        return DateTime(startDate.year, startDate.month + 1, 1).subtract(const Duration(days: 1)); // Last day of month
+        return DateTime(startDate.year, startDate.month + 1, 1).subtract(const Duration(days: 1)); 
       case BudgetPeriod.quarterly:
-        return DateTime(startDate.year, startDate.month + 3, 1).subtract(const Duration(days: 1)); // Last day of quarter
+        return DateTime(startDate.year, startDate.month + 3, 1).subtract(const Duration(days: 1)); 
       case BudgetPeriod.yearly:
-        return DateTime(startDate.year, 12, 31); // Last day of year
+        return DateTime(startDate.year, 12, 31); 
     }
   }
 }
@@ -247,7 +247,7 @@ class UpdateBudgetPlan {
 
   Future<Result<void>> call(BudgetEntity budget) async {
     try {
-      // Validation
+      
       final validationResult = _validateBudget(budget);
       if (validationResult.isFailure) {
         return failure(validationResult.failure!);
@@ -264,7 +264,7 @@ class UpdateBudgetPlan {
     }
   }
 
-  /// Validates budget entity
+  
   Result<void> _validateBudget(BudgetEntity budget) {
     final Map<String, List<String>> fieldErrors = {};
     

@@ -2,7 +2,7 @@ class AppConstants {
   static const String appName = 'CashFlow';
   static const String appVersion = '1.0.0';
 
-  // Routes
+  
   static const String onboardingRoute = '/onboarding';
   static const String mainRoute = '/main';
   static const String bugReportRoute = '/bug-report';
@@ -12,6 +12,6 @@ class AppConstants {
   static const String budgetManagementRoute = '/budget-management';
   static const String transactionDetailRoute = '/transaction-detail';
 
-  // Database
+  
   static const String databaseName = 'cashflow_db';
 }

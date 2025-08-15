@@ -44,17 +44,17 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
   @override
   void initState() {
     super.initState();
-    // Initialize budget management data when page loads
+    
     context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
 
-    // Also initialize transaction data for budget calculations
+    
     context.read<TransactionBloc>().add(const TransactionDataRequested());
   }
 
   Future<void> refreshData() async {
     context.read<BudgetManagementBloc>().add(const BudgetManagementDataRequested());
 
-    // Also refresh transaction data for up-to-date budget calculations
+    
     if (mounted) {
       context.read<TransactionBloc>().add(const TransactionDataRequested());
     }
@@ -73,7 +73,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // App Bar
+            
             SliverAppBar(
               floating: true,
               pinned: false,
@@ -94,7 +94,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
               ),
             ),
 
-            // Budget Overview Section
+            
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -102,7 +102,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
               ),
             ),
 
-            // Filter and Sort Section
+            
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -147,7 +147,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
               ),
             ),
 
-            // Add Budget Button
+            
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -156,7 +156,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                   onPressed: () async {
                     final bloc = context.read<BudgetManagementBloc>();
                     await context.pushNamed('create_budget');
-                    // Refresh data after returning from create budget page
+                    
                     if (mounted) {
                       bloc.add(const BudgetManagementDataRequested());
                     }
@@ -182,19 +182,19 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
               ),
             ),
 
-            // Banner ad above budget plans list
+            
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: const BannerAdWidget(
-                  maxHeight: 100, // Lebih compact
+                  maxHeight: 100, 
                   margin: EdgeInsets.symmetric(horizontal: 4),
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
               ),
             ),
 
-            // Budget Plans List
+            
             _BudgetPlansSliver(
               sortBy: _sortBy,
               sortAscending: _sortAscending,
@@ -288,7 +288,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
+            
             Container(
               margin: const EdgeInsets.only(top: 12),
               width: 40,
@@ -298,7 +298,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            // Header
+            
             Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
@@ -322,7 +322,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 ],
               ),
             ),
-            // Options
+            
             ...sortOptions.map((option) {
               final isSelected = option['value'] == _sortBy;
               return Container(
@@ -430,7 +430,7 @@ class _BudgetPlansSliver extends StatelessWidget {
     return BlocConsumer<BudgetManagementBloc, BudgetManagementState>(
       listener: (context, state) {
         if (state is BudgetManagementOperationSuccess) {
-          // Show success message for delete/update operations
+          
           String localizedMessage;
           switch (state.message) {
             case 'budgetCreatedSuccess':
@@ -443,7 +443,7 @@ class _BudgetPlansSliver extends StatelessWidget {
               localizedMessage = AppLocalizations.of(context)!.budgetDeletedSuccess;
               break;
             default:
-              localizedMessage = state.message; // Fallback to original message
+              localizedMessage = state.message; 
           }
           
           ScaffoldMessenger.of(context).showSnackBar(
@@ -453,7 +453,7 @@ class _BudgetPlansSliver extends StatelessWidget {
             ),
           );
         } else if (state is BudgetManagementError) {
-          // Show error message
+          
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
@@ -479,7 +479,7 @@ class _BudgetPlansSliver extends StatelessWidget {
           return SliverFillRemaining(child: _buildEmptyState(context));
         }
 
-        // Sort budget plans based on selected criteria
+        
         final sortedBudgets = List<dynamic>.from(state.budgetPlans);
         sortedBudgets.sort((a, b) {
           int comparison = 0;
@@ -531,7 +531,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                     'create_budget',
                     extra: {'budget': budget},
                   );
-                  // Refresh data after returning from edit budget page
+                  
                   if (context.mounted) {
                     context
                         .read<BudgetManagementBloc>()
@@ -628,7 +628,7 @@ class _BudgetPlansSliver extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
+            
             Container(
               margin: const EdgeInsets.only(top: 12),
               width: 40,
@@ -639,12 +639,12 @@ class _BudgetPlansSliver extends StatelessWidget {
               ),
             ),
             
-            // Header section with icon and title
+            
             Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  // Icon
+                  
                   Container(
                     width: 72,
                     height: 72,
@@ -660,7 +660,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   
-                  // Title
+                  
                   Text(
                     AppLocalizations.of(context)!.deleteBudgetPlan,
                     style: const TextStyle(
@@ -674,7 +674,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   
-                  // Subtitle
+                  
                   Text(
                     AppLocalizations.of(context)!.deleteBudgetConfirmation(budgetName),
                     style: TextStyle(
@@ -689,7 +689,7 @@ class _BudgetPlansSliver extends StatelessWidget {
               ),
             ),
             
-            // Content section with white background
+            
             Container(
               width: double.infinity,
               margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -707,7 +707,7 @@ class _BudgetPlansSliver extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Budget name preview
+                  
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -735,7 +735,7 @@ class _BudgetPlansSliver extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   
-                  // Warning message
+                  
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -768,7 +768,7 @@ class _BudgetPlansSliver extends StatelessWidget {
               ),
             ),
             
-            // Action buttons
+            
             Padding(
               padding: const EdgeInsets.all(24),
               child: Row(
@@ -798,16 +798,16 @@ class _BudgetPlansSliver extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         final bloc = context.read<BudgetManagementBloc>();
-                        Navigator.of(context).pop(); // Close dialog first
+                        Navigator.of(context).pop(); 
 
                         try {
-                          // Delete budget and wait for completion
+                          
                           bloc.add(BudgetDeleteRequested(id: budgetId));
 
-                          // Use callback to refresh data and UI
+                          
                           await onRefreshNeeded();
                         } catch (e) {
-                          // Error will be handled by BlocConsumer listener
+                          
                         }
                       },
                       style: ElevatedButton.styleFrom(

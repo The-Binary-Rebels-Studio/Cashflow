@@ -116,12 +116,12 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   @override
   Future<void> initializePredefinedCategories() async {
     final count = await getCategoriesCount();
-    if (count > 0) return; // Already initialized
+    if (count > 0) return; 
 
     final batch = _database.batch();
     final now = DateTime.now();
 
-    // Add expense categories
+    
     for (final categoryData in PredefinedCategories.expenseCategories) {
       final category = CategoryModel(
         id: _generateId(),
@@ -137,7 +137,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
       batch.insert(_tableName, category.toMap());
     }
 
-    // Add income categories
+    
     for (final categoryData in PredefinedCategories.incomeCategories) {
       final category = CategoryModel(
         id: _generateId(),

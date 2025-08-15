@@ -35,16 +35,16 @@ class _MainNavigationState extends State<MainNavigation> {
       _selectedIndex = index;
     });
     
-    // Notify pages about tab change for potential refresh
-    if (index == 1 && _previousIndex != 1) { // Transaction tab and coming from different tab
-      // Trigger refresh for transaction page only when switching TO transaction tab
+    
+    if (index == 1 && _previousIndex != 1) { 
+      
       _triggerTransactionRefresh();
     }
   }
   
   void _triggerTransactionRefresh() {
-    // This will be called when transaction tab becomes active
-    // Refresh transactions via bloc
+    
+    
     if (mounted) {
       context.read<TransactionBloc>().add(const TransactionDataRequested());
     }
@@ -56,7 +56,7 @@ class _MainNavigationState extends State<MainNavigation> {
     final List<Widget> screens = [
       const HomePage(),
       const TransactionPage(),
-      const ProfilePage(), // Still using ProfilePage as container for settings
+      const ProfilePage(), 
     ];
 
     return Scaffold(

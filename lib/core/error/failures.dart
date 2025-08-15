@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-/// Base class for all application failures
+
 abstract class AppFailure extends Equatable {
   final String message;
   final String? code;
@@ -21,7 +21,7 @@ abstract class AppFailure extends Equatable {
   String toString() => 'AppFailure(message: $message, code: $code)';
 }
 
-// Database-related failures
+
 class DatabaseFailure extends AppFailure {
   const DatabaseFailure({
     required super.message,
@@ -34,7 +34,7 @@ class DatabaseFailure extends AppFailure {
   String toString() => 'DatabaseFailure(message: $message, code: $code)';
 }
 
-// Network-related failures (for future use)
+
 class NetworkFailure extends AppFailure {
   const NetworkFailure({
     required super.message,
@@ -47,7 +47,7 @@ class NetworkFailure extends AppFailure {
   String toString() => 'NetworkFailure(message: $message, code: $code)';
 }
 
-// Validation-related failures
+
 class ValidationFailure extends AppFailure {
   final Map<String, List<String>> fieldErrors;
 
@@ -66,7 +66,7 @@ class ValidationFailure extends AppFailure {
   String toString() => 'ValidationFailure(message: $message, fieldErrors: $fieldErrors)';
 }
 
-// Business logic failures
+
 class BusinessLogicFailure extends AppFailure {
   const BusinessLogicFailure({
     required super.message,
@@ -79,7 +79,7 @@ class BusinessLogicFailure extends AppFailure {
   String toString() => 'BusinessLogicFailure(message: $message, code: $code)';
 }
 
-// Not found failures
+
 class NotFoundFailure extends AppFailure {
   final String resourceType;
   final String resourceId;
@@ -99,7 +99,7 @@ class NotFoundFailure extends AppFailure {
   String toString() => 'NotFoundFailure(resourceType: $resourceType, resourceId: $resourceId)';
 }
 
-// Permission/Authorization failures
+
 class UnauthorizedFailure extends AppFailure {
   const UnauthorizedFailure({
     super.message = 'Unauthorized access',
@@ -112,7 +112,7 @@ class UnauthorizedFailure extends AppFailure {
   String toString() => 'UnauthorizedFailure(message: $message)';
 }
 
-// Generic server failures
+
 class ServerFailure extends AppFailure {
   final int? statusCode;
 
@@ -131,7 +131,7 @@ class ServerFailure extends AppFailure {
   String toString() => 'ServerFailure(message: $message, statusCode: $statusCode)';
 }
 
-// Cache failures
+
 class CacheFailure extends AppFailure {
   const CacheFailure({
     required super.message,
@@ -144,7 +144,7 @@ class CacheFailure extends AppFailure {
   String toString() => 'CacheFailure(message: $message)';
 }
 
-// Unexpected failures
+
 class UnexpectedFailure extends AppFailure {
   const UnexpectedFailure({
     super.message = 'An unexpected error occurred',
@@ -157,9 +157,7 @@ class UnexpectedFailure extends AppFailure {
   String toString() => 'UnexpectedFailure(message: $message)';
 }
 
-// Specific domain failures
 
-// Transaction-related failures
 class TransactionFailure extends AppFailure {
   const TransactionFailure({
     required super.message,
@@ -187,7 +185,7 @@ class InvalidTransactionDataFailure extends ValidationFailure {
   });
 }
 
-// Budget-related failures
+
 class BudgetFailure extends AppFailure {
   const BudgetFailure({
     required super.message,
@@ -223,7 +221,7 @@ class InsufficientBudgetFailure extends BusinessLogicFailure {
   List<Object?> get props => [...super.props, availableAmount, requestedAmount];
 }
 
-// Category-related failures
+
 class CategoryFailure extends AppFailure {
   const CategoryFailure({
     required super.message,
