@@ -18,6 +18,7 @@ import 'package:cashflow/core/services/app_open_ad_manager.dart' as _i576;
 import 'package:cashflow/core/services/currency_bloc.dart' as _i410;
 import 'package:cashflow/core/services/data_deletion_service.dart' as _i988;
 import 'package:cashflow/core/services/feedback_api_service.dart' as _i202;
+import 'package:cashflow/core/services/simple_analytics_service.dart' as _i23;
 import 'package:cashflow/features/budget_management/data/datasources/budget_local_datasource.dart'
     as _i297;
 import 'package:cashflow/features/budget_management/data/datasources/category_local_datasource.dart'
@@ -105,6 +106,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i576.AppOpenAdManager>(() => _i576.AppOpenAdManager());
     gh.singleton<_i285.AdsService>(() => _i285.AdsService());
     gh.singleton<_i202.FeedbackApiService>(() => _i202.FeedbackApiService());
+    gh.singleton<_i23.SimpleAnalyticsService>(
+      () => _i23.SimpleAnalyticsService(),
+    );
     gh.factory<_i943.OnboardingLocalDataSource>(
       () => _i943.OnboardingLocalDataSourceImpl(),
     );

@@ -49,3 +49,12 @@ claude/
 
 # Configuration files with sensitive data
 config.json
+
+# Firebase configuration files (contain API keys)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase_options.dart
+
+# Keystore files
+android/key.properties
+android/app/cashflow-release-key.jks

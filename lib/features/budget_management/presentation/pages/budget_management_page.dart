@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/di/injection.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
+import 'package:cashflow/core/services/simple_analytics_service.dart';
 import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_bloc.dart';
 import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_event.dart';
 import 'package:cashflow/features/budget_management/presentation/bloc/budget_management_state.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_overview_card.dart';
 import 'package:cashflow/features/budget_management/presentation/widgets/budget_plan_item.dart';
+import 'package:cashflow/features/budget_management/domain/entities/budget_entity.dart';
 import 'package:cashflow/features/budget_management/domain/entities/budget_entity_extensions.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
@@ -40,12 +42,23 @@ class _BudgetManagementView extends StatefulWidget {
 class _BudgetManagementViewState extends State<_BudgetManagementView> {
   String _sortBy = 'amount';
   bool _sortAscending = false;
+  late final SimpleAnalyticsService _analyticsService;
+  DateTime? _screenStartTime;
 
   @override
   void initState() {
     super.initState();
     
+    _analyticsService = getIt<SimpleAnalyticsService>();
+    _screenStartTime = DateTime.now();
+    
     context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
+
+    // Analytics tracking
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _analyticsService.logScreenView('budget_management');
+      _analyticsService.logFeatureUsage('budget_overview_access');
+    });
 
     
     context.read<TransactionBloc>().add(const TransactionDataRequested());
@@ -61,6 +74,24 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
 
     if (mounted) {
       setState(() {});
+    }
+  }
+  
+  Future<void> _onEditBudget(BudgetEntity budget) async {
+    // Analytics tracking
+    _analyticsService.logButtonPress('edit_budget', 'budget_management');
+    _analyticsService.logBudgetAction('edit');
+    _analyticsService.logNavigation('budget_management', 'edit_budget');
+    
+    await context.pushNamed(
+      'create_budget',
+      extra: {'budget': budget},
+    );
+    
+    if (context.mounted) {
+      context
+          .read<BudgetManagementBloc>()
+          .add(const BudgetManagementDataRequested());
     }
   }
 
@@ -154,6 +185,11 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
+                    // Analytics tracking
+                    _analyticsService.logButtonPress('create_budget', 'budget_management');
+                    _analyticsService.logFeatureUsage('budget_creation_start');
+                    _analyticsService.logNavigation('budget_management', 'create_budget');
+                    
                     final bloc = context.read<BudgetManagementBloc>();
                     await context.pushNamed('create_budget');
                     
@@ -199,6 +235,7 @@ class _BudgetManagementViewState extends State<_BudgetManagementView> {
               sortBy: _sortBy,
               sortAscending: _sortAscending,
               onRefreshNeeded: refreshData,
+              onEditBudget: _onEditBudget,
             ),
           ],
         ),
@@ -418,11 +455,13 @@ class _BudgetPlansSliver extends StatelessWidget {
   final String sortBy;
   final bool sortAscending;
   final Future<void> Function() onRefreshNeeded;
+  final Function(BudgetEntity) onEditBudget;
 
   const _BudgetPlansSliver({
     required this.sortBy,
     required this.sortAscending,
     required this.onRefreshNeeded,
+    required this.onEditBudget,
   });
 
   @override
@@ -526,18 +565,7 @@ class _BudgetPlansSliver extends StatelessWidget {
               child: BudgetPlanItem(
                 budget: budget,
                 category: category,
-                onEdit: () async {
-                  await context.pushNamed(
-                    'create_budget',
-                    extra: {'budget': budget},
-                  );
-                  
-                  if (context.mounted) {
-                    context
-                        .read<BudgetManagementBloc>()
-                        .add(const BudgetManagementDataRequested());
-                  }
-                },
+                onEdit: () => onEditBudget(budget),
                 onDelete: () {
                   _showDeleteConfirmation(
                     context,

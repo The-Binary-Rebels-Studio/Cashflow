@@ -7,6 +7,7 @@ import 'package:cashflow/l10n/app_localizations.dart';
 import 'package:cashflow/core/di/injection.dart';
 import 'package:cashflow/core/services/currency_bloc.dart';
 import 'package:cashflow/core/services/currency_event.dart';
+import 'package:cashflow/core/services/simple_analytics_service.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:cashflow/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:cashflow/features/transaction/domain/entities/transaction_entity.dart';
@@ -226,12 +227,16 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   String? _selectedItemId; 
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
+  late final SimpleAnalyticsService _analyticsService;
+  DateTime? _screenStartTime;
 
 
   @override
   void initState() {
     super.initState();
     
+    _analyticsService = getIt<SimpleAnalyticsService>();
+    _screenStartTime = DateTime.now();
     
     if (widget.initialType != null) {
       _selectedType = widget.initialType!;
@@ -243,6 +248,13 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     
     context.read<CurrencyBloc>().add(const CurrencyInitialized());
     _refreshBudgetData();
+    
+    // Analytics tracking
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final transactionType = _selectedType?.name ?? 'unknown';
+      _analyticsService.logScreenView('add_transaction_$transactionType');
+      _analyticsService.logFeatureUsage('transaction_creation_start');
+    });
   }
   
   
@@ -262,6 +274,13 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
   @override
   void dispose() {
+    // Analytics tracking
+    if (_screenStartTime != null) {
+      final timeSpent = DateTime.now().difference(_screenStartTime!).inSeconds;
+      final transactionType = _selectedType?.name ?? 'unknown';
+      _analyticsService.logScreenTimeSpent('add_transaction_$transactionType', timeSpent);
+    }
+    
     _amountController.removeListener(_onAmountChanged);
     _titleController.dispose();
     _amountController.dispose();
@@ -1023,6 +1042,11 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   Widget _buildTypeButton(String label, TransactionType type, bool isSelected, Color color, IconData icon) {
     return GestureDetector(
       onTap: () {
+        // Analytics tracking for transaction type selection
+        _analyticsService.logButtonPress('transaction_type_${type.name}', 'add_transaction');
+        _analyticsService.logUserPreference('transaction_type', type.name);
+        _analyticsService.logContentInteraction('transaction_form', 'type_select', type.name);
+        
         setState(() {
           _selectedType = type;
           _selectedItemId = null; 
@@ -1534,6 +1558,21 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       }
 
       if (mounted) {
+        // Analytics tracking for successful transaction
+        _analyticsService.logTransactionAction(
+          'create', 
+          _selectedType!.name
+        );
+        _analyticsService.logFeatureUsage('transaction_created_success');
+        
+        // Track amount range for privacy-safe analytics
+        final amountRange = _getAmountRange(amount);
+        _analyticsService.logContentInteraction(
+          'transaction_form', 
+          'submit_success', 
+          'amount_range_$amountRange'
+        );
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.transactionSaved),
@@ -1544,6 +1583,13 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       }
     } catch (e) {
       if (mounted) {
+        // Analytics tracking for failed transaction
+        _analyticsService.logContentInteraction(
+          'transaction_form', 
+          'submit_error', 
+          'save_failed'
+        );
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.transactionSaveFailed),
@@ -1560,6 +1606,15 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+  
+  String _getAmountRange(double amount) {
+    if (amount < 50000) return 'under_50k';
+    if (amount < 100000) return '50k_100k';
+    if (amount < 500000) return '100k_500k';
+    if (amount < 1000000) return '500k_1m';
+    if (amount < 5000000) return '1m_5m';
+    return 'over_5m';
   }
 }
 

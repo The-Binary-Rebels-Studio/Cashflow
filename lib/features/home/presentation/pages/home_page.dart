@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cashflow/core/constants/app_constants.dart';
+import 'package:cashflow/core/di/injection.dart';
+import 'package:cashflow/core/services/simple_analytics_service.dart';
 import 'package:cashflow/features/home/presentation/widgets/header_section.dart';
 import 'package:cashflow/features/home/presentation/widgets/balance_card.dart';
 import 'package:cashflow/features/home/presentation/widgets/quick_stats_row.dart';
@@ -26,17 +28,43 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isBalanceVisible = true;
+  late final SimpleAnalyticsService _analyticsService;
+  DateTime? _screenStartTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _analyticsService = getIt<SimpleAnalyticsService>();
+    _screenStartTime = DateTime.now();
+
+    context.read<TransactionBloc>().add(const TransactionDataRequested());
+
+    // Log screen view
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _analyticsService.logScreenView('home_page');
+      _analyticsService.logAppOpen();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Log time spent on screen
+    if (_screenStartTime != null) {
+      final timeSpent = DateTime.now().difference(_screenStartTime!).inSeconds;
+      _analyticsService.logScreenTimeSpent('home_page', timeSpent);
+    }
+    super.dispose();
+  }
 
   void _toggleBalanceVisibility() {
     setState(() {
       _isBalanceVisible = !_isBalanceVisible;
     });
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<TransactionBloc>().add(const TransactionDataRequested());
+    // Analytics tracking
+    _analyticsService.logButtonPress('toggle_balance_visibility', 'home_page');
+
+    _analyticsService.logFeatureUsage('balance_visibility_toggle');
   }
 
   @override
@@ -63,21 +91,31 @@ class _HomePageState extends State<HomePage> {
               BlocBuilder<TransactionBloc, TransactionState>(
                 builder: (context, state) {
                   return QuickStatsRow(
-                    income: state is TransactionLoaded ? state.totalIncome : 0.0,
-                    expenses: state is TransactionLoaded ? state.totalExpense : 0.0,
+                    income: state is TransactionLoaded
+                        ? state.totalIncome
+                        : 0.0,
+                    expenses: state is TransactionLoaded
+                        ? state.totalExpense
+                        : 0.0,
                   );
                 },
               ),
               const SizedBox(height: 24),
-              
+
               const BannerAdWidget(
-                maxHeight: 120, 
+                maxHeight: 120,
                 margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
               const SizedBox(height: 16),
               QuickActionsSection(
                 onAddIncome: () {
+                  _analyticsService.logButtonPress('add_income', 'home_page');
+                  _analyticsService.logNavigation(
+                    'home_page',
+                    'add_transaction_income',
+                  );
+                  _analyticsService.logFeatureUsage('quick_add_income');
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const AddTransactionPage(
@@ -87,6 +125,12 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 onAddExpense: () {
+                  _analyticsService.logButtonPress('add_expense', 'home_page');
+                  _analyticsService.logNavigation(
+                    'home_page',
+                    'add_transaction_expense',
+                  );
+                  _analyticsService.logFeatureUsage('quick_add_expense');
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const AddTransactionPage(
@@ -96,28 +140,48 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 onBudget: () {
+                  _analyticsService.logButtonPress(
+                    'budget_management',
+                    'home_page',
+                  );
+                  _analyticsService.logNavigation(
+                    'home_page',
+                    'budget_management',
+                  );
+                  _analyticsService.logFeatureUsage('budget_access');
                   context.push(AppConstants.budgetManagementRoute);
                 },
               ),
               const SizedBox(height: 24),
               const SpendingChart(),
               const SizedBox(height: 24),
-              
+
               const BannerAdWidget(
-                maxHeight: 90, 
+                maxHeight: 90,
                 margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
               const SizedBox(height: 16),
               BlocBuilder<TransactionBloc, TransactionState>(
                 builder: (context, state) {
-                  final transactions = state is TransactionLoaded 
-                      ? state.transactions.take(6).toList() 
+                  final transactions = state is TransactionLoaded
+                      ? state.transactions.take(6).toList()
                       : <TransactionWithBudget>[];
-                  
+
                   return RecentTransactions(
                     transactions: transactions,
                     onSeeAll: () {
+                      _analyticsService.logButtonPress(
+                        'see_all_transactions',
+                        'home_page',
+                      );
+                      _analyticsService.logNavigation(
+                        'home_page',
+                        'transaction_list',
+                      );
+                      _analyticsService.logFeatureUsage(
+                        'view_all_transactions',
+                      );
                       NavigationHelper.navigateToTransactions(context);
                     },
                   );

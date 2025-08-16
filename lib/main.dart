@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'firebase_options.dart';
 import 'core/di/injection.dart';
 import 'core/localization/locale_bloc.dart';
 import 'core/localization/locale_event.dart';
@@ -8,6 +11,7 @@ import 'core/services/currency_bloc.dart';
 import 'core/services/currency_event.dart';
 import 'core/services/ads_service.dart';
 import 'core/services/app_open_ad_manager.dart';
+import 'core/services/simple_analytics_service.dart';
 import 'features/budget_management/presentation/bloc/budget_management_bloc.dart';
 import 'features/budget_management/presentation/bloc/budget_management_event.dart';
 import 'features/transaction/presentation/bloc/transaction_bloc.dart';
@@ -18,8 +22,18 @@ import 'l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  
   await configureDependencies();
   
+  final analyticsService = getIt<SimpleAnalyticsService>();
+  analyticsService.initialize();
   
   final adsService = getIt<AdsService>();
   await adsService.initialize();

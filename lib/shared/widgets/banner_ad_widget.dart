@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yandex_mobileads/mobile_ads.dart';
 import '../../core/di/injection.dart';
 import '../../core/services/ads_service.dart';
+import '../../core/services/simple_analytics_service.dart';
 
 
 class BannerAdWidget extends StatefulWidget {
@@ -30,6 +31,7 @@ class BannerAdWidget extends StatefulWidget {
 
 class _BannerAdWidgetState extends State<BannerAdWidget> {
   late final AdsService _adsService;
+  late final SimpleAnalyticsService _analyticsService;
   BannerAd? _bannerAd;
   bool _isLoading = false;
   bool _hasError = false;
@@ -40,6 +42,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   void initState() {
     super.initState();
     _adsService = getIt<AdsService>();
+    _analyticsService = getIt<SimpleAnalyticsService>();
     
   }
 
@@ -108,6 +111,10 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       adRequest: const AdRequest(),
       onAdLoaded: () {
         if (mounted) {
+          // Analytics tracking for successful ad load
+          _analyticsService.logAdInteraction('banner', 'loaded');
+          _analyticsService.logContentInteraction('banner_ad', 'load_success', 'screen');
+          
           setState(() {
             _isLoading = false;
             _hasError = false;
@@ -117,6 +124,10 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       },
       onAdFailedToLoad: (error) {
         if (mounted) {
+          // Analytics tracking for failed ad load
+          _analyticsService.logAdInteraction('banner', 'load_failed');
+          _analyticsService.logContentInteraction('banner_ad', 'load_error', error.description);
+          
           setState(() {
             _isLoading = false;
             _hasError = true;
@@ -126,19 +137,31 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         }
       },
       onAdClicked: () {
-        
+        // Analytics tracking for ad clicks
+        _analyticsService.logAdInteraction('banner', 'clicked');
+        _analyticsService.logContentInteraction('banner_ad', 'user_click', 'engagement');
+        _analyticsService.logUserEngagement('ad_click', 'banner_widget');
       },
       onLeftApplication: () {
-        
+        // Analytics tracking when user leaves app
+        _analyticsService.logAdInteraction('banner', 'left_app');
+        _analyticsService.logUserEngagement('app_exit', 'ad_redirect');
       },
       onReturnedToApplication: () {
-        
+        // Analytics tracking when user returns to app
+        _analyticsService.logAdInteraction('banner', 'returned_to_app');
+        _analyticsService.logUserEngagement('app_return', 'after_ad');
       },
       onImpression: (data) {
-        
+        // Analytics tracking for ad impressions
+        _analyticsService.logAdInteraction('banner', 'impression');
+        _analyticsService.logContentInteraction('banner_ad', 'view_impression', 'visibility');
       },
       onAdClose: () {
         if (mounted) {
+          // Analytics tracking for ad close
+          _analyticsService.logAdInteraction('banner', 'closed');
+          _analyticsService.logUserEngagement('ad_dismiss', 'banner_widget');
           setState(() => _isBannerAlreadyCreated = false);
         }
       },
