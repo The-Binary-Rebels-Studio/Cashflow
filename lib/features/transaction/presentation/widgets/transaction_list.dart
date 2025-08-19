@@ -62,8 +62,7 @@ class _TransactionListState extends State<TransactionList> {
       setState(() {
         _budgets = budgets;
       });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   List<TransactionWithBudget> _filterTransactionsByBudget(
@@ -71,32 +70,40 @@ class _TransactionListState extends State<TransactionList> {
   ) {
     final l10n = AppLocalizations.of(context)!;
     if (widget.selectedBudget == l10n.all) return transactions;
-    
-    
-    final selectedBudget = _budgets.where((budget) => budget.name == widget.selectedBudget).firstOrNull;
-    
+
+    final selectedBudget = _budgets
+        .where((budget) => budget.name == widget.selectedBudget)
+        .firstOrNull;
+
     if (selectedBudget == null) {
-      
-      
       return transactions;
     }
-    
-    return transactions.where((transaction) => 
-      transaction.transaction.budgetId == selectedBudget.id).toList();
+
+    return transactions
+        .where(
+          (transaction) =>
+              transaction.transaction.budgetId == selectedBudget.id,
+        )
+        .toList();
   }
 
   List<TransactionWithBudget> _filterTransactions(
     List<TransactionWithBudget> transactions,
   ) {
     var filtered = _filterTransactionsByBudget(transactions);
-    
+
     return filtered.where((transaction) {
-      bool matchesSearch = widget.searchQuery.isEmpty ||
-          transaction.transaction.title.toLowerCase().contains(widget.searchQuery.toLowerCase()) ||
-          transaction.budget.name.toLowerCase().contains(widget.searchQuery.toLowerCase());
-      
+      bool matchesSearch =
+          widget.searchQuery.isEmpty ||
+          transaction.transaction.title.toLowerCase().contains(
+            widget.searchQuery.toLowerCase(),
+          ) ||
+          transaction.budget.name.toLowerCase().contains(
+            widget.searchQuery.toLowerCase(),
+          );
+
       bool matchesPeriod = _matchesPeriodFilter(transaction.transaction.date);
-      
+
       return matchesSearch && matchesPeriod;
     }).toList();
   }
@@ -104,22 +111,35 @@ class _TransactionListState extends State<TransactionList> {
   bool _matchesPeriodFilter(DateTime transactionDate) {
     final now = DateTime.now();
     final l10n = AppLocalizations.of(context)!;
-    
-    
+
     if (widget.specificDate != null) {
-      final specificDate = DateTime(widget.specificDate!.year, widget.specificDate!.month, widget.specificDate!.day);
-      final txDate = DateTime(transactionDate.year, transactionDate.month, transactionDate.day);
+      final specificDate = DateTime(
+        widget.specificDate!.year,
+        widget.specificDate!.month,
+        widget.specificDate!.day,
+      );
+      final txDate = DateTime(
+        transactionDate.year,
+        transactionDate.month,
+        transactionDate.day,
+      );
       return txDate == specificDate;
     }
-    
+
     if (widget.selectedPeriod == l10n.filterToday) {
-      return DateTime(transactionDate.year, transactionDate.month, transactionDate.day) ==
+      return DateTime(
+            transactionDate.year,
+            transactionDate.month,
+            transactionDate.day,
+          ) ==
           DateTime(now.year, now.month, now.day);
     } else if (widget.selectedPeriod == l10n.filterThisWeek) {
       final weekStart = now.subtract(Duration(days: now.weekday - 1));
-      return transactionDate.isAfter(weekStart) && transactionDate.isBefore(now.add(const Duration(days: 1)));
+      return transactionDate.isAfter(weekStart) &&
+          transactionDate.isBefore(now.add(const Duration(days: 1)));
     } else if (widget.selectedPeriod == l10n.filterThisMonth) {
-      return transactionDate.year == now.year && transactionDate.month == now.month;
+      return transactionDate.year == now.year &&
+          transactionDate.month == now.month;
     } else if (widget.selectedPeriod == l10n.filterThisYear) {
       return transactionDate.year == now.year;
     } else {
@@ -131,20 +151,24 @@ class _TransactionListState extends State<TransactionList> {
     List<TransactionWithBudget> transactions,
   ) {
     final sortedTransactions = List<TransactionWithBudget>.from(transactions);
-    
+
     final l10n = AppLocalizations.of(context)!;
-    
+
     if (widget.sortBy == l10n.sortByAmount) {
-      sortedTransactions.sort((a, b) => b.transaction.amount.abs().compareTo(a.transaction.amount.abs()));
+      sortedTransactions.sort(
+        (a, b) =>
+            b.transaction.amount.abs().compareTo(a.transaction.amount.abs()),
+      );
     } else if (widget.sortBy == l10n.sortByCategory) {
       sortedTransactions.sort((a, b) => a.budget.name.compareTo(b.budget.name));
     } else {
-      
-      sortedTransactions.sort((a, b) => b.transaction.date.compareTo(a.transaction.date));
+      sortedTransactions.sort(
+        (a, b) => b.transaction.date.compareTo(a.transaction.date),
+      );
     }
 
     final Map<String, List<TransactionWithBudget>> grouped = {};
-    
+
     for (final transaction in sortedTransactions) {
       final dateKey = _formatDateKey(transaction.transaction.date);
       if (!grouped.containsKey(dateKey)) {
@@ -153,10 +177,12 @@ class _TransactionListState extends State<TransactionList> {
       grouped[dateKey]!.add(transaction);
     }
 
-    return grouped.entries.map((entry) => TransactionGroup(
-      date: entry.key,
-      transactions: entry.value,
-    )).toList();
+    return grouped.entries
+        .map(
+          (entry) =>
+              TransactionGroup(date: entry.key, transactions: entry.value),
+        )
+        .toList();
   }
 
   String _formatDateKey(DateTime date) {
@@ -176,31 +202,31 @@ class _TransactionListState extends State<TransactionList> {
   }
 
   int _calculateItemCount(int groupCount) {
-    
-    if (groupCount == 0) return 0; 
+    if (groupCount == 0) return 0;
     final additionalAdCount = groupCount >= 10 ? (groupCount / 10).floor() : 0;
-    return 1 + groupCount + additionalAdCount; 
+    return 1 + groupCount + additionalAdCount;
   }
 
   Widget _buildListItem(List<TransactionGroup> groups, int index) {
-    
     if (index == 0) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: BannerAdWidget(
           maxHeight: 100,
-          margin: EdgeInsets.zero,
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
       );
     }
 
-    
-    final adjustedIndex = index - 1; 
+    final adjustedIndex = index - 1;
     final adPositions = <int>{};
-    
+
     if (groups.length >= 10) {
-      for (int i = 10; i < groups.length + ((groups.length / 10).floor()); i += 11) {
+      for (
+        int i = 10;
+        i < groups.length + ((groups.length / 10).floor());
+        i += 11
+      ) {
         adPositions.add(i);
       }
     }
@@ -210,16 +236,16 @@ class _TransactionListState extends State<TransactionList> {
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: BannerAdWidget(
           maxHeight: 80,
-          margin: EdgeInsets.zero,
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
       );
     }
 
-    
-    final adsBeforeThisIndex = adPositions.where((pos) => pos < adjustedIndex).length;
+    final adsBeforeThisIndex = adPositions
+        .where((pos) => pos < adjustedIndex)
+        .length;
     final groupIndex = adjustedIndex - adsBeforeThisIndex;
-    
+
     if (groupIndex >= groups.length) {
       return const SizedBox.shrink();
     }
@@ -234,17 +260,13 @@ class _TransactionListState extends State<TransactionList> {
         if (state is TransactionLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (state is TransactionError) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Colors.red[400],
-                ),
+                Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
                 const SizedBox(height: 16),
                 Text(
                   'Error loading transactions',
@@ -258,28 +280,34 @@ class _TransactionListState extends State<TransactionList> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => context.read<TransactionBloc>().add(const TransactionDataRequested()),
+                  onPressed: () => context.read<TransactionBloc>().add(
+                    const TransactionDataRequested(),
+                  ),
                   child: const Text('Retry'),
                 ),
               ],
             ),
           );
         }
-        
+
         if (state is TransactionLoaded) {
           final filteredTransactions = _filterTransactions(state.transactions);
-          final groupedTransactions = _groupTransactionsByDate(filteredTransactions);
-          
+          final groupedTransactions = _groupTransactionsByDate(
+            filteredTransactions,
+          );
+
           if (groupedTransactions.isEmpty) {
             return _EmptyState(
               searchQuery: widget.searchQuery,
               selectedBudget: widget.selectedBudget,
             );
           }
-          
+
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<TransactionBloc>().add(const TransactionDataRequested());
+              context.read<TransactionBloc>().add(
+                const TransactionDataRequested(),
+              );
             },
             child: ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
@@ -290,7 +318,7 @@ class _TransactionListState extends State<TransactionList> {
             ),
           );
         }
-        
+
         return const SizedBox.shrink();
       },
     );
@@ -337,7 +365,9 @@ class _TransactionGroup extends StatelessWidget {
           ),
           child: Column(
             children: group.transactions
-                .map((transaction) => _TransactionTile(transaction: transaction))
+                .map(
+                  (transaction) => _TransactionTile(transaction: transaction),
+                )
                 .toList(),
           ),
         ),
@@ -346,20 +376,29 @@ class _TransactionGroup extends StatelessWidget {
     );
   }
 
-  String _calculateDayTotal(List<TransactionWithBudget> transactions, BuildContext context) {
-    final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
+  String _calculateDayTotal(
+    List<TransactionWithBudget> transactions,
+    BuildContext context,
+  ) {
+    final total = transactions.fold<double>(
+      0,
+      (sum, item) => sum + item.transaction.amount,
+    );
     final currency = GetIt.instance<CurrencyBloc>().state;
     return CurrencyFormatter.formatWithSymbol(
       total,
       currency.symbol,
       context,
       showSign: true,
-      useHomeFormat: false, 
+      useHomeFormat: false,
     );
   }
 
   Color _getDayTotalColor(List<TransactionWithBudget> transactions) {
-    final total = transactions.fold<double>(0, (sum, item) => sum + item.transaction.amount);
+    final total = transactions.fold<double>(
+      0,
+      (sum, item) => sum + item.transaction.amount,
+    );
     return total >= 0 ? Colors.green : Colors.red;
   }
 }
@@ -371,19 +410,16 @@ class _TransactionTile extends StatelessWidget {
 
   IconData _getTransactionIcon() {
     if (transaction.transaction.type.value == 'income') {
-      return Icons.attach_money; 
+      return Icons.attach_money;
     }
-    
-    
-    
-    return Icons.shopping_cart; 
+
+    return Icons.shopping_cart;
   }
 
   Color _getTransactionIconColor() {
-    
-    return transaction.transaction.type.value == 'income' 
-        ? Colors.green    
-        : Colors.red;     
+    return transaction.transaction.type.value == 'income'
+        ? Colors.green
+        : Colors.red;
   }
 
   @override
@@ -395,11 +431,11 @@ class _TransactionTile extends StatelessWidget {
       currency.symbol,
       context,
       showSign: true,
-      useHomeFormat: false, 
+      useHomeFormat: false,
     );
     final transactionIcon = _getTransactionIcon();
     final iconColor = _getTransactionIconColor();
-    
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       onTap: () => _navigateToDetail(context),
@@ -410,27 +446,17 @@ class _TransactionTile extends StatelessWidget {
           color: iconColor.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          transactionIcon,
-          color: iconColor,
-          size: 24,
-        ),
+        child: Icon(transactionIcon, color: iconColor, size: 24),
       ),
       title: Text(
         transaction.transaction.title,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
       subtitle: Text(
         transaction.budget.name,
-        style: const TextStyle(
-          color: Colors.grey,
-          fontSize: 14,
-        ),
+        style: const TextStyle(color: Colors.grey, fontSize: 14),
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
@@ -463,9 +489,7 @@ class _TransactionTile extends StatelessWidget {
   void _navigateToDetail(BuildContext context) {
     context.pushNamed(
       'transaction_detail',
-      pathParameters: {
-        'transactionId': transaction.transaction.id,
-      },
+      pathParameters: {'transactionId': transaction.transaction.id},
     );
   }
 }
@@ -474,15 +498,12 @@ class _EmptyState extends StatelessWidget {
   final String searchQuery;
   final String selectedBudget;
 
-  const _EmptyState({
-    required this.searchQuery,
-    required this.selectedBudget,
-  });
+  const _EmptyState({required this.searchQuery, required this.selectedBudget});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -490,7 +511,8 @@ class _EmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              searchQuery.isNotEmpty || selectedBudget != AppLocalizations.of(context)!.all
+              searchQuery.isNotEmpty ||
+                      selectedBudget != AppLocalizations.of(context)!.all
                   ? Icons.search_off
                   : Icons.receipt_long_outlined,
               size: 80,
@@ -498,7 +520,8 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              searchQuery.isNotEmpty || selectedBudget != AppLocalizations.of(context)!.all
+              searchQuery.isNotEmpty ||
+                      selectedBudget != AppLocalizations.of(context)!.all
                   ? AppLocalizations.of(context)!.noTransactionsFound
                   : l10n.dashboardMoreTransactionsSoon,
               style: TextStyle(
@@ -509,13 +532,11 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              searchQuery.isNotEmpty || selectedBudget != AppLocalizations.of(context)!.all
+              searchQuery.isNotEmpty ||
+                      selectedBudget != AppLocalizations.of(context)!.all
                   ? AppLocalizations.of(context)!.tryAdjustingFilters
                   : AppLocalizations.of(context)!.startAddingTransactions,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
               textAlign: TextAlign.center,
             ),
           ],
@@ -529,8 +550,5 @@ class TransactionGroup {
   final String date;
   final List<TransactionWithBudget> transactions;
 
-  TransactionGroup({
-    required this.date,
-    required this.transactions,
-  });
+  TransactionGroup({required this.date, required this.transactions});
 }

@@ -16,14 +16,18 @@ class QuickActionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.dashboardQuickActions,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
+        const SizedBox(height: 16),
+        Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: Text(
+            l10n.dashboardQuickActions,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 16),

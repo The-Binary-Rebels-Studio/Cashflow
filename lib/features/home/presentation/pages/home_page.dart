@@ -100,14 +100,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              const SizedBox(height: 24),
-
-              const BannerAdWidget(
-                maxHeight: 120,
-                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              const SizedBox(height: 16),
+              BannerAdWidget(),
               QuickActionsSection(
                 onAddIncome: () {
                   _analyticsService.logButtonPress('add_income', 'home_page');
@@ -158,7 +151,6 @@ class _HomePageState extends State<HomePage> {
 
               const BannerAdWidget(
                 maxHeight: 90,
-                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
               const SizedBox(height: 16),

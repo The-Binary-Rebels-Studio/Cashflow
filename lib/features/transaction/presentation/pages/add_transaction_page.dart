@@ -20,18 +20,17 @@ import 'package:cashflow/features/budget_management/domain/entities/budget_entit
 import 'package:cashflow/features/budget_management/domain/entities/category_entity.dart';
 import 'package:cashflow/shared/widgets/banner_ad_widget.dart';
 
-
 class TransactionItem {
   final String id;
   final String name;
-  final double remainingAmount; 
-  final bool isBudgetPlan; 
+  final double remainingAmount;
+  final bool isBudgetPlan;
   final String displayName;
   final String description;
   final IconData icon;
   final Color color;
-  final BudgetEntity? budget; 
-  final CategoryEntity? category; 
+  final BudgetEntity? budget;
+  final CategoryEntity? category;
 
   const TransactionItem({
     required this.id,
@@ -46,17 +45,20 @@ class TransactionItem {
     this.category,
   });
 
-  
-  factory TransactionItem.fromBudget(BudgetEntity budget, double remainingAmount, CategoryEntity category) {
+  factory TransactionItem.fromBudget(
+    BudgetEntity budget,
+    double remainingAmount,
+    CategoryEntity category,
+  ) {
     Color categoryColor;
     IconData iconData;
-    
+
     try {
       categoryColor = Color(int.parse(category.colorValue));
     } catch (e) {
       categoryColor = Colors.blue;
     }
-    
+
     const iconMap = {
       '57411': Icons.restaurant,
       '57669': Icons.directions_car,
@@ -67,9 +69,9 @@ class TransactionItem {
       '57437': Icons.school,
       '58730': Icons.account_balance_wallet,
     };
-    
+
     iconData = iconMap[category.iconCodePoint] ?? Icons.category;
-    
+
     return TransactionItem(
       id: budget.id,
       name: budget.name,
@@ -83,17 +85,16 @@ class TransactionItem {
     );
   }
 
-  
   factory TransactionItem.fromCategory(CategoryEntity category) {
     Color categoryColor;
     IconData iconData;
-    
+
     try {
       categoryColor = Color(int.parse(category.colorValue));
     } catch (e) {
       categoryColor = Colors.green;
     }
-    
+
     const iconMap = {
       '57411': Icons.restaurant,
       '57669': Icons.directions_car,
@@ -104,9 +105,9 @@ class TransactionItem {
       '57437': Icons.school,
       '58730': Icons.account_balance_wallet,
     };
-    
+
     iconData = iconMap[category.iconCodePoint] ?? Icons.category;
-    
+
     return TransactionItem(
       id: category.id,
       name: category.name,
@@ -119,9 +120,7 @@ class TransactionItem {
       category: category,
     );
   }
-
 }
-
 
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   static const String _separator = '.';
@@ -131,24 +130,19 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    
     String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
 
-    
     if (newText.isEmpty) {
       return newValue.copyWith(text: '');
     }
 
-    
     String formattedText = _addThousandsSeparator(newText);
 
-    
     int selectionIndex = newValue.selection.end;
     int originalLength = newValue.text.length;
     int formattedLength = formattedText.length;
     int lengthDifference = formattedLength - originalLength;
 
-    
     selectionIndex += lengthDifference;
     if (selectionIndex > formattedLength) {
       selectionIndex = formattedLength;
@@ -182,7 +176,6 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   }
 }
 
-
 String getRawNumber(String formattedText) {
   return formattedText.replaceAll('.', '');
 }
@@ -190,10 +183,7 @@ String getRawNumber(String formattedText) {
 class AddTransactionPage extends StatelessWidget {
   final TransactionType? initialType;
 
-  const AddTransactionPage({
-    super.key,
-    this.initialType,
-  });
+  const AddTransactionPage({super.key, this.initialType});
 
   @override
   Widget build(BuildContext context) {
@@ -224,31 +214,28 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   final _descriptionController = TextEditingController();
 
   TransactionType? _selectedType;
-  String? _selectedItemId; 
+  String? _selectedItemId;
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
   late final SimpleAnalyticsService _analyticsService;
   DateTime? _screenStartTime;
 
-
   @override
   void initState() {
     super.initState();
-    
+
     _analyticsService = getIt<SimpleAnalyticsService>();
     _screenStartTime = DateTime.now();
-    
+
     if (widget.initialType != null) {
       _selectedType = widget.initialType!;
     }
 
-    
     _amountController.addListener(_onAmountChanged);
 
-    
     context.read<CurrencyBloc>().add(const CurrencyInitialized());
     _refreshBudgetData();
-    
+
     // Analytics tracking
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final transactionType = _selectedType?.name ?? 'unknown';
@@ -256,21 +243,18 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       _analyticsService.logFeatureUsage('transaction_creation_start');
     });
   }
-  
-  
+
   void _refreshBudgetData() {
-    context.read<BudgetManagementBloc>().add(const BudgetManagementInitialized());
+    context.read<BudgetManagementBloc>().add(
+      const BudgetManagementInitialized(),
+    );
   }
 
-  
   void _onAmountChanged() {
     if (_selectedType == TransactionType.expense && _selectedItemId != null) {
-      setState(() {
-        
-      });
+      setState(() {});
     }
   }
-
 
   @override
   void dispose() {
@@ -278,9 +262,12 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     if (_screenStartTime != null) {
       final timeSpent = DateTime.now().difference(_screenStartTime!).inSeconds;
       final transactionType = _selectedType?.name ?? 'unknown';
-      _analyticsService.logScreenTimeSpent('add_transaction_$transactionType', timeSpent);
+      _analyticsService.logScreenTimeSpent(
+        'add_transaction_$transactionType',
+        timeSpent,
+      );
     }
-    
+
     _amountController.removeListener(_onAmountChanged);
     _titleController.dispose();
     _amountController.dispose();
@@ -288,81 +275,68 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     super.dispose();
   }
 
-  
-  Future<List<TransactionItem>> _getAvailableTransactionItems(BudgetManagementState budgetState) async {
+  Future<List<TransactionItem>> _getAvailableTransactionItems(
+    BudgetManagementState budgetState,
+  ) async {
     List<TransactionItem> transactionItems = [];
-    
+
     if (budgetState is BudgetManagementLoaded) {
       if (_selectedType == TransactionType.expense) {
-        
         final budgets = budgetState.budgetPlans;
-        
+
         for (final budget in budgets) {
-          
           final category = budgetState.expenseCategories
               .where((cat) => cat.id == budget.categoryId)
               .firstOrNull;
-          
+
           if (category != null) {
-            
             final remainingAmount = await _calculateRemainingBudget(budget);
-            
-            transactionItems.add(TransactionItem.fromBudget(budget, remainingAmount, category));
+
+            transactionItems.add(
+              TransactionItem.fromBudget(budget, remainingAmount, category),
+            );
           }
         }
       }
-      
     }
 
     return transactionItems;
   }
 
-  
   Future<double> _calculateRemainingBudget(BudgetEntity budget) async {
     try {
       final transactionBloc = context.read<TransactionBloc>();
-      
-      
-      final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(budget);
-      final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
-      
-      
-      final result = await transactionBloc.transactionUsecases.getTotalByBudgetAndDateRange(
-        budget.id,
-        periodStart,
-        periodEnd,
+
+      final periodStart = BudgetCalculationUtils.calculateBudgetPeriodStart(
+        budget,
       );
-      
+      final periodEnd = BudgetCalculationUtils.calculateBudgetPeriodEnd(budget);
+
+      final result = await transactionBloc.transactionUsecases
+          .getTotalByBudgetAndDateRange(budget.id, periodStart, periodEnd);
+
       return result.when(
         success: (totalSpent) {
-          
-          
-          
           final remaining = budget.amount - totalSpent.abs();
-          
-          
+
           return remaining;
         },
         failure: (failure) {
-          
           return budget.amount;
         },
       );
     } catch (e) {
-      
       return budget.amount;
     }
   }
 
-  
   String _formatCurrency(double amount) {
     final currencyBloc = context.read<CurrencyBloc>();
     final symbol = currencyBloc.selectedCurrency.symbol;
     final formattedAmount = _formatNumber(amount);
     return '$symbol $formattedAmount';
   }
-  
-  
+
   String _formatNumber(double number) {
     final formatter = ThousandsSeparatorInputFormatter();
     final intValue = number.toInt().toString();
@@ -374,8 +348,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     return formattedValue.text;
   }
 
-
-  
   void _showNoBudgetDialog() {
     showModalBottomSheet(
       context: context,
@@ -386,10 +358,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF667eea),
-              Color(0xFF764ba2),
-            ],
+            colors: [Color(0xFF667eea), Color(0xFF764ba2)],
           ),
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -397,7 +366,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            
             Container(
               width: 40,
               height: 4,
@@ -407,8 +375,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               ),
             ),
             const SizedBox(height: 24),
-            
-            
+
             Container(
               width: 80,
               height: 80,
@@ -423,8 +390,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               ),
             ),
             const SizedBox(height: 24),
-            
-            
+
             Text(
               AppLocalizations.of(context)!.noBudgetPlans,
               style: const TextStyle(
@@ -435,8 +401,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            
-            
+
             Text(
               AppLocalizations.of(context)!.createBudgetPlanDescription,
               style: TextStyle(
@@ -447,8 +412,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            
-            
+
             Text(
               AppLocalizations.of(context)!.whatWouldYouLikeToDo,
               style: TextStyle(
@@ -459,8 +423,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            
-            
+
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -493,8 +456,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                 ),
               ),
             ),
-            
-            
+
             SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
           ],
         ),
@@ -505,7 +467,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -531,7 +493,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -542,17 +503,19 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                     colors: _selectedType == null
                         ? [const Color(0xFF667eea), const Color(0xFF764ba2)]
                         : _selectedType == TransactionType.income
-                            ? [const Color(0xFF4CAF50), const Color(0xFF8BC34A)]
-                            : [const Color(0xFFFF5722), const Color(0xFFFF9800)],
+                        ? [const Color(0xFF4CAF50), const Color(0xFF8BC34A)]
+                        : [const Color(0xFFFF5722), const Color(0xFFFF9800)],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: (_selectedType == null
-                          ? const Color(0xFF667eea)
-                          : _selectedType == TransactionType.income
-                              ? const Color(0xFF4CAF50)
-                              : const Color(0xFFFF5722)).withValues(alpha: 0.3),
+                      color:
+                          (_selectedType == null
+                                  ? const Color(0xFF667eea)
+                                  : _selectedType == TransactionType.income
+                                  ? const Color(0xFF4CAF50)
+                                  : const Color(0xFFFF5722))
+                              .withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -571,8 +534,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                         _selectedType == null
                             ? Icons.account_balance_wallet
                             : _selectedType == TransactionType.income
-                                ? Icons.add_circle_outline
-                                : Icons.remove_circle_outline,
+                            ? Icons.add_circle_outline
+                            : Icons.remove_circle_outline,
                         color: Colors.white,
                         size: 32,
                       ),
@@ -582,8 +545,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                       _selectedType == null
                           ? l10n.addTransaction
                           : _selectedType == TransactionType.income
-                              ? l10n.addIncome
-                              : l10n.addExpense,
+                          ? l10n.addIncome
+                          : l10n.addExpense,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -596,8 +559,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                       _selectedType == null
                           ? 'Choose transaction type and record your financial activity'
                           : _selectedType == TransactionType.income
-                              ? 'Record your income and earnings'
-                              : 'Track your spending and expenses',
+                          ? 'Record your income and earnings'
+                          : 'Track your spending and expenses',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 14,
@@ -610,7 +573,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 32),
 
-              
               _buildFormSection(
                 l10n.transactionType,
                 Container(
@@ -643,7 +605,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              
               _buildFormSection(
                 l10n.transactionTitle,
                 TextFormField(
@@ -663,7 +624,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              
               Row(
                 children: [
                   Expanded(
@@ -673,7 +633,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                       BlocBuilder<CurrencyBloc, dynamic>(
                         builder: (context, currencyState) {
                           final currencyBloc = context.read<CurrencyBloc>();
-                          final currencySymbol = currencyBloc.selectedCurrency.symbol;
+                          final currencySymbol =
+                              currencyBloc.selectedCurrency.symbol;
 
                           return TextFormField(
                             controller: _amountController,
@@ -692,11 +653,15 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Colors.grey[300]!),
+                                borderSide: BorderSide(
+                                  color: Colors.grey[300]!,
+                                ),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Colors.grey[300]!),
+                                borderSide: BorderSide(
+                                  color: Colors.grey[300]!,
+                                ),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
@@ -768,7 +733,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              
               if (_selectedType == TransactionType.expense) ...[
                 _buildFormSection(
                   l10n.transactionCategory,
@@ -777,7 +741,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                       return FutureBuilder<List<TransactionItem>>(
                         future: _getAvailableTransactionItems(budgetState),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Container(
                               padding: const EdgeInsets.all(16),
                               decoration: _buildContainerDecoration(),
@@ -804,8 +769,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                           }
 
                           final transactionItems = snapshot.data ?? [];
-                          
-                          
+
                           final selectedTransactionItem = transactionItems
                               .where((item) => item.id == _selectedItemId)
                               .firstOrNull;
@@ -824,11 +788,15 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                                   ),
                                   const SizedBox(width: 12),
                                   if (selectedTransactionItem != null) ...[
-                                    _buildTransactionDisplayWidget(selectedTransactionItem),
+                                    _buildTransactionDisplayWidget(
+                                      selectedTransactionItem,
+                                    ),
                                   ] else ...[
                                     Expanded(
                                       child: Text(
-                                        AppLocalizations.of(context)!.selectBudgetPlan,
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.selectBudgetPlan,
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.grey[600],
@@ -854,7 +822,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 24),
 
-              
               _buildFormSection(
                 l10n.transactionDescription,
                 TextFormField(
@@ -896,22 +863,18 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
               const SizedBox(height: 32),
 
-              
               if (_selectedType == TransactionType.expense) ...[
                 _buildBudgetPreviewSection(),
                 const SizedBox(height: 24),
               ],
 
-              
               const BannerAdWidget(
-                maxHeight: 80, 
-                margin: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+                maxHeight: 80,
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
 
               const SizedBox(height: 16),
 
-              
               Row(
                 children: [
                   Expanded(
@@ -943,8 +906,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                         backgroundColor: _selectedType == null
                             ? const Color(0xFF667eea)
                             : _selectedType == TransactionType.income
-                                ? const Color(0xFF4CAF50)
-                                : const Color(0xFFFF5722),
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFFFF5722),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -958,7 +921,9 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             )
                           : Row(
@@ -1039,17 +1004,30 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     );
   }
 
-  Widget _buildTypeButton(String label, TransactionType type, bool isSelected, Color color, IconData icon) {
+  Widget _buildTypeButton(
+    String label,
+    TransactionType type,
+    bool isSelected,
+    Color color,
+    IconData icon,
+  ) {
     return GestureDetector(
       onTap: () {
         // Analytics tracking for transaction type selection
-        _analyticsService.logButtonPress('transaction_type_${type.name}', 'add_transaction');
+        _analyticsService.logButtonPress(
+          'transaction_type_${type.name}',
+          'add_transaction',
+        );
         _analyticsService.logUserPreference('transaction_type', type.name);
-        _analyticsService.logContentInteraction('transaction_form', 'type_select', type.name);
-        
+        _analyticsService.logContentInteraction(
+          'transaction_form',
+          'type_select',
+          type.name,
+        );
+
         setState(() {
           _selectedType = type;
-          _selectedItemId = null; 
+          _selectedItemId = null;
         });
       },
       child: Container(
@@ -1065,11 +1043,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? color : Colors.grey,
-              size: 18,
-            ),
+            Icon(icon, color: isSelected ? color : Colors.grey, size: 18),
             const SizedBox(width: 6),
             Text(
               label,
@@ -1096,7 +1070,11 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               color: transactionItem.color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Icon(transactionItem.icon, color: transactionItem.color, size: 14),
+            child: Icon(
+              transactionItem.icon,
+              color: transactionItem.color,
+              size: 14,
+            ),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -1115,10 +1093,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                 if (true) ...[
                   Text(
                     transactionItem.description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -1131,7 +1106,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   }
 
   Widget _buildBudgetPreviewSection() {
-    
     if (_selectedType != TransactionType.expense || _selectedItemId == null) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -1142,19 +1116,12 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.info_outline,
-              color: Colors.blue[600],
-              size: 20,
-            ),
+            Icon(Icons.info_outline, color: Colors.blue[600], size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Pilih budget plan untuk melihat informasi anggaran',
-                style: TextStyle(
-                  color: Colors.blue[700],
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.blue[700], fontSize: 14),
               ),
             ),
           ],
@@ -1195,23 +1162,25 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                 .firstOrNull;
 
             if (selectedItem == null || !selectedItem.isBudgetPlan) {
-              return const SizedBox(); 
+              return const SizedBox();
             }
 
             final budget = selectedItem.budget!;
-            final currentAmount = double.tryParse(getRawNumber(_amountController.text)) ?? 0;
-            final remainingAfterTransaction = selectedItem.remainingAmount - currentAmount;
+            final currentAmount =
+                double.tryParse(getRawNumber(_amountController.text)) ?? 0;
+            final remainingAfterTransaction =
+                selectedItem.remainingAmount - currentAmount;
             final isOverBudget = remainingAfterTransaction < 0;
 
             return Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: isOverBudget 
+                color: isOverBudget
                     ? Colors.red.withValues(alpha: 0.05)
                     : Colors.green.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: isOverBudget 
+                  color: isOverBudget
                       ? Colors.red.withValues(alpha: 0.2)
                       : Colors.green.withValues(alpha: 0.2),
                 ),
@@ -1219,7 +1188,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  
                   Row(
                     children: [
                       Container(
@@ -1260,8 +1228,12 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                         ),
                       ),
                       Icon(
-                        isOverBudget ? Icons.warning_amber_rounded : Icons.check_circle,
-                        color: isOverBudget ? Colors.red[600] : Colors.green[600],
+                        isOverBudget
+                            ? Icons.warning_amber_rounded
+                            : Icons.check_circle,
+                        color: isOverBudget
+                            ? Colors.red[600]
+                            : Colors.green[600],
                         size: 24,
                       ),
                     ],
@@ -1269,7 +1241,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
 
                   const SizedBox(height: 16),
 
-                  
                   Row(
                     children: [
                       Expanded(
@@ -1283,7 +1254,9 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                       Expanded(
                         child: _buildBudgetStatItem(
                           'Terpakai',
-                          _formatCurrency(budget.amount - selectedItem.remainingAmount),
+                          _formatCurrency(
+                            budget.amount - selectedItem.remainingAmount,
+                          ),
                           Colors.orange,
                         ),
                       ),
@@ -1292,7 +1265,9 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                         child: _buildBudgetStatItem(
                           'Tersisa',
                           _formatCurrency(selectedItem.remainingAmount),
-                          selectedItem.remainingAmount > 0 ? Colors.green : Colors.red,
+                          selectedItem.remainingAmount > 0
+                              ? Colors.green
+                              : Colors.red,
                         ),
                       ),
                     ],
@@ -1303,12 +1278,15 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                     Divider(color: Colors.grey[300]),
                     const SizedBox(height: 16),
 
-                    
                     Row(
                       children: [
                         Icon(
-                          isOverBudget ? Icons.trending_down : Icons.trending_flat,
-                          color: isOverBudget ? Colors.red[600] : Colors.blue[600],
+                          isOverBudget
+                              ? Icons.trending_down
+                              : Icons.trending_flat,
+                          color: isOverBudget
+                              ? Colors.red[600]
+                              : Colors.blue[600],
                           size: 16,
                         ),
                         const SizedBox(width: 8),
@@ -1327,20 +1305,24 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isOverBudget ? '${AppLocalizations.of(context)!.overBudget}:' : 'Sisa Budget:',
+                          isOverBudget
+                              ? '${AppLocalizations.of(context)!.overBudget}:'
+                              : 'Sisa Budget:',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[600],
                           ),
                         ),
                         Text(
-                          isOverBudget 
+                          isOverBudget
                               ? _formatCurrency(remainingAfterTransaction.abs())
                               : _formatCurrency(remainingAfterTransaction),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: isOverBudget ? Colors.red[600] : Colors.green[600],
+                            color: isOverBudget
+                                ? Colors.red[600]
+                                : Colors.green[600],
                           ),
                         ),
                       ],
@@ -1429,9 +1411,8 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     final budgetState = context.read<BudgetManagementBloc>().state;
     final transactionItems = await _getAvailableTransactionItems(budgetState);
 
-    
     final realItems = transactionItems;
-    
+
     if (realItems.isEmpty && _selectedType == TransactionType.expense) {
       _showNoBudgetDialog();
       return;
@@ -1454,7 +1435,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
           onCreateBudget: () async {
             Navigator.pop(modalContext);
             await context.push(AppConstants.budgetManagementRoute);
-            
+
             if (mounted) {
               _refreshBudgetData();
             }
@@ -1479,7 +1460,6 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       return;
     }
 
-    
     if (_selectedType == TransactionType.expense && _selectedItemId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -1493,46 +1473,44 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
     setState(() => _isLoading = true);
 
     try {
-      
       final title = _titleController.text.trim();
       final rawAmount = getRawNumber(_amountController.text);
       final amount = double.parse(rawAmount);
       final description = _descriptionController.text.trim();
 
-      
       String? budgetId;
       if (!mounted) return;
       final budgetState = context.read<BudgetManagementBloc>().state;
-      
+
       if (_selectedType == TransactionType.expense) {
-        
         if (budgetState is BudgetManagementLoaded) {
-          final transactionItems = await _getAvailableTransactionItems(budgetState);
+          final transactionItems = await _getAvailableTransactionItems(
+            budgetState,
+          );
           final selectedItem = transactionItems
               .where((item) => item.id == _selectedItemId)
               .firstOrNull;
-              
+
           if (selectedItem != null && selectedItem.isBudgetPlan) {
-            
             budgetId = selectedItem.budget!.id;
           }
         }
-        
+
         if (budgetId == null) {
-          throw Exception('Budget ID not found. Please select a valid budget plan.');
+          throw Exception(
+            'Budget ID not found. Please select a valid budget plan.',
+          );
         }
       } else {
-        
-        
-        budgetId = 'income_${title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_')}_${DateTime.now().millisecondsSinceEpoch}';
+        budgetId =
+            'income_${title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_')}_${DateTime.now().millisecondsSinceEpoch}';
       }
 
-      
       final transaction = TransactionEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(), 
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: title,
         description: description.isEmpty ? null : description,
-        amount: _selectedType == TransactionType.expense ? -amount : amount, 
+        amount: _selectedType == TransactionType.expense ? -amount : amount,
         budgetId: budgetId,
         type: _selectedType!,
         date: _selectedDate,
@@ -1540,39 +1518,30 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
         updatedAt: DateTime.now(),
       );
 
-      
-
-      
       if (!mounted) return;
       final transactionBloc = context.read<TransactionBloc>();
       final budgetBloc = context.read<BudgetManagementBloc>();
       await transactionBloc.transactionUsecases.addTransaction(transaction);
 
-      
       if (mounted) {
-        
         budgetBloc.add(const BudgetManagementDataRequested());
-        
-        
+
         transactionBloc.add(const TransactionDataRequested());
       }
 
       if (mounted) {
         // Analytics tracking for successful transaction
-        _analyticsService.logTransactionAction(
-          'create', 
-          _selectedType!.name
-        );
+        _analyticsService.logTransactionAction('create', _selectedType!.name);
         _analyticsService.logFeatureUsage('transaction_created_success');
-        
+
         // Track amount range for privacy-safe analytics
         final amountRange = _getAmountRange(amount);
         _analyticsService.logContentInteraction(
-          'transaction_form', 
-          'submit_success', 
-          'amount_range_$amountRange'
+          'transaction_form',
+          'submit_success',
+          'amount_range_$amountRange',
         );
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.transactionSaved),
@@ -1585,11 +1554,11 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
       if (mounted) {
         // Analytics tracking for failed transaction
         _analyticsService.logContentInteraction(
-          'transaction_form', 
-          'submit_error', 
-          'save_failed'
+          'transaction_form',
+          'submit_error',
+          'save_failed',
         );
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.transactionSaveFailed),
@@ -1607,7 +1576,7 @@ class _AddTransactionViewState extends State<_AddTransactionView> {
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
   }
-  
+
   String _getAmountRange(double amount) {
     if (amount < 50000) return 'under_50k';
     if (amount < 100000) return '50k_100k';
@@ -1634,7 +1603,8 @@ class _EnhancedBudgetSelector extends StatefulWidget {
   });
 
   @override
-  State<_EnhancedBudgetSelector> createState() => _EnhancedBudgetSelectorState();
+  State<_EnhancedBudgetSelector> createState() =>
+      _EnhancedBudgetSelectorState();
 }
 
 class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
@@ -1663,24 +1633,23 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
         if (query.isEmpty) {
           _filteredItems = widget.transactionItems;
         } else {
-          _filteredItems = widget.transactionItems
-              .where((item) {
-                final searchQuery = query.toLowerCase();
-                
-                if (item.name.toLowerCase().contains(searchQuery)) {
-                  return true;
-                }
-                
-                if (item.description.toLowerCase().contains(searchQuery)) {
-                  return true;
-                }
-                
-                if (item.budget != null && item.budget!.description.toLowerCase().contains(searchQuery)) {
-                  return true;
-                }
-                return false;
-              })
-              .toList();
+          _filteredItems = widget.transactionItems.where((item) {
+            final searchQuery = query.toLowerCase();
+
+            if (item.name.toLowerCase().contains(searchQuery)) {
+              return true;
+            }
+
+            if (item.description.toLowerCase().contains(searchQuery)) {
+              return true;
+            }
+
+            if (item.budget != null &&
+                item.budget!.description.toLowerCase().contains(searchQuery)) {
+              return true;
+            }
+            return false;
+          }).toList();
         }
       });
     });
@@ -1696,7 +1665,6 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
       ),
       child: Column(
         children: [
-          
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -1706,8 +1674,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
-          
+
           Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
@@ -1730,8 +1697,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
               ],
             ),
           ),
-          
-          
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
@@ -1762,15 +1728,17 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                 ),
                 filled: true,
                 fillColor: Colors.grey[50],
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
               onChanged: _onSearchChanged,
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
-          
+
           if (_searchController.text.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1786,25 +1754,23 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                 ),
               ),
             ),
-          
+
           const SizedBox(height: 8),
-          
-          
+
           if (widget.transactionItems.isEmpty) ...[
-            
             Expanded(
               child: Center(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
                   padding: const EdgeInsets.all(28),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF667eea),
-                        Color(0xFF764ba2),
-                      ],
+                      colors: [Color(0xFF667eea), Color(0xFF764ba2)],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
@@ -1818,7 +1784,6 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      
                       Container(
                         width: 64,
                         height: 64,
@@ -1882,7 +1847,6 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
               ),
             ),
           ] else ...[
-            
             Expanded(
               child: _filteredItems.isEmpty
                   ? _buildEmptySearchState()
@@ -1891,7 +1855,8 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                       itemCount: _filteredItems.length,
                       itemBuilder: (context, index) {
                         final transactionItem = _filteredItems[index];
-                        final isSelected = transactionItem.id == widget.selectedItemId;
+                        final isSelected =
+                            transactionItem.id == widget.selectedItemId;
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),
@@ -1914,7 +1879,9 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                                   ),
                                   borderRadius: BorderRadius.circular(16),
                                   color: isSelected
-                                      ? const Color(0xFF667eea).withValues(alpha: 0.05)
+                                      ? const Color(
+                                          0xFF667eea,
+                                        ).withValues(alpha: 0.05)
                                       : Colors.white,
                                 ),
                                 child: Row(
@@ -1923,7 +1890,9 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        color: transactionItem.color.withValues(alpha: 0.15),
+                                        color: transactionItem.color.withValues(
+                                          alpha: 0.15,
+                                        ),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Icon(
@@ -1935,7 +1904,8 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             children: [
@@ -1945,24 +1915,57 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,
-                                                    color: isSelected ? const Color(0xFF667eea) : Colors.black87,
+                                                    color: isSelected
+                                                        ? const Color(
+                                                            0xFF667eea,
+                                                          )
+                                                        : Colors.black87,
                                                   ),
                                                 ),
                                               ),
-                                              if (transactionItem.isBudgetPlan && transactionItem.budget != null) ...[
+                                              if (transactionItem
+                                                      .isBudgetPlan &&
+                                                  transactionItem.budget !=
+                                                      null) ...[
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 2,
+                                                      ),
                                                   decoration: BoxDecoration(
-                                                    color: _getPeriodColor(transactionItem.budget!.period).withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(4),
-                                                    border: Border.all(color: _getPeriodColor(transactionItem.budget!.period).withValues(alpha: 0.3)),
+                                                    color: _getPeriodColor(
+                                                      transactionItem
+                                                          .budget!
+                                                          .period,
+                                                    ).withValues(alpha: 0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
+                                                    border: Border.all(
+                                                      color: _getPeriodColor(
+                                                        transactionItem
+                                                            .budget!
+                                                            .period,
+                                                      ).withValues(alpha: 0.3),
+                                                    ),
                                                   ),
                                                   child: Text(
-                                                    _getLocalizedPeriodName(transactionItem.budget!.period),
+                                                    _getLocalizedPeriodName(
+                                                      transactionItem
+                                                          .budget!
+                                                          .period,
+                                                    ),
                                                     style: TextStyle(
                                                       fontSize: 10,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: _getPeriodColor(transactionItem.budget!.period),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: _getPeriodColor(
+                                                        transactionItem
+                                                            .budget!
+                                                            .period,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -1972,12 +1975,18 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                                           const SizedBox(height: 4),
                                           if (transactionItem.isBudgetPlan) ...[
                                             Text(
-                                              transactionItem.remainingAmount > 0 
+                                              transactionItem.remainingAmount >
+                                                      0
                                                   ? 'Sisa: ${widget.formatCurrency(transactionItem.remainingAmount)} dari ${widget.formatCurrency(transactionItem.budget?.amount ?? 0)}'
                                                   : '${AppLocalizations.of(context)!.overBudget}: ${widget.formatCurrency(transactionItem.remainingAmount.abs())} dari ${widget.formatCurrency(transactionItem.budget?.amount ?? 0)}',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                color: transactionItem.remainingAmount > 0 ? Colors.green[600] : Colors.red[600],
+                                                color:
+                                                    transactionItem
+                                                            .remainingAmount >
+                                                        0
+                                                    ? Colors.green[600]
+                                                    : Colors.red[600],
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
@@ -2010,7 +2019,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
                     ),
             ),
           ],
-          
+
           const SizedBox(height: 20),
         ],
       ),
@@ -2025,11 +2034,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 48,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.search_off, size: 48, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               l10n.noBudgetsFound,
@@ -2042,10 +2047,7 @@ class _EnhancedBudgetSelectorState extends State<_EnhancedBudgetSelector> {
             const SizedBox(height: 8),
             Text(
               l10n.tryAdjustingSearchTerm,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
