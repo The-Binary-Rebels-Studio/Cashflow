@@ -32,7 +32,6 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isLoading = false;
   bool _isBannerAlreadyCreated = false;
-  double _actualHeight = 60;
 
   @override
   void initState() {
@@ -62,13 +61,6 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         width: windowSize.width.toInt(),
         maxHeight: widget.maxHeight,
       );
-
-      final calculatedBannerSize = await adSize.getCalculatedBannerAdSize();
-      if (mounted) {
-        setState(() {
-          _actualHeight = calculatedBannerSize.height.toDouble();
-        });
-      }
 
       _bannerAd = _createBanner(adSize);
 
