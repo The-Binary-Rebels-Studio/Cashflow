@@ -10,14 +10,15 @@ import 'package:cashflow/core/utils/currency_formatter.dart';
 class SpendingChart extends StatelessWidget {
   const SpendingChart({super.key});
 
-  
-  List<BudgetSpendingData> _calculateBudgetSpending(List<TransactionWithBudget> expenseTransactions) {
+  List<BudgetSpendingData> _calculateBudgetSpending(
+    List<TransactionWithBudget> expenseTransactions,
+  ) {
     final Map<String, BudgetSpendingData> budgetMap = {};
-    
+
     for (final txn in expenseTransactions) {
       final budgetId = txn.budget.id;
-      final amount = txn.transaction.amount.abs(); 
-      
+      final amount = txn.transaction.amount.abs();
+
       if (budgetMap.containsKey(budgetId)) {
         budgetMap[budgetId] = budgetMap[budgetId]!.copyWith(
           spent: budgetMap[budgetId]!.spent + amount,
@@ -32,10 +33,11 @@ class SpendingChart extends StatelessWidget {
         );
       }
     }
-    
-    return budgetMap.values.toList()..sort((a, b) => b.spent.compareTo(a.spent));
+
+    return budgetMap.values.toList()
+      ..sort((a, b) => b.spent.compareTo(a.spent));
   }
-  
+
   Color _getBudgetColor(String budgetName) {
     final colors = [
       Colors.orange,
@@ -47,25 +49,26 @@ class SpendingChart extends StatelessWidget {
       Colors.teal,
       Colors.indigo,
     ];
-    
-    
+
     final hash = budgetName.hashCode.abs();
     return colors[hash % colors.length];
   }
 
-  List<PieChartSectionData> _createPieChartSections(List<BudgetSpendingData> budgetData) {
+  List<PieChartSectionData> _createPieChartSections(
+    List<BudgetSpendingData> budgetData,
+  ) {
     if (budgetData.isEmpty) return [];
-    
+
     final total = budgetData.fold<double>(0, (sum, data) => sum + data.spent);
     if (total == 0) return [];
 
     return budgetData.map((data) {
       final percentage = (data.spent / total) * 100;
-      
+
       return PieChartSectionData(
         color: data.color,
         value: percentage,
-        title: percentage >= 10 ? '${percentage.toStringAsFixed(0)}%' : '', 
+        title: percentage >= 10 ? '${percentage.toStringAsFixed(0)}%' : '',
         radius: 50,
         titleStyle: const TextStyle(
           fontSize: 11,
@@ -79,7 +82,7 @@ class SpendingChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -90,20 +93,22 @@ class SpendingChart extends StatelessWidget {
           children: [
             Text(
               l10n.dashboardSpendingCategories,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             BlocBuilder<TransactionBloc, TransactionState>(
               builder: (context, state) {
                 if (state is TransactionLoaded) {
-                  final budgetSpendingData = _calculateBudgetSpending(state.expenseTransactions);
-                  
+                  final budgetSpendingData = _calculateBudgetSpending(
+                    state.expenseTransactions,
+                  );
+
                   if (budgetSpendingData.isEmpty) {
                     return _buildEmptyState(context);
                   }
-                  
+
                   return Row(
                     children: [
                       Expanded(
@@ -111,7 +116,9 @@ class SpendingChart extends StatelessWidget {
                           height: 120,
                           child: PieChart(
                             PieChartData(
-                              sections: _createPieChartSections(budgetSpendingData),
+                              sections: _createPieChartSections(
+                                budgetSpendingData,
+                              ),
                               centerSpaceRadius: 30,
                               sectionsSpace: 2,
                               borderData: FlBorderData(show: false),
@@ -124,7 +131,7 @@ class SpendingChart extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: budgetSpendingData
-                              .take(4) 
+                              .take(4)
                               .map((data) => _BudgetSpendingItem(data: data))
                               .toList(),
                         ),
@@ -132,7 +139,7 @@ class SpendingChart extends StatelessWidget {
                     ],
                   );
                 }
-                
+
                 return _buildLoadingState();
               },
             ),
@@ -141,7 +148,7 @@ class SpendingChart extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildEmptyState(BuildContext context) {
     return SizedBox(
       height: 120,
@@ -161,13 +168,11 @@ class SpendingChart extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildLoadingState() {
     return const SizedBox(
       height: 120,
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -180,8 +185,10 @@ class _BudgetSpendingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOverBudget = data.spent > data.budgetAmount;
-    final percentage = data.budgetAmount > 0 ? (data.spent / data.budgetAmount * 100) : 0;
-    
+    final percentage = data.budgetAmount > 0
+        ? (data.spent / data.budgetAmount * 100)
+        : 0;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Column(
@@ -248,7 +255,7 @@ class BudgetSpendingData {
     required this.spent,
     required this.color,
   });
-  
+
   BudgetSpendingData copyWith({
     String? budgetId,
     String? budgetName,
@@ -264,7 +271,7 @@ class BudgetSpendingData {
       color: color ?? this.color,
     );
   }
-  
+
   double get percentage => budgetAmount > 0 ? (spent / budgetAmount * 100) : 0;
   bool get isOverBudget => spent > budgetAmount;
 }
